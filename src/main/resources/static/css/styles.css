@@ -10846,3 +10846,15 @@ html {
   background-repeat: no-repeat;
   min-height: 15rem;
 }
+
+/* 테마 원본 부분 */
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+/* 커스터마이즈 부분 */
+.background-with-image {
+  /* 배경 이미지 그라데이션을 설정합니다. */
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://quotement.com/wp-content/uploads/2022/06/280-Awesome-Coffee-Captions-To-Show-Your-Coffee-Obsession-720x405.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  /* 다른 스타일링 속성을 필요에 따라 추가할 수 있습니다. */
+}
