@@ -99,7 +99,7 @@ public class MenuService {
             return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
         } else {
             menuRepository.delete(menu);
-            StatusResponseDto res = new StatusResponseDto("메뉴가 삭제되었습니다.", 400);
+            StatusResponseDto res = new StatusResponseDto("메뉴가 삭제되었습니다.", 200);
             return new ResponseEntity<>(res, HttpStatus.OK);
         }
     }
