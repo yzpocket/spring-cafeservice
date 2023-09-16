@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders")
-public class Order extends TimeStamped {
+public class Order{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
