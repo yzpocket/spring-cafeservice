@@ -16,10 +16,11 @@ public abstract class TimeStamped {
     @CreatedDate
     @Column(updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime createdAt; // 글생성시간
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime modifiedAt; // 글수정시간
+    private LocalDateTime modifiedAt;
 }
+
