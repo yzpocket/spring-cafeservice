@@ -1,12 +1,12 @@
 package com.sparta.springcafeservice.service;
 
-import com.sparta.springcafeservice.dto.CommentRequestDto;
-import com.sparta.springcafeservice.dto.CommentResponseDto;
-import com.sparta.springcafeservice.entity.Comment;
+import com.sparta.springcafeservice.dto.ReviewRequestDto;
+import com.sparta.springcafeservice.dto.ReviewResponseDto;
+import com.sparta.springcafeservice.entity.Review;
 import com.sparta.springcafeservice.entity.Store;
 import com.sparta.springcafeservice.entity.User;
 import com.sparta.springcafeservice.exception.RestApiException;
-import com.sparta.springcafeservice.repository.CommentRepository;
+import com.sparta.springcafeservice.repository.ReviewRepository;
 import com.sparta.springcafeservice.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,81 +21,81 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class CommentService {
+public class ReviewService {
 
-    private final CommentRepository commentRepository;
+    private final ReviewRepository reviewRepository;
     private final StoreRepository storeRepository;
 
     // CREATE - 리뷰 작성
-    public CommentResponseDto createComment(CommentRequestDto commentRequestDto, User user) {
+    public ReviewResponseDto createReview(ReviewRequestDto reviewRequestDto, User user) {
         // 가게 존재 여부 확인
-        Store store = findStore(commentRequestDto.getStoreId());
+        Store store = findStore(reviewRequestDto.getStoreId());
 
         // Entity로 <- RequestDto를
-        Comment comment = new Comment(commentRequestDto, user, store);
+        Review review = new Review(reviewRequestDto, user, store);
 
         // DB 저장
-        Comment savedComment = commentRepository.save(comment);
+        Review savedReview = reviewRepository.save(review);
 
         // 저장된 리뷰를 가게의 리뷰 리스트에 추가
-        store.addCommentList(comment);
+        store.addReviewList(review);
         System.out.println("리뷰가 등록되었습니다.");
 
-        return new CommentResponseDto(savedComment);
+        return new ReviewResponseDto(savedReview);
     }
 
     // READ All - 리뷰 조회
-    public List<CommentResponseDto> getAllComments(User user) {
+    public List<ReviewResponseDto> getAllReviews(User user) {
         // 모든 리뷰을 데이터베이스에서 조회
-        List<Comment> commentList = commentRepository.findAll();
+        List<Review> reviewList = reviewRepository.findAll();
         System.out.println("모든 리뷰 조회 완료.");
 
-        // 조회된 모든 리뷰을 CommentResponseDto로 매핑하고 리스트로 반환 (row -> 객체 -> 객체배열(list))
-        return commentList.stream().map(CommentResponseDto::new).collect(Collectors.toList());
+        // 조회된 모든 리뷰을 ReviewResponseDto로 매핑하고 리스트로 반환 (row -> 객체 -> 객체배열(list))
+        return reviewList.stream().map(ReviewResponseDto::new).collect(Collectors.toList());
     }
 
     // READ ONE - 리뷰 선택 조회
-    public CommentResponseDto getComment(Long id, User user) {
+    public ReviewResponseDto getReview(Long id, User user) {
         // 특정 리뷰 DB 존재 여부 확인
-        Comment comment = findComment(id);
+        Review review = findReview(id);
         System.out.println("리뷰번호"+id+"번 리뷰 조회 완료.");
 
-        // 조회된 리뷰를 CommentResponseDto로 매핑하여 반환
-        return new CommentResponseDto(comment);
+        // 조회된 리뷰를 ReviewResponseDto로 매핑하여 반환
+        return new ReviewResponseDto(review);
     }
 
     // UPDATE - 선택 리뷰 수정
     @Transactional
-    public CommentResponseDto updateComment(Long id, CommentRequestDto requestDto, User user) {
+    public ReviewResponseDto updateReview(Long id, ReviewRequestDto requestDto, User user) {
         // 특정 리뷰 DB 존재 여부 확인
-        Comment comment = findComment(id);
+        Review review = findReview(id);
 
         // 리뷰의 작성자와 현재 로그인한 사용자를 비교하여 작성자가 같지 않으면 예외 발생
-        if (!comment.getUser().getId().equals(user.getId())) {
+        if (!review.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("리뷰 작성자만 수정할 수 있습니다.");
         }
 
         // 리뷰을 업데이트
-        comment.update(requestDto);
+        review.update(requestDto);
         System.out.println("리뷰번호"+id+"번 리뷰 수정 완료.");
 
         // 업데이트된 리뷰을 반환
-        return new CommentResponseDto(comment);
+        return new ReviewResponseDto(review);
     }
 
     // DELETE - 선택 리뷰 삭제
     @Transactional
-    public ResponseEntity<String> deleteComment(Long id, User user) {
+    public ResponseEntity<String> deleteReview(Long id, User user) {
         // 특정 리뷰 DB 존재 여부 확인
-        Comment comment = findComment(id);
+        Review review = findReview(id);
 
         // DB기록된 리뷰의 작성자와 현재 로그인한 사용자를 비교하여 작성자가 같지 않으면 예외 발생
-        if (!comment.getUser().getId().equals(user.getId())) {
+        if (!review.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("리뷰 작성자만 삭제할 수 있습니다.");
         }
 
         // 리뷰를 삭제
-        commentRepository.delete(comment);
+        reviewRepository.delete(review);
         System.out.println("리뷰번호"+id+"번 리뷰 삭제 완료.");
 
         // 삭제가 성공한 응답을 반환
@@ -112,9 +112,9 @@ public class CommentService {
     }
 
     // find2 - 리뷰 ID로 존재 여부 확인
-    private Comment findComment(Long id) {
+    private Review findReview(Long id) {
         // 리뷰 ID를 사용하여 특정 리뷰를 조회하고, 존재하지 않을 경우 예외 발생
-        return commentRepository.findById(id).orElseThrow(() ->
+        return reviewRepository.findById(id).orElseThrow(() ->
                 new RestApiException("선택한 리뷰는 존재하지 않습니다.", HttpStatus.NOT_FOUND.value())
         );
     }
