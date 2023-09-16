@@ -1,9 +1,9 @@
 package com.sparta.springcafeservice.controller;
 
-import com.sparta.springcafeservice.dto.CommentRequestDto;
-import com.sparta.springcafeservice.dto.CommentResponseDto;
+import com.sparta.springcafeservice.dto.ReviewRequestDto;
+import com.sparta.springcafeservice.dto.ReviewResponseDto;
 import com.sparta.springcafeservice.security.UserDetailsImpl;
-import com.sparta.springcafeservice.service.CommentService;
+import com.sparta.springcafeservice.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,59 +17,60 @@ import java.util.List;
 /**
  * 리뷰 관련 HTTP 요청 처리를 담당하는 컨트롤러
  */
-@Controller
+//@Controller
+@RestController
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api")
-public class CommentController {
+public class ReviewController {
 
-    private final CommentService commentService;
+    private final ReviewService reviewService;
 
     // 리뷰 작성 API
-    @PostMapping("/comments")
-    public CommentResponseDto createComment(
-            @RequestBody CommentRequestDto requestDto,
+    @PostMapping("/reviews")
+    public ReviewResponseDto createReview(
+            @RequestBody ReviewRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     )
     {
-        return commentService.createComment(requestDto, userDetails.getUser());
+        return reviewService.createReview(requestDto, userDetails.getUser());
     }
 
     // 리뷰 모두 조회 API
-    @GetMapping("/comments")
-    public List<CommentResponseDto> getAllComments(
+    @GetMapping("/reviews")
+    public List<ReviewResponseDto> getAllReviews(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     )
     {
-        return commentService.getAllComments(userDetails.getUser());
+        return reviewService.getAllReviews(userDetails.getUser());
     }
 
     // 리뷰 선택 조회 API
-    @GetMapping("/comments/{id}")
-    public CommentResponseDto getComment(
+    @GetMapping("/reviews/{id}")
+    public ReviewResponseDto getReview(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return commentService.getComment(id, userDetails.getUser());
+        return reviewService.getReview(id, userDetails.getUser());
     }
 
     // 리뷰 수정 API
-    @PutMapping("/comments/{id}")
-    public CommentResponseDto updateComment(
+    @PutMapping("/reviews/{id}")
+    public ReviewResponseDto updateReview(
             @PathVariable Long id,
-            @RequestBody CommentRequestDto requestDto,
+            @RequestBody ReviewRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
             //@AuthenticationPrincipal StoreDetailsImpl storeDetails
     ) {
-        return commentService.updateComment(id, requestDto, userDetails.getUser());
+        return reviewService.updateReview(id, requestDto, userDetails.getUser());
     }
 
     // 리뷰 삭제 API by Id
-    @DeleteMapping("/comments/{id}")
-    public ResponseEntity<String> deleteComment(
+    @DeleteMapping("/reviews/{id}")
+    public ResponseEntity<String> deleteReview(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return commentService.deleteComment(id, userDetails.getUser());
+        return reviewService.deleteReview(id, userDetails.getUser());
     }
 }
