@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
 
 @Configuration
 @EnableWebSecurity // Spring Security 지원을 가능하게 함
@@ -64,14 +67,29 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
                         .requestMatchers("/", "/index.html", "/menu.html", "/service.html", "/blog.html", "/contact.html").permitAll() // 네비게이션 페이지 요청 모두 접근 허가
-                        .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                        .requestMatchers("/api/auth/**").permitAll() // '/api/auth/'로 시작하는 요청 모두 접근 허가 > 회원가입, 로그인
+
+                        // 메뉴 조회는 누구나 접근 / 카페도 추후 추가
+                        .requestMatchers(HttpMethod.GET, "/api/menus").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/menus/{id}").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
         http.formLogin((formLogin) -> // security의 제공 로그인 페이지가 아니라 사용자 설정 폼로그인을 사용하도록 지정
                 formLogin
-                        .loginPage("/api/user/login-page").permitAll()
+                        .loginPage("/api/auth/login-page").permitAll()
+
         );
+        // 로그아웃 부분
+        // 일단 카카오로그인 말고 그냥 로그인으로 구현
+
+        http.logout(logout -> {
+            logout.logoutRequestMatcher(new AntPathRequestMatcher("/api/auth/logout"));
+            logout.logoutSuccessUrl("/api/auth/login");
+            logout.invalidateHttpSession(true);
+            logout.deleteCookies("JSESSIONID");
+        });
+
 
         // 필터 관리
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
@@ -79,4 +97,5 @@ public class WebSecurityConfig {
 
         return http.build();
     }
+
 }

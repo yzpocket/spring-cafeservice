@@ -84,7 +84,7 @@ public class MenuService {
             MenuResponseDto res = new MenuResponseDto(menu);
             return new ResponseEntity<>(res, HttpStatus.OK);
         } else {
-            StatusResponseDto res = new StatusResponseDto("사업자가 아닙니다.", 400)
+            StatusResponseDto res = new StatusResponseDto("사업자가 아닙니다.", 400);
             return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
         }
     }
