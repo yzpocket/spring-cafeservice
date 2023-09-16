@@ -28,15 +28,15 @@ public class CommentResponseDto {  // response Dto
     }
 
     // 리뷰 업데이트용 생성자
-    public CommentResponseDto(CommentResponseDto updatedComment) {
-        this.id = updatedComment.getId();
-        this.storeId = updatedComment.getStoreId();
-        this.userId = updatedComment.getUserId();
-        this.star = updatedComment.getStar();
-        this.comment = updatedComment.getComment();
-        this.createdAt = updatedComment.getCreatedAt();
-        this.modifiedAt = updatedComment.getModifiedAt();
-    }
+    //public CommentResponseDto(CommentResponseDto updatedComment) {
+    //    this.id = updatedComment.getId();
+    //    this.storeId = updatedComment.getStoreId();
+    //    this.userId = updatedComment.getUserId();
+    //    this.star = updatedComment.getStar();
+    //    this.comment = updatedComment.getComment();
+    //    this.createdAt = updatedComment.getCreatedAt();
+    //    this.modifiedAt = updatedComment.getModifiedAt();
+    //}
 
     // CommentResponseDto 형태로 변환
     //public CommentResponseDto fromComment(Comment comment) {
