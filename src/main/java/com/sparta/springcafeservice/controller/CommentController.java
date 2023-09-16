@@ -55,25 +55,21 @@ public class CommentController {
 
     // 리뷰 수정 API
     @PutMapping("/comments/{id}")
-    public ResponseEntity<String> updateComment(
+    public CommentResponseDto updateComment(
             @PathVariable Long id,
             @RequestBody CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
             //@AuthenticationPrincipal StoreDetailsImpl storeDetails
-            ) {
-        return commentService.updateComment(id, requestDto, userDetails.getUser()); //, storeDetails.getStore()
-
+    ) {
+        return commentService.updateComment(id, requestDto, userDetails.getUser());
     }
 
     // 리뷰 삭제 API by Id
     @DeleteMapping("/comments/{id}")
     public ResponseEntity<String> deleteComment(
             @PathVariable Long id,
-            //@RequestBody CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
-            //@AuthenticationPrincipal StoreDetailsImpl storeDetails
     ) {
         return commentService.deleteComment(id, userDetails.getUser());
     }
 }
-//보여주신 코드에서 @DeleteMapping("/comment/{id}") 엔드포인트는 리뷰를 삭제하는 API 엔드포인트로 보입니다. 그러나 @DeleteMapping을 사용하여 HTTP DELETE 요청을 처리하려면 일반적으로 @RequestBody를 사용하지 않습니다.
