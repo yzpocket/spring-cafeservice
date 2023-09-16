@@ -54,7 +54,7 @@ public class MenuService {
     // readOnly = 데이터 변경 금지, 더티체킹 생략
     @Transactional(readOnly = true)
     public List<MenuResponseDto> getMenus() {
-        List<Menu> menus = menuRepository.findAllByOrderByModifiedAtDesc();
+        List<Menu> menus = menuRepository.findAll();
         List<MenuResponseDto> responseDtos = new ArrayList<>();
 
         for (Menu menu : menus) {
