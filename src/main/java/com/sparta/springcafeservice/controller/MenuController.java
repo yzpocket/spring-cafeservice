@@ -24,7 +24,7 @@ public class MenuController {
 
     // 메뉴 등록
     @ResponseBody
-    @PutMapping("/menus")
+    @PostMapping("/menus")
     public ResponseEntity<StatusResponseDto> createMenu(@RequestBody MenuRequestDto menuRequestDto,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return menuService.createMenu(menuRequestDto, userDetails.getUser());

@@ -75,11 +75,11 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
-        http.formLogin((formLogin) -> // security의 제공 로그인 페이지가 아니라 사용자 설정 폼로그인을 사용하도록 지정
-                formLogin
-                        .loginPage("/api/auth/login-page").permitAll()
-
-        );
+//        http.formLogin((formLogin) -> // security의 제공 로그인 페이지가 아니라 사용자 설정 폼로그인을 사용하도록 지정
+//                formLogin
+//                        .loginPage("/api/auth/login-page").permitAll()
+//
+//        );
         // 로그아웃 부분
         // 일단 카카오로그인 말고 그냥 로그인으로 구현
 
