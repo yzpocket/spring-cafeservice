@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-
-    //List<Comment> findAllByCommentIdOrderByStoreId(Long storeId); // 필요한 정보만 가져오도록 함
+    //기본적인 JpaRepository의 SimpleJpaRepository 클래스에서 제네릭 다형성 활용 <T or ?> 타입으로 정의되어있다.
+    //List<Comment> findAllByCommentIdOrderByStoreId(Long storeId); // JpaMethod는 정렬기준 바꾸거나 where등 조건들 필요할때
 
 }

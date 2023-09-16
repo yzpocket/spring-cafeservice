@@ -1,5 +1,6 @@
 package com.sparta.springcafeservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.springcafeservice.dto.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,30 +24,26 @@ public class Comment extends TimeStamped {
     private byte star; // 리뷰 별점
 
     //Comment:Store 관계 N:1
-    //Comment의 id 컬럼과 Store의 id 컬럼을 Join 조건으로 사용
-    //Comment<-Store 단방향
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
     //Comment:User 관계 N:1
-    //Comment의 id 컬럼과 User의 id 컬럼을 Join 조건으로 사용
-    //Comment<-User 단방향
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
 
-    public Comment(CommentRequestDto commentRequestDto, Long tokenUserId, Long tokenStoreId) {// <- 토큰에서 유저 이름 가져오기
-        this.userId = tokenUserId; // Comment와 관련된 유저의 ID를 설정합니다.
-        this.storeId = tokenStoreId; // Comment와 관련된 가게의 ID를 설정합니다.
-        this.star = commentRequestDto.getStar();
+    public Comment(CommentRequestDto commentRequestDto, User user, Store store) {
         this.comment = commentRequestDto.getComment();
-
+        this.star = commentRequestDto.getStar();
+        this.user = user;
+        this.store = store; // store 필드 초기화
     }
 
-    // 댓글 수정 생성자
-    public void update(CommentRequestDto commentRequestDto) {
-        this.comment = commentRequestDto.getComment();
+
+    public void update(CommentRequestDto requestDto) {
+        this.comment = requestDto.getComment();
     }
 }
