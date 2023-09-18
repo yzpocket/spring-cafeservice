@@ -79,7 +79,6 @@ public class OrderService {
         // user가 order에서 가져온 userId값과 다를 때(동일 사장) 예외처리
         if (!user.getId().equals(order.getUser().getId())) {
             throw new IllegalArgumentException("주문상태를 변경할 권한이 없습니다.");
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("주문 취소 권한이 없습니다.");
         }
         order.update(requestDto);
         //수정 성공
@@ -93,7 +92,6 @@ public class OrderService {
         // user가 order에서 가져온 userId값과 다를 때(동일 사장) 예외처리
         if (!user.getId().equals(order.getUser().getId())) {
             throw new IllegalArgumentException("주문을 취소할 권한이 없습니다.");
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("주문 취소 권한이 없습니다.");
         }
 
         return ResponseEntity.ok("주문을 취소하였습니다.");

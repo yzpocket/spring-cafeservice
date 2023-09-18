@@ -30,15 +30,15 @@ public class Store extends TimeStamped{
     @Column(name = "information")
     private String information; //가게 정보
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+//    @JsonIgnore
+    @OneToOne
+    @JoinColumn(nullable = false)
     private User user;
 
-    //@OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
-    //private List<Menu> menuList = new ArrayList<>();
-//
-    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "store", orphanRemoval = true)
+    private List<Menu> menuList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store", orphanRemoval = true)
     private List<Review> reviewList = new ArrayList<>();
 
     public Store(StoreRequestDto requestDto, User user) {
@@ -61,3 +61,4 @@ public class Store extends TimeStamped{
         // Comment 객체를 Store의 commentList에 추가
     }
 }
+

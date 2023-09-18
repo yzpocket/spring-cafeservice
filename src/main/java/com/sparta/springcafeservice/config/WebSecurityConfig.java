@@ -83,12 +83,12 @@ public class WebSecurityConfig {
         // 로그아웃 부분
         // 일단 카카오로그인 말고 그냥 로그인으로 구현
 
-        http.logout(logout -> {
-            logout.logoutRequestMatcher(new AntPathRequestMatcher("/api/auth/logout"));
-            logout.logoutSuccessUrl("/api/auth/login");
-            logout.invalidateHttpSession(true);
-            logout.deleteCookies("JSESSIONID");
-        });
+//        http.logout(logout -> {
+//            logout.logoutRequestMatcher(new AntPathRequestMatcher("/api/auth/logout"));
+//            logout.logoutSuccessUrl("/api/auth/login");
+//            logout.invalidateHttpSession(true);
+//            logout.deleteCookies("JSESSIONID");
+//        });
 
 
         // 필터 관리

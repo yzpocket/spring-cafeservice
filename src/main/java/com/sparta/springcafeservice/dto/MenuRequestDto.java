@@ -11,4 +11,6 @@ public class MenuRequestDto {
     private String image;
 
     private int price;
+
+    private Long storeId;
 }
