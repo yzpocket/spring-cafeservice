@@ -30,8 +30,8 @@ public class StoreController {
 
     // ReadAll
     @GetMapping("/stores")
-    public List<StoreAllResponseDto> getAllStores(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return storeService.getAllStores(userDetails.getUser());
+    public List<StoreAllResponseDto> getAllStores() {
+        return storeService.getAllStores();
     }
 
     // Read

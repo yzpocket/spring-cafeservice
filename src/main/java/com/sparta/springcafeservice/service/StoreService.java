@@ -36,7 +36,7 @@ public class StoreService {
 
 
     //ReadAll
-    public List<StoreAllResponseDto> getAllStores(User user) {
+    public List<StoreAllResponseDto> getAllStores() {
         List<Store> storeList = storeRepository.findAll();
         return storeList.stream().map(StoreAllResponseDto::new).collect(Collectors.toList());
     }
