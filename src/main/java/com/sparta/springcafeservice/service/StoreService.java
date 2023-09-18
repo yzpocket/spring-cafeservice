@@ -30,6 +30,10 @@ public class StoreService {
     // Create
     public StoreAllResponseDto createStore(StoreRequestDto requestDto, User user) {
         Store store = storeRepository.save(new Store(requestDto, user));
+        //registNum 값이 들어있는 경우 처리 필요! ->registNum 값 정책이 바뀔 시 수정 필요!!
+        if (user.getRegistNum() == 0) {
+            throw new IllegalArgumentException("사업자가 아닙니다.");
+        }
         //Entity -> ResponseDto
         return new StoreAllResponseDto(store);
     }
@@ -58,6 +62,10 @@ public class StoreService {
         if (!passwordEncoder.matches(requestDto.getPassword(), store.getUser().getPassword())) {
             throw new IllegalArgumentException("비밀번호가 다릅니다");
         }
+        //가게 사장만 수정 가능
+        if (!user.getId().equals(store.getUser().getId())) {
+            throw new IllegalArgumentException("사용자가 다릅니다");
+        }
 
         store.update(requestDto);
         // 수정 성공
@@ -74,6 +82,10 @@ public class StoreService {
         // 비밀 번호가 다를 시 예외처리
         if (!passwordEncoder.matches(requestDto.getPassword(), store.getUser().getPassword())) {
             throw new IllegalArgumentException("비밀번호가 다릅니다");
+        }
+        //가게 사장만 삭제 가능
+        if (!user.getId().equals(store.getUser().getId())) {
+            throw new IllegalArgumentException("사용자가 다릅니다");
         }
 
         storeRepository.delete(store);
