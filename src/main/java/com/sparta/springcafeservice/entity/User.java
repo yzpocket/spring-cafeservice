@@ -26,13 +26,14 @@ public class User {
     private String email;
 
     @Column(nullable = true)
-    private String registNum;
+    // 사용자는 0, 사업자는 0이외의 값
+    private int registNum;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    private int point = 1000000; //고객이 기본으로 가진 포인트 지급
+    private int point = 0; //고객이 기본으로 가진 포인트 지급
 
 
     public User(String username, String password, String email, UserRoleEnum role) {
