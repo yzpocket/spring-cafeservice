@@ -10,7 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@EntityListeners(AuditingEntityListener.class)
+@Entity
 @Getter
 @NoArgsConstructor
 @Table(name = "orders")
@@ -48,7 +48,7 @@ public class Order extends TimeStamped {
         this.user = user;
         this.contents = requestDto.getContents();
         this.orderStatus = OrderStatusEnum.ORDER_CONFIRMATION;
-        this.orderDate = LocalDateTime.now();
+        this.orderDate = LocalDateTime.now(); //주문 시간(생성일자, 수정일자와는 다릅니다.)
     }
 
     public void update(OrderRequestDto requestDto) {

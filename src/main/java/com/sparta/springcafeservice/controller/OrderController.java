@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Controller
+//@Controller
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class OrderController {
 
     private final OrderService orderService;
 
-//create
+    //create
     @PostMapping("/orders")
     public OrderResponseDto createOrder(@RequestBody OrderRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return orderService.createOrder(requestDto, userDetails.getUser());

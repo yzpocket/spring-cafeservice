@@ -3,7 +3,6 @@ package com.sparta.springcafeservice.service;
 
 import com.sparta.springcafeservice.dto.OrderRequestDto;
 import com.sparta.springcafeservice.dto.OrderResponseDto;
-import com.sparta.springcafeservice.dto.StoreResponseDto;
 import com.sparta.springcafeservice.entity.Menu;
 import com.sparta.springcafeservice.entity.Order;
 import com.sparta.springcafeservice.entity.Store;
@@ -14,14 +13,10 @@ import com.sparta.springcafeservice.repository.StoreRepository;
 import com.sparta.springcafeservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.nio.channels.IllegalChannelGroupException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +28,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
+    private final UserRepository userRepository;
 
 
 
@@ -44,7 +40,16 @@ public class OrderService {
         Store store = storeRepository.findById(requestDto.getStoreId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 가게를 찾을 수 없습니다."));
 
+        //user가 가진 포인트 확인
+        if (user.getPoint() < menu.getPrice()) {
+            throw new IllegalArgumentException("포인트가 부족해 주문할 수 없습니다");
+        }
+
         Order order = orderRepository.save(new Order(requestDto, user, menu, store));
+
+        user.setPoint(user.getPoint() - menu.getPrice());
+        userRepository.save(user);
+
         return new OrderResponseDto(order);
     }
 
@@ -70,8 +75,8 @@ public class OrderService {
     public ResponseEntity<String> updateOrder(Long id, OrderRequestDto requestDto, User user) {
         Order order = findOrder(id);
         // user가 order에서 가져온 userId값과 다를 때(동일 사장) 예외처리
-        if (!user.getId().equals(requestDto.getUserId())) {
-            throw new IllegalArgumentException("주문 취소 권한이 없습니다.");
+        if (!user.getId().equals(order.getUser().getId())) {
+            throw new IllegalArgumentException("주문상태를 변경할 권한이 없습니다.");
 //            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("주문 취소 권한이 없습니다.");
         }
         order.update(requestDto);
@@ -84,10 +89,11 @@ public class OrderService {
     public ResponseEntity<String> deleteOrder(Long id, OrderRequestDto requestDto, User user) {
         Order order = findOrder(id);
         // user가 order에서 가져온 userId값과 다를 때(동일 사장) 예외처리
-        if (!user.getId().equals(requestDto.getUserId())) {
-            throw new IllegalArgumentException("주문 삭제 권한이 없습니다.");
+        if (!user.getId().equals(order.getUser().getId())) {
+            throw new IllegalArgumentException("주문을 취소할 권한이 없습니다.");
 //            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("주문 취소 권한이 없습니다.");
         }
+
         return ResponseEntity.ok("주문을 취소하였습니다.");
     }
 
