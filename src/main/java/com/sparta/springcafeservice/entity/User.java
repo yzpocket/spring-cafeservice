@@ -32,7 +32,7 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    private int point;
+    private int point = 1000000; //고객이 기본으로 가진 포인트 지급
 
 
     public User(String username, String password, String email, UserRoleEnum role) {
@@ -42,7 +42,7 @@ public class User {
         this.role = role;
     }
 
-    public User(String username, String password, String email, UserRoleEnum role, String registNum) {
+    public User(String username, String password, String email, UserRoleEnum role, int registNum) {
         this.username = username;
         this.password = password;
         this.email = email;
