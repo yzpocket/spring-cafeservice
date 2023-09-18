@@ -39,7 +39,7 @@ public class Store extends TimeStamped{
     //private List<Menu> menuList = new ArrayList<>();
 //
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
-    private List<Comment> commentList = new ArrayList<>();
+    private List<Review> reviewList = new ArrayList<>();
 
     public Store(StoreRequestDto requestDto, User user) {
         this.storeName = requestDto.getStoreName();
@@ -54,7 +54,7 @@ public class Store extends TimeStamped{
         this.information = requestDto.getInformation();
     }
 
-    public void addCommentList(Comment comment) {
+    public void addReviewList(Review comment) {
         // Comment 객체를 Store와 연결
         comment.setStore(this); // Comment 엔티티에 있는 setStore 메서드를 활용하여 연결
 
