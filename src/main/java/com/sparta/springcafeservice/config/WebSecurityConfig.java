@@ -2,10 +2,12 @@ package com.sparta.springcafeservice.config;
 
 
 import com.sparta.springcafeservice.jwt.JwtUtil;
+import com.sparta.springcafeservice.security.CustomLogoutSuccessHandler;
 import com.sparta.springcafeservice.security.JwtAuthenticationFilter;
 import com.sparta.springcafeservice.security.JwtAuthorizationFilter;
 import com.sparta.springcafeservice.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 @Configuration
@@ -30,6 +31,7 @@ public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -63,32 +65,27 @@ public class WebSecurityConfig {
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
-        http.authorizeHttpRequests((authorizeHttpRequests) ->
-                authorizeHttpRequests
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
-                        .requestMatchers("/", "/index.html", "/menu.html", "/service.html", "/blog.html", "/contact.html").permitAll() // 네비게이션 페이지 요청 모두 접근 허가
-                        .requestMatchers("/api/auth/**").permitAll() // '/api/auth/'로 시작하는 요청 모두 접근 허가 > 회원가입, 로그인
+        http
+                .authorizeRequests(authorizeRequests ->
+                        authorizeRequests
+                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
+                                .requestMatchers("/", "/index.html", "/menu.html", "/service.html", "/blog.html", "/contact.html").permitAll() // 네비게이션 페이지 요청 모두 접근 허가
+                                .requestMatchers("/api/auth/**").permitAll() // '/api/auth/'로 시작하는 요청 모두 접근 허가 > 회원가입, 로그인
 
-                        // 메뉴 조회는 누구나 접근 / 카페도 추후 추가
-                        .requestMatchers(HttpMethod.GET, "/api/menus").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/menus/{id}").permitAll()
-                        .anyRequest().authenticated() // 그 외 모든 요청 인증처리
-        );
+                                // 메뉴 조회는 누구나 접근 / 카페도 추후 추가
+                                .requestMatchers(HttpMethod.GET, "/api/menus").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/menus/{id}").permitAll()
+                )
+                // 로그아웃 처리 추가 부분
+                .logout(logout -> {
+                    logout.logoutUrl("/api/auth/logout") // 로그아웃을 처리할 URL
+                            //.logoutSuccessUrl("/") // 로그아웃 성공 시 이동할 페이지 (메인 페이지로 리디렉션)
+                            .logoutSuccessHandler(customLogoutSuccessHandler) // CustomLogoutSuccessHandler <- 이부분이 msg : statuscode 반환시킴 설정
+                            .invalidateHttpSession(true) // HTTP 세션 무효화 여부
+                            .deleteCookies(JwtUtil.AUTHORIZATION_HEADER); // 로그아웃 시 삭제할 쿠키 이름
+                });
 
-//        http.formLogin((formLogin) -> // security의 제공 로그인 페이지가 아니라 사용자 설정 폼로그인을 사용하도록 지정
-//                formLogin
-//                        .loginPage("/api/auth/login-page").permitAll()
-//
-//        );
-        // 로그아웃 부분
-        // 일단 카카오로그인 말고 그냥 로그인으로 구현
 
-        http.logout(logout -> {
-            logout.logoutRequestMatcher(new AntPathRequestMatcher("/api/auth/logout"));
-            logout.logoutSuccessUrl("/api/auth/login");
-            logout.invalidateHttpSession(true);
-            logout.deleteCookies("JSESSIONID");
-        });
 
 
         // 필터 관리
