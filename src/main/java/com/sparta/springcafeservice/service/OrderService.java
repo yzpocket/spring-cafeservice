@@ -7,12 +7,14 @@ import com.sparta.springcafeservice.entity.Menu;
 import com.sparta.springcafeservice.entity.Order;
 import com.sparta.springcafeservice.entity.Store;
 import com.sparta.springcafeservice.entity.User;
+import com.sparta.springcafeservice.exception.RestApiException;
 import com.sparta.springcafeservice.repository.MenuRepository;
 import com.sparta.springcafeservice.repository.OrderRepository;
 import com.sparta.springcafeservice.repository.StoreRepository;
 import com.sparta.springcafeservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,8 +101,9 @@ public class OrderService {
 
 
     private Order findOrder(Long id) {
-        return orderRepository.findById(id)
-                .orElseThrow(() -> new IllegalIdentifierException("해당 주문은 존재하지 않습니다."));
+        return orderRepository.findById(id).orElseThrow(() ->
+                new RestApiException("선택한 주문는 존재하지 않습니다.", HttpStatus.NOT_FOUND.value())
+        );
     }
 
     private Order findByUserId(Long userId) {
