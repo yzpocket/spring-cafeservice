@@ -1,5 +1,6 @@
 package com.sparta.springcafeservice.controller;
 
+import com.sparta.springcafeservice.dto.StoreAllResponseDto;
 import com.sparta.springcafeservice.dto.StoreRequestDto;
 import com.sparta.springcafeservice.dto.StoreResponseDto;
 import com.sparta.springcafeservice.security.UserDetailsImpl;
@@ -23,13 +24,13 @@ public class StoreController {
 
     // Create
     @PostMapping("/stores")
-    public StoreResponseDto createStore(@RequestBody StoreRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StoreAllResponseDto createStore(@RequestBody StoreRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return storeService.createStore(requestDto, userDetails.getUser());
     }
 
     // ReadAll
     @GetMapping("/stores")
-    public List<StoreResponseDto> getAllStores(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public List<StoreAllResponseDto> getAllStores(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return storeService.getAllStores(userDetails.getUser());
     }
 

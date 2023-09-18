@@ -23,6 +23,10 @@ public class Menu {
     @Column(nullable = false)
     private int price;
 
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
+
     public Menu(MenuRequestDto menuRequestDto) {
         this.menuName = menuRequestDto.getMenuName();
         this.image = menuRequestDto.getImage();
