@@ -36,24 +36,6 @@ public class ReviewController {
         return reviewService.createReview(requestDto, userDetails.getUser());
     }
 
-    //// 리뷰 모두 조회 API
-    //@GetMapping("/reviews")
-    //public List<ReviewResponseDto> getAllReviews(
-    //        @AuthenticationPrincipal UserDetailsImpl userDetails
-    //)
-    //{
-    //    return reviewService.getAllReviews(userDetails.getUser());
-    //}
-
-    //// 리뷰 선택 조회 API
-    //@GetMapping("/reviews/{id}")
-    //public ReviewResponseDto getReview(
-    //        @PathVariable Long id,
-    //        @AuthenticationPrincipal UserDetailsImpl userDetails
-    //) {
-    //    return reviewService.getReview(id, userDetails.getUser());
-    //}
-
     // 특정 가게 ID에 해당하는 리뷰 조회 API
     @GetMapping("/reviews/{store_id}")
     public List<ReviewResponseDto> getReviewsByStoreId(

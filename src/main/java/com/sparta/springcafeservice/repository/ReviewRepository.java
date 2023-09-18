@@ -13,4 +13,3 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByStoreId(Long storeId);
 
 }
-    // JpaMethod는 정렬기준 바꾸거나 where등 조건들 필요할때 카멜케이스로 작성할 수 있다.
