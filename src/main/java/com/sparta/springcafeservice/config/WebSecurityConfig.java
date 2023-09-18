@@ -75,6 +75,8 @@ public class WebSecurityConfig {
                                 // 메뉴 조회는 누구나 접근 / 카페도 추후 추가
                                 .requestMatchers(HttpMethod.GET, "/api/menus").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/menus/{id}").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/stores").permitAll()
+
                 )
                 // 로그아웃 처리 추가 부분
                 .logout(logout -> {

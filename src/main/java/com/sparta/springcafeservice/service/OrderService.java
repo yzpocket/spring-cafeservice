@@ -33,7 +33,6 @@ public class OrderService {
     private final UserRepository userRepository;
 
 
-
     // create
     public OrderResponseDto createOrder(OrderRequestDto requestDto, User user) {
         //db확인
@@ -67,9 +66,8 @@ public class OrderService {
 
         if (order == null) {
             throw new IllegalArgumentException("주문 내역이 없습니다.");
-        } else {
-            return new OrderResponseDto(order);
         }
+        return new OrderResponseDto(order);
     }
 
     // update
