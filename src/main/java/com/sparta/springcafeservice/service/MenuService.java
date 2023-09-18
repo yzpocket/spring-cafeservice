@@ -31,7 +31,7 @@ public class MenuService {
         Menu checkMenu = menuRepository.findByMenuName(menu.getMenuName());
 
         // 사업자 구분
-        if (user.getRegistNum() == null || user.getRegistNum().isEmpty()) {
+        if (user.getRegistNum() == 0) {
             StatusResponseDto result = new StatusResponseDto("사업자가 아닙니다.", 400);
             return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
         }
@@ -115,7 +115,7 @@ public class MenuService {
 
     // User 체킹 -> 사업자 인지
     public boolean validateUserAuthority(User user) {
-        if (!user.getRegistNum().isEmpty()) {
+        if (user.getRegistNum() != 0) {
             return true;
         } else {
             return false;
