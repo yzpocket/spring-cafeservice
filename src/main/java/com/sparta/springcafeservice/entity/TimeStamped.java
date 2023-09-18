@@ -23,3 +23,4 @@ public abstract class TimeStamped {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime modifiedAt;
 }
+

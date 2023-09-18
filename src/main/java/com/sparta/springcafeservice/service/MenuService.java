@@ -4,8 +4,10 @@ import com.sparta.springcafeservice.dto.MenuRequestDto;
 import com.sparta.springcafeservice.dto.MenuResponseDto;
 import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.entity.Menu;
+import com.sparta.springcafeservice.entity.Store;
 import com.sparta.springcafeservice.entity.User;
 import com.sparta.springcafeservice.repository.MenuRepository;
+import com.sparta.springcafeservice.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,11 +27,20 @@ public class MenuService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final StoreRepository storeRepository;
+
     // 메뉴 등록
     @Transactional
     public ResponseEntity<StatusResponseDto> createMenu(MenuRequestDto menuRequestDto, User user) {
         Menu menu = new Menu(menuRequestDto);
         Menu checkMenu = menuRepository.findByMenuName(menu.getMenuName());
+        Optional<Store> storeCheck = storeRepository.findById(menuRequestDto.getStoreId());
+
+        // request에서 받아온 가게 ID와 DB의 가게 체크
+        if (!storeCheck.isPresent()) {
+            throw new IllegalArgumentException("해당 가게는 존재하지 않습니다.");
+        }
+        menu.setStore(storeCheck.get());
 
         // 사업자 구분
         if (user.getRegistNum() == 0) {
@@ -121,4 +133,5 @@ public class MenuService {
             return false;
         }
     }
+
 }

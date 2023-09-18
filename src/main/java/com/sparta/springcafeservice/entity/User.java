@@ -35,6 +35,10 @@ public class User {
 
     private int point = 0; //고객이 기본으로 가진 포인트 지급
 
+    @OneToOne(mappedBy = "user")
+    private Store store;
+
+
 
     public User(String username, String password, String email, UserRoleEnum role) {
         this.username = username;

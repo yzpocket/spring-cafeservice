@@ -38,4 +38,8 @@ public class Menu {
         this.image = menuRequestDto.getImage();
         this.price = menuRequestDto.getPrice();
     }
+
+    public void setStore(Store checkId) {
+        this.store = checkId;
+    }
 }
