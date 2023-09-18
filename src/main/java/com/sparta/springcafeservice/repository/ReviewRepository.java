@@ -4,9 +4,13 @@ import com.sparta.springcafeservice.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    //기본적인 JpaRepository의 SimpleJpaRepository 클래스에서 제네릭 다형성 활용 <T or ?> 타입으로 정의되어있다.
-    //List<Comment> findAllByCommentIdOrderByStoreId(Long storeId); // JpaMethod는 정렬기준 바꾸거나 where등 조건들 필요할때
+
+    //특정 가게의 리뷰 모두 조회
+    List<Review> findByStoreId(Long storeId);
 
 }
+    // JpaMethod는 정렬기준 바꾸거나 where등 조건들 필요할때 카멜케이스로 작성할 수 있다.
