@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Table(name = "store")
+@Table(name = "stores")
 @NoArgsConstructor
 public class Store extends TimeStamped{
 

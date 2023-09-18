@@ -42,7 +42,7 @@ public class User {
         this.role = role;
     }
 
-    public User(String username, String password, String email, UserRoleEnum role, String registNum) {
+    public User(String username, String password, String email, UserRoleEnum role, int registNum) {
         this.username = username;
         this.password = password;
         this.email = email;

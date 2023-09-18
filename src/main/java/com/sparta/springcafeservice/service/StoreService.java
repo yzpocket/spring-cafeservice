@@ -5,9 +5,11 @@ import com.sparta.springcafeservice.dto.StoreRequestDto;
 import com.sparta.springcafeservice.dto.StoreResponseDto;
 import com.sparta.springcafeservice.entity.Store;
 import com.sparta.springcafeservice.entity.User;
+import com.sparta.springcafeservice.exception.RestApiException;
 import com.sparta.springcafeservice.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -87,7 +89,9 @@ public class StoreService {
 
 
     private Store findStore(Long id) {
-        return storeRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 가게는 존재하지 않습니다."));
+        // 가게 ID를 사용하여 특정 가게을 조회하고, 존재하지 않을 경우 예외 발생
+        return storeRepository.findById(id).orElseThrow(() ->
+                new RestApiException("선택한 가게는 존재하지 않습니다.", HttpStatus.NOT_FOUND.value())
+        );
     }
 }

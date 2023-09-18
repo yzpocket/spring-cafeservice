@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "review") // 맵핑된 DB 테이블 : review
+@Table(name = "reviews") // 맵핑된 DB 테이블 : reviews
 public class Review extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto increment(MySQL)
