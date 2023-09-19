@@ -1,6 +1,7 @@
 package com.sparta.springcafeservice.service;
 
 
+import com.sparta.springcafeservice.dto.StoreAllResponseDto;
 import com.sparta.springcafeservice.dto.StoreRequestDto;
 import com.sparta.springcafeservice.dto.StoreResponseDto;
 import com.sparta.springcafeservice.entity.Store;
@@ -27,22 +28,27 @@ public class StoreService {
     private PasswordEncoder passwordEncoder;
 
     // Create
-    public StoreResponseDto createStore(StoreRequestDto requestDto, User user) {
+    public StoreAllResponseDto createStore(StoreRequestDto requestDto, User user) {
         Store store = storeRepository.save(new Store(requestDto, user));
+        //registNum 값이 들어있는 경우 처리 필요! ->registNum 값 정책이 바뀔 시 수정 필요!!
+        if (user.getRegistNum() == 0) {
+            throw new IllegalArgumentException("사업자가 아닙니다.");
+        }
         //Entity -> ResponseDto
-        return new StoreResponseDto(store);
+        return new StoreAllResponseDto(store);
     }
 
 
     //ReadAll
-    public List<StoreResponseDto> getAllStores(User user) {
+    public List<StoreAllResponseDto> getAllStores() {
         List<Store> storeList = storeRepository.findAll();
-        return storeList.stream().map(StoreResponseDto::new).collect(Collectors.toList());
+        return storeList.stream().map(StoreAllResponseDto::new).collect(Collectors.toList());
     }
 
 
     // Read
     public StoreResponseDto getStore(Long id, User user) {
+
         return new StoreResponseDto(findStore(id));
     }
 
@@ -51,13 +57,14 @@ public class StoreService {
     @Transactional
     public ResponseEntity<String> updateStore(Long id, StoreRequestDto requestDto, User user) {
         Store store = findStore(id);
-        // 해당 메모의 작성자와 현재 로그인한 사용자를 비교하여 작성자가 같지 않으면 예외 발생, 어드민이 아닐 시
-//        if (user.getRole() == UserRoleEnum.USER && !store.getUser().getUserId().equals(user.getUserId())) {
-//            throw new IllegalArgumentException("사장님만 수정할 수 있습니다.");
-//        }
+
         // 비밀 번호가 다를 시 예외처리
         if (!passwordEncoder.matches(requestDto.getPassword(), store.getUser().getPassword())) {
             throw new IllegalArgumentException("비밀번호가 다릅니다");
+        }
+        //가게 사장만 수정 가능
+        if (!user.getId().equals(store.getUser().getId())) {
+            throw new IllegalArgumentException("사용자가 다릅니다");
         }
 
         store.update(requestDto);
@@ -72,15 +79,14 @@ public class StoreService {
     public ResponseEntity<String> deleteStore(Long id, StoreRequestDto requestDto, User user) {
         Store store = findStore(id);
 
-//        if (user.getRole() == UserRoleEnum.USER && !store.getUser().getUserId().equals(user.getUserId())) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("사장님만 삭제할 수 있습니다.");
-//        }
-
         // 비밀 번호가 다를 시 예외처리
         if (!passwordEncoder.matches(requestDto.getPassword(), store.getUser().getPassword())) {
             throw new IllegalArgumentException("비밀번호가 다릅니다");
         }
-
+        //가게 사장만 삭제 가능
+        if (!user.getId().equals(store.getUser().getId())) {
+            throw new IllegalArgumentException("사용자가 다릅니다");
+        }
 
         storeRepository.delete(store);
 

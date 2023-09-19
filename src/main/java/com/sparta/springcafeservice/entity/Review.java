@@ -40,7 +40,6 @@ public class Review extends TimeStamped {
         this.star = reviewRequestDto.getStar();
         this.user = user;
         this.store = store; // store 필드 초기화
-        store.getReviewList().add(this);
     }
 
 

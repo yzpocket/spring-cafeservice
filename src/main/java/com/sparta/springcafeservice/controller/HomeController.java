@@ -7,32 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
     @GetMapping("/")
     public String home() {
-        return "index"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
+        return "redirect:/index.html"; // 정적 HTML 파일로 리다이렉트
     }
-    //@GetMapping("/index")
-    //public String index() {
-    //    return "index"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
-    //}
-    //@GetMapping("/menu")
-    //public String menu() {
-    //    return "menu"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
-    //}
-    //@GetMapping("/services")
-    //public String service() {
-    //    return "services"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
-    //}
-    //@GetMapping("/blog")
-    //public String blog() {
-    //    return "blog"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
-    //}
-    //
-    //@GetMapping("/about")
-    //public String about() {
-    //    return "about"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
-    //}
-    //
-    //@GetMapping("/contact")
-    //public String contact() {
-    //    return "contact"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
-    //}
 }
