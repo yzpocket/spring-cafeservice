@@ -44,24 +44,18 @@ public class ReviewService {
         return new ReviewResponseDto(savedReview);
     }
 
-    // READ All - 리뷰 조회
-    public List<ReviewResponseDto> getAllReviews(User user) {
-        // 모든 리뷰을 데이터베이스에서 조회
-        List<Review> reviewList = reviewRepository.findAll();
-        System.out.println("모든 리뷰 조회 완료.");
+    // READ ALL by storeId - 특정 가게의 리뷰 전체 조회
+    public List<ReviewResponseDto> getReviewsByStoreId(Long storeId) {
+        // 가게 존재 여부 확인
+        Store store = findStore(storeId);
 
-        // 조회된 모든 리뷰을 ReviewResponseDto로 매핑하고 리스트로 반환 (row -> 객체 -> 객체배열(list))
-        return reviewList.stream().map(ReviewResponseDto::new).collect(Collectors.toList());
-    }
+        // 특정 가게 ID에 해당하는 리뷰 목록 조회
+        List<Review> reviews = reviewRepository.findByStoreId(storeId);
 
-    // READ ONE - 리뷰 선택 조회
-    public ReviewResponseDto getReview(Long id, User user) {
-        // 특정 리뷰 DB 존재 여부 확인
-        Review review = findReview(id);
-        System.out.println("리뷰번호"+id+"번 리뷰 조회 완료.");
-
-        // 조회된 리뷰를 ReviewResponseDto로 매핑하여 반환
-        return new ReviewResponseDto(review);
+        // 조회된 리뷰 목록을 ReviewResponseDto로 매핑하여 리스트로 반환
+        return reviews.stream()
+                .map(ReviewResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     // UPDATE - 선택 리뷰 수정
@@ -118,5 +112,6 @@ public class ReviewService {
                 new RestApiException("선택한 리뷰는 존재하지 않습니다.", HttpStatus.NOT_FOUND.value())
         );
     }
+
 
 }
