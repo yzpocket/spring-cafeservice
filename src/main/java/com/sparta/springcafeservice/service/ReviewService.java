@@ -39,19 +39,6 @@ public class ReviewService {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    // 사실상 선택 조회 코드는
-    // 리뷰를 상세하게 보는 것에 대한 사용자 흐름이 있으면 필요하지만
-    // 우리가 설계한 것에는 없는 기능이기 때문에 불필요한 부분이다.
-    // 특정 가게 리뷰 조회
-    @Transactional(readOnly = true)
-    public List<ReviewResponseDto> getReviewsByStoreId(Long storeId) {
-        Store store = findStore(storeId);
-        List<Review> reviews = store.getReviewList();
-
-        return reviews.stream()
-                .map(ReviewResponseDto::new)
-                .collect(Collectors.toList());
-    }
 
     // 리뷰 수정
     @Transactional
@@ -104,5 +91,4 @@ public class ReviewService {
     private boolean validateUserAuthority(Long reviewUserId, User user) {
         return reviewUserId.equals(user.getId());
     }
-
 }

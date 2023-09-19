@@ -33,12 +33,6 @@ public class ReviewController {
         return reviewService.createReview(requestDto, userDetails.getUser());
     }
 
-    // 특정 가게의 리뷰 조회
-    @GetMapping("/reviews/{store_id}")
-    public List<ReviewResponseDto> getReviewsByStoreId(@PathVariable Long store_id) {
-        return reviewService.getReviewsByStoreId(store_id);
-    }
-
     // 리뷰 수정
     @PutMapping("/reviews/{id}")
     public ResponseEntity<?> updateReview(@PathVariable Long id, @RequestBody ReviewRequestDto requestDto,
