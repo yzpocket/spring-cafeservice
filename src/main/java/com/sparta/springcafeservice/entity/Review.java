@@ -5,7 +5,6 @@ import com.sparta.springcafeservice.dto.ReviewRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity @Getter
 @NoArgsConstructor
@@ -22,7 +21,6 @@ public class Review extends TimeStamped {
     @Column(nullable = false)
     private byte star;
 
-    @JsonIgnore
     @JoinColumn(name = "store_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Store store;
@@ -43,5 +41,8 @@ public class Review extends TimeStamped {
 
     public void setStore(Store store) {
         this.store = store;
+        if (!store.getReviewList().contains(this)) {
+            store.getReviewList().add(this);
+        }
     }
 }
