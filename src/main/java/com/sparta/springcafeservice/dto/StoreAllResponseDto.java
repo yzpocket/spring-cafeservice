@@ -7,6 +7,7 @@ import lombok.Getter;
 
 @Getter
 public class StoreAllResponseDto {
+    private Long id;
 
     private String storeName;
     private String storeAddress;
@@ -18,5 +19,8 @@ public class StoreAllResponseDto {
         this.storeName = store.getStoreName();
         this.storeAddress = store.getStoreAddress();
         this.information = store.getInformation();
+    }
+    public Long getId() {
+        return id;
     }
 }
