@@ -2,13 +2,13 @@ package com.sparta.springcafeservice.controller;
 
 import com.sparta.springcafeservice.dto.ReviewRequestDto;
 import com.sparta.springcafeservice.dto.ReviewResponseDto;
+import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,41 +26,24 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    // 리뷰 작성 API
+    // 리뷰 작성
     @PostMapping("/reviews")
-    public ReviewResponseDto createReview(
-            @RequestBody ReviewRequestDto requestDto,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    )
-    {
+    public ResponseEntity<?> createReview(@RequestBody ReviewRequestDto requestDto,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return reviewService.createReview(requestDto, userDetails.getUser());
     }
 
-    // 특정 가게 ID에 해당하는 리뷰 조회 API
-    @GetMapping("/reviews/{store_id}")
-    public List<ReviewResponseDto> getReviewsByStoreId(
-            @PathVariable Long store_id
-    ) {
-        return reviewService.getReviewsByStoreId(store_id);
-    }
-
-    // 리뷰 수정 API
+    // 리뷰 수정
     @PutMapping("/reviews/{id}")
-    public ReviewResponseDto updateReview(
-            @PathVariable Long id,
-            @RequestBody ReviewRequestDto requestDto,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-            //@AuthenticationPrincipal StoreDetailsImpl storeDetails
-    ) {
+    public ResponseEntity<?> updateReview(@PathVariable Long id, @RequestBody ReviewRequestDto requestDto,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return reviewService.updateReview(id, requestDto, userDetails.getUser());
     }
 
-    // 리뷰 삭제 API by Id
+    // 리뷰 삭제
     @DeleteMapping("/reviews/{id}")
-    public ResponseEntity<String> deleteReview(
-            @PathVariable Long id,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+    public ResponseEntity<StatusResponseDto> deleteReview(@PathVariable Long id,
+                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return reviewService.deleteReview(id, userDetails.getUser());
     }
 }
