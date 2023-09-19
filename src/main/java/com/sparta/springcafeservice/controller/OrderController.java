@@ -34,10 +34,11 @@ public class OrderController {
         return orderService.getAllOrders(userDetails.getUser());
     }
 
-    //read
-    @GetMapping("/orders/{id}")
-    public OrderResponseDto getOrder(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return orderService.getOrder(id, userDetails.getUser());
+
+    @GetMapping("/orders/stores")
+    public List<OrderResponseDto> getAllOrdersByStoreId(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return orderService.getAllOrdersByStoreId(userDetails.getUser());
+
     }
 
     //update
