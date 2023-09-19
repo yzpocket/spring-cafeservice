@@ -54,14 +54,17 @@ public class Store extends TimeStamped{
         this.information = requestDto.getInformation();
     }
 
-    public void addReviewList(Review review) {
-        // Comment 객체를 Store와 연결
-        review.setStore(this); // Comment 엔티티에 있는 setStore 메서드를 활용하여 연결
-
-        // Comment 객체를 Store의 commentList에 추가
-        this.reviewList.add(review);
-    }
     public List<Menu> getMenuList() {
         return menuList;
+    }
+
+    public void addReview(Review review) {
+        review.setStore(this);
+
+        this.reviewList.add(review);
+    }
+
+    public List<Review> getReviews() {
+        return reviewList;
     }
 }
