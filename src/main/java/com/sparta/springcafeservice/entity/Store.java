@@ -41,6 +41,8 @@ public class Store extends TimeStamped{
     @OneToMany(mappedBy = "store", orphanRemoval = true)
     private List<Review> reviewList = new ArrayList<>();
 
+
+
     public Store(StoreRequestDto requestDto, User user) {
         this.storeName = requestDto.getStoreName();
         this.storeAddress = requestDto.getStoreAddress();
@@ -54,11 +56,11 @@ public class Store extends TimeStamped{
         this.information = requestDto.getInformation();
     }
 
-    public void addReviewList(Review comment) {
-        // Comment 객체를 Store와 연결
-        comment.setStore(this); // Comment 엔티티에 있는 setStore 메서드를 활용하여 연결
-
-        // Comment 객체를 Store의 commentList에 추가
-    }
+//    public void addReviewList(Review comment) {
+//        // Comment 객체를 Store와 연결
+//        comment.setStore(this); // Comment 엔티티에 있는 setStore 메서드를 활용하여 연결
+//
+//        // Comment 객체를 Store의 commentList에 추가
+//    }
 }
 

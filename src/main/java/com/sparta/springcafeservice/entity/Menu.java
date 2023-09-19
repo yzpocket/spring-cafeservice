@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity @Getter
 @NoArgsConstructor
 @Table(name = "menus")
@@ -27,8 +30,8 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     private Store store;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Order order;
+    @OneToMany(mappedBy = "menu", orphanRemoval = true)
+    List<Order> orderList = new ArrayList<>();
 
 
     public Menu(MenuRequestDto menuRequestDto) {

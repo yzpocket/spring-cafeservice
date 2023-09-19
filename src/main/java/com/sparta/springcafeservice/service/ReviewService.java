@@ -38,7 +38,7 @@ public class ReviewService {
         Review savedReview = reviewRepository.save(review);
 
         // 저장된 리뷰를 가게의 리뷰 리스트에 추가
-        store.addReviewList(review);
+//        store.addReviewList(review);
         System.out.println("리뷰가 등록되었습니다.");
 
         return new ReviewResponseDto(savedReview);
