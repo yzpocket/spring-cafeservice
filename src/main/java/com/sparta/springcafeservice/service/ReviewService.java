@@ -27,26 +27,26 @@ public class ReviewService {
 
     // 리뷰 작성
     @Transactional
-    public ResponseEntity<?> createReview(ReviewRequestDto reviewRequestDto, User user) {
+    public ResponseEntity<StatusResponseDto> createReview(ReviewRequestDto reviewRequestDto, User user) {
         Review review = new Review(reviewRequestDto, user);
 
         Store store = findStore(reviewRequestDto.getStoreId());
         review.setStore(store);
 
-        Review savedReview = reviewRepository.save(review);
-        store.addReview(review);
+        reviewRepository.save(review);
 
-        ReviewResponseDto responseDto = new ReviewResponseDto(savedReview);
-        return ResponseEntity.ok(responseDto);
+        StatusResponseDto result = new StatusResponseDto("메뉴를 등록했습니다.", 200);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-/*이부분 StoreService로 가야된다는 것 같음 = 주체가 가게조회에 댓글이 조회되는 것이니 리뷰 서비스에서 처리할 문제가 아닌듯*/
-
+    // 사실상 선택 조회 코드는
+    // 리뷰를 상세하게 보는 것에 대한 사용자 흐름이 있으면 필요하지만
+    // 우리가 설계한 것에는 없는 기능이기 때문에 불필요한 부분이다.
     // 특정 가게 리뷰 조회
     @Transactional(readOnly = true)
     public List<ReviewResponseDto> getReviewsByStoreId(Long storeId) {
         Store store = findStore(storeId);
-        List<Review> reviews = store.getReviews();
+        List<Review> reviews = store.getReviewList();
 
         return reviews.stream()
                 .map(ReviewResponseDto::new)
@@ -58,15 +58,17 @@ public class ReviewService {
     public ResponseEntity<?> updateReview(Long id, ReviewRequestDto requestDto, User user) {
         Review review = findReview(id);
 
-        if (!validateUserAuthority(user.getId(), review.getUser())) {
+        if (validateUserAuthority(user.getId(), review.getUser())) {
+            review.update(requestDto);
+
+            ReviewResponseDto res = new ReviewResponseDto(review);
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        } else {
             StatusResponseDto res = new StatusResponseDto("리뷰 작성자만 수정할 수 있습니다.", 400);
             return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
         }
-
-        review.update(requestDto);
-        ReviewResponseDto responseDto = new ReviewResponseDto(review);
-        return ResponseEntity.ok(responseDto);
     }
+
 
     // DELETE - 선택 리뷰 삭제
     @Transactional
@@ -80,7 +82,7 @@ public class ReviewService {
 
         reviewRepository.delete(review);
         StatusResponseDto res = new StatusResponseDto("리뷰가 삭제되었습니다.", 200);
-        return ResponseEntity.ok(res);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
 
