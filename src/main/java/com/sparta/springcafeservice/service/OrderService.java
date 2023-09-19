@@ -3,10 +3,7 @@ package com.sparta.springcafeservice.service;
 
 import com.sparta.springcafeservice.dto.OrderRequestDto;
 import com.sparta.springcafeservice.dto.OrderResponseDto;
-import com.sparta.springcafeservice.entity.Menu;
-import com.sparta.springcafeservice.entity.Order;
-import com.sparta.springcafeservice.entity.Store;
-import com.sparta.springcafeservice.entity.User;
+import com.sparta.springcafeservice.entity.*;
 import com.sparta.springcafeservice.exception.RestApiException;
 import com.sparta.springcafeservice.repository.MenuRepository;
 import com.sparta.springcafeservice.repository.OrderRepository;
@@ -74,10 +71,26 @@ public class OrderService {
     @Transactional
     public ResponseEntity<String> updateOrder(Long id, OrderRequestDto requestDto, User user) {
         Order order = findOrder(id);
-        //주문의 storeId와 user의 storeId를 비교한다 -> 사장인지 확인!
+        //변경사항 확인
+        OrderStatusEnum currentStatus = order.getOrderStatus();
+        OrderStatusEnum newStatus = requestDto.getOrderStatus();
+
         if (!order.getMenu().getStore().getId().equals(user.getStore().getId())) {
             throw new IllegalArgumentException("주문상태를 변경할 권한이 없습니다.");
         }
+        //주문 상태가 바뀌면 사장에게 돈을 입금한다.
+        if (!currentStatus.equals(newStatus)) {
+            if (newStatus.equals(OrderStatusEnum.DELIVERY_COMPLETED)) {
+                int menuPrice = order.getMenu().getPrice();
+                User owner = order.getMenu().getStore().getUser();
+
+                int notUpdatePoint = owner.getPoint();
+                int updatePoint = (notUpdatePoint + menuPrice);
+
+                owner.setPoint(updatePoint);
+            }
+        }
+
         order.update(requestDto);
         //수정 성공
         return ResponseEntity.ok("주문 상태가 바뀌었습니다.");
