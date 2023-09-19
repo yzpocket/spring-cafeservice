@@ -46,7 +46,7 @@ public class OrderService {
             throw new IllegalArgumentException("포인트가 부족해 주문할 수 없습니다");
         }
 
-        Order order = orderRepository.save(new Order(requestDto, user, menu, store));
+        Order order = orderRepository.save(new Order(requestDto, user, menu));
 
         user.setPoint(user.getPoint() - menu.getPrice());
         userRepository.save(user);
@@ -74,8 +74,8 @@ public class OrderService {
     @Transactional
     public ResponseEntity<String> updateOrder(Long id, OrderRequestDto requestDto, User user) {
         Order order = findOrder(id);
-        // user가 order에서 가져온 userId값과 다를 때(동일 사장) 예외처리
-        if (!user.getId().equals(order.getStore().getUser().getId())) {
+        //주문의 storeId와 user의 storeId를 비교한다 -> 사장인지 확인!
+        if (!order.getMenu().getStore().getId().equals(user.getStore().getId())) {
             throw new IllegalArgumentException("주문상태를 변경할 권한이 없습니다.");
         }
         order.update(requestDto);
@@ -87,8 +87,8 @@ public class OrderService {
     @Transactional
     public ResponseEntity<String> deleteOrder(Long id, OrderRequestDto requestDto, User user) {
         Order order = findOrder(id);
-        // user가 order에서 가져온 userId값과 다를 때(동일 사장) 예외처리
-        if (!user.getId().equals(order.getStore().getUser().getId())) {
+
+        if (!order.getMenu().getStore().getId().equals(user.getStore().getId())) {
             throw new IllegalArgumentException("주문을 취소할 권한이 없습니다.");
         }
 
@@ -98,7 +98,7 @@ public class OrderService {
 
     private Order findOrder(Long id) {
         return orderRepository.findById(id).orElseThrow(() ->
-                new RestApiException("선택한 주문는 존재하지 않습니다.", HttpStatus.NOT_FOUND.value())
+                new RestApiException("선택한 주문은 존재하지 않습니다.", HttpStatus.NOT_FOUND.value())
         );
     }
 
