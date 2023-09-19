@@ -13,7 +13,6 @@ import com.sparta.springcafeservice.repository.OrderRepository;
 import com.sparta.springcafeservice.repository.StoreRepository;
 import com.sparta.springcafeservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -34,6 +33,7 @@ public class OrderService {
 
 
     // create
+    @Transactional
     public OrderResponseDto createOrder(OrderRequestDto requestDto, User user) {
         //db확인
         Menu menu = menuRepository.findById(requestDto.getMenuId())
@@ -60,14 +60,14 @@ public class OrderService {
         return orderList.stream().map(OrderResponseDto::new).collect(Collectors.toList());
     }
 
-    //read -> 일반 USER 는 자신이 주문한 주문을 조회할 수 있다. ->userId 별로 찾기
-    public OrderResponseDto getOrder(Long id, User user) {
-        Order order = findByUserId(user.getId());
+    public List<OrderResponseDto> getAllOrdersByStoreId(User user) {
+        Long storeId = user.getStore().getId();
+        List<Order> orders = orderRepository.findAllByOrderByModifiedAtDesc();
+        List<OrderResponseDto> storeOrders = orders.stream().filter(order -> order.getMenu().getStore().getId().equals(storeId))
+                .map(OrderResponseDto::new)
+                .collect(Collectors.toList());
 
-        if (order == null) {
-            throw new IllegalArgumentException("주문 내역이 없습니다.");
-        }
-        return new OrderResponseDto(order);
+        return storeOrders;
     }
 
     // update
