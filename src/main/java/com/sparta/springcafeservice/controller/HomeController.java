@@ -22,8 +22,7 @@ public class HomeController {
     }
 
     @GetMapping("/getStore")
-    public String stores(Model model) {
-        model.addAttribute("message", "안녕하세요!");
+    public String store() {
         return "getStore"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
     }
     //@GetMapping("/index")
