@@ -32,8 +32,7 @@ public class ReviewService {
         return handleServiceRequest(() -> {
             Store store = checkStoreExist(reviewRequestDto.getStoreId());
 
-            Review review = new Review(reviewRequestDto, user);
-            review.setStore(store);
+            Review review = new Review(reviewRequestDto, user, store);
 
             reviewRepository.save(review);
 

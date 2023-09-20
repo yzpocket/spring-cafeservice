@@ -30,10 +30,11 @@ public class Review extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    public Review(ReviewRequestDto reviewRequestDto, User user) {
+    public Review(ReviewRequestDto reviewRequestDto, User user, Store store) {
         this.review = reviewRequestDto.getReview();
         this.star = reviewRequestDto.getStar();
         this.user = user;
+        this.store = store;
     }
 
     public void update(ReviewRequestDto requestDto) {
