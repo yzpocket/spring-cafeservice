@@ -71,6 +71,7 @@ public class WebSecurityConfig {
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
                                 .requestMatchers("/", "/index.html", "/menu.html", "/service.html", "/store.html", "/contact.html").permitAll() // 네비게이션 페이지 요청 모두 접근 허가
                                 .requestMatchers("/api/auth/**").permitAll() // '/api/auth/'로 시작하는 요청 모두 접근 허가 > 회원가입, 로그인
+//                                .requestMatchers("/login.html").permitAll()
 
                                 // 메뉴 조회는 누구나 접근 / 카페도 추후 추가
                                 .requestMatchers(HttpMethod.GET, "/api/menus").permitAll()
