@@ -12,6 +12,14 @@ public class HomeController {
         model.addAttribute("message", "안녕하세요!");
         return "index"; // 뷰 이름은 templates 폴더에 있는 템플릿 파일명과 일치해야 합니다.
     }
+    //@GetMapping("/")
+    //public String index() {
+    //    return "index"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
+    //}
+    @GetMapping("/login")
+    public String login() {
+        return "login"; // res/templates/login.html
+    }
 
     @GetMapping("/getStore")
     public String stores(Model model) {
