@@ -1,9 +1,13 @@
 package com.sparta.springcafeservice.entity;
 
 import com.sparta.springcafeservice.dto.MenuRequestDto;
+import com.sparta.springcafeservice.repository.StoreRepository;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity @Getter
 @NoArgsConstructor
@@ -23,9 +27,12 @@ public class Menu {
     @Column(nullable = false)
     private int price;
 
-    @ManyToOne
-    @JoinColumn(name = "store_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Store store;
+
+    @OneToMany(mappedBy = "menu", orphanRemoval = true)
+    List<Order> orderList = new ArrayList<>();
+
 
     public Menu(MenuRequestDto menuRequestDto) {
         this.menuName = menuRequestDto.getMenuName();
