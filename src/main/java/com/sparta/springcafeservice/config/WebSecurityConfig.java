@@ -76,6 +76,7 @@ public class WebSecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/menus").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/menus/{id}").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/stores").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/stores/{id}").permitAll()
 
                 )
                 // 로그아웃 처리 추가 부분

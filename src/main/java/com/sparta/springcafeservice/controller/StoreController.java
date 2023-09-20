@@ -44,8 +44,8 @@ public class StoreController {
 
     // Read
     @GetMapping("/stores/{id}")
-    public StoreResponseDto getStore(@PathVariable Long id,  @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return storeService.getStore(id, userDetails.getUser());
+    public StoreResponseDto getStore(@PathVariable Long id) {
+        return storeService.getStore(id);
     }
 
     // Update

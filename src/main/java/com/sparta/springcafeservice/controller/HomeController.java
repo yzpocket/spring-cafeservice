@@ -25,10 +25,10 @@ public class HomeController {
     //public String service() {
     //    return "services"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
     //}
-    //@GetMapping("/blog")
-    //public String blog() {
-    //    return "blog"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
-    //}
+    @GetMapping("/stores")
+    public String stores() {
+        return "getStore"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
+    }
     //
     //@GetMapping("/about")
     //public String about() {

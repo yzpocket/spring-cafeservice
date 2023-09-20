@@ -35,10 +35,10 @@ public class Store extends TimeStamped{
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "store", orphanRemoval = true)
+    @OneToMany(mappedBy = "store", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Menu> menuList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store", orphanRemoval = true)
+    @OneToMany(mappedBy = "store", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Review> reviewList = new ArrayList<>();
 
     public Store(StoreRequestDto requestDto, User user) {

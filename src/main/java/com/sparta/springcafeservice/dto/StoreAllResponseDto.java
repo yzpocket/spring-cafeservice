@@ -16,6 +16,7 @@ public class StoreAllResponseDto {
 //    private List<MenuResponseDto> menuResponseDtoList;
 
     public StoreAllResponseDto(Store store) {
+        this.id = store.getId();
         this.storeName = store.getStoreName();
         this.storeAddress = store.getStoreAddress();
         this.information = store.getInformation();
