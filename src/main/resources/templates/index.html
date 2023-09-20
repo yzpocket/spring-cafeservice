@@ -132,6 +132,8 @@
     });
 </script>
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+
 <script>
     $(document).ready(function () {
             getAllStores();
@@ -145,7 +147,7 @@
             success: function (response) {
                 const stores = response;
                 const cardBox = $("#cardBox"); // #cardBox 요소 선택
-console.log(response)
+        console.log(response)
                 cardBox.empty();
 
                 for (let i = 0; i < stores.length; i++) {
