@@ -20,4 +20,31 @@ public class HomeController {
     public String login() {
         return "login"; // res/templates/login.html
     }
+
+    //@GetMapping("/index")
+    //public String index() {
+    //    return "index"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
+    //}
+    //@GetMapping("/menu")
+    //public String menu() {
+    //    return "menu"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
+    //}
+    //@GetMapping("/services")
+    //public String service() {
+    //    return "services"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
+    //}
+    @GetMapping("/stores")
+    public String stores() {
+        return "getStore"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
+    }
+    //
+    //@GetMapping("/about")
+    //public String about() {
+    //    return "about"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
+    //}
+    //
+    //@GetMapping("/contact")
+    //public String contact() {
+    //    return "contact"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
+    //}
 }

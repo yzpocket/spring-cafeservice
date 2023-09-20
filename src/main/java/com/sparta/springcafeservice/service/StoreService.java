@@ -47,7 +47,7 @@ public class StoreService {
 
 
     // Read
-    public StoreResponseDto getStore(Long id, User user) {
+    public StoreResponseDto getStore(Long id) {
 
         return new StoreResponseDto(findStore(id));
     }
