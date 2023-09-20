@@ -5,7 +5,6 @@ import com.sparta.springcafeservice.dto.ReviewRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity @Getter
 @NoArgsConstructor
@@ -31,17 +30,14 @@ public class Review extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    public Review(ReviewRequestDto reviewRequestDto, User user) {
+    public Review(ReviewRequestDto reviewRequestDto, User user, Store store) {
         this.review = reviewRequestDto.getReview();
         this.star = reviewRequestDto.getStar();
         this.user = user;
+        this.store = store;
     }
 
     public void update(ReviewRequestDto requestDto) {
         this.review = requestDto.getReview();
-    }
-
-    public void setStore(Store store) {
-        this.store = store;
     }
 }
