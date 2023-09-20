@@ -13,6 +13,11 @@ public class HomeController {
         return "index"; // 뷰 이름은 templates 폴더에 있는 템플릿 파일명과 일치해야 합니다.
     }
 
+    @GetMapping("/getStore")
+    public String stores(Model model) {
+        model.addAttribute("message", "안녕하세요!");
+        return "getStore"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
+    }
     //@GetMapping("/index")
     //public String index() {
     //    return "index"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
@@ -25,10 +30,7 @@ public class HomeController {
     //public String service() {
     //    return "services"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
     //}
-    @GetMapping("/stores")
-    public String stores() {
-        return "getStore"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
-    }
+
     //
     //@GetMapping("/about")
     //public String about() {
