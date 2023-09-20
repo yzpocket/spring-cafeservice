@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,67 +29,75 @@ public class ReviewService {
     // 리뷰 작성
     @Transactional
     public ResponseEntity<StatusResponseDto> createReview(ReviewRequestDto reviewRequestDto, User user) {
-        Review review = new Review(reviewRequestDto, user);
+        return handleServiceRequest(() -> {
+            Store store = checkStoreExist(reviewRequestDto.getStoreId());
 
-        Store store = findStore(reviewRequestDto.getStoreId());
-        review.setStore(store);
+            Review review = new Review(reviewRequestDto, user, store);
 
-        reviewRepository.save(review);
+            reviewRepository.save(review);
 
-        StatusResponseDto result = new StatusResponseDto("메뉴를 등록했습니다.", 200);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+            return new StatusResponseDto("리뷰를 등록했습니다.", 200);
+        });
     }
-
 
     // 리뷰 수정
     @Transactional
-    public ResponseEntity<?> updateReview(Long id, ReviewRequestDto requestDto, User user) {
-        Review review = findReview(id);
+    public ResponseEntity<StatusResponseDto> updateReview(Long id, ReviewRequestDto requestDto, User user) {
+        return handleServiceRequest(() -> {
+            Review review = checkReviewExist(id);
+            validateUserAuthority(user.getId(), review.getUser());
 
-        if (validateUserAuthority(user.getId(), review.getUser())) {
             review.update(requestDto);
 
-            ReviewResponseDto res = new ReviewResponseDto(review);
-            return new ResponseEntity<>(res, HttpStatus.OK);
-        } else {
-            StatusResponseDto res = new StatusResponseDto("리뷰 작성자만 수정할 수 있습니다.", 400);
-            return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
-        }
+            return new StatusResponseDto("리뷰가 수정되었습니다.", 200);
+        });
     }
 
-
-    // DELETE - 선택 리뷰 삭제
+    // 선택 리뷰 삭제
     @Transactional
     public ResponseEntity<StatusResponseDto> deleteReview(Long id, User user) {
-        Review review = findReview(id);
+        return handleServiceRequest(() -> {
+            Review review = checkReviewExist(id);
+            validateUserAuthority(user.getId(), review.getUser());
 
-        if (!validateUserAuthority(user.getId(), review.getUser())) {
-            StatusResponseDto res = new StatusResponseDto("리뷰 작성자만 삭제할 수 있습니다.", 400);
-            return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
-        }
+            reviewRepository.delete(review);
 
-        reviewRepository.delete(review);
-        StatusResponseDto res = new StatusResponseDto("리뷰가 삭제되었습니다.", 200);
-        return new ResponseEntity<>(res, HttpStatus.OK);
+            return new StatusResponseDto("리뷰가 삭제되었습니다.", 200);
+        });
     }
 
 
     // 가게 체크
-    private Store findStore(Long id) {
+    private Store checkStoreExist(Long id) {
         return storeRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 가게는 존재하지 않습니다.")
         );
     }
 
     // 리뷰 체크
-    private Review findReview(Long id) {
+    private Review checkReviewExist(Long id) {
         return reviewRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 리뷰는 존재하지 않습니다.")
         );
     }
 
-    // User 체킹 -> 동일 유저 인지
-    private boolean validateUserAuthority(Long reviewUserId, User user) {
-        return reviewUserId.equals(user.getId());
+    // 동일 유저 체크
+    private void validateUserAuthority(Long reviewUserId, User user) {
+        if (!reviewUserId.equals(user.getId())) {
+            throw new IllegalArgumentException("리뷰 작성자만 접근할 수 있습니다.");
+        }
+    }
+
+    // 중복 코드 제거를 위한 메소드
+    private ResponseEntity<StatusResponseDto> handleServiceRequest(Supplier<StatusResponseDto> action) {
+        try {
+            return new ResponseEntity<>(action.get(), HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(new StatusResponseDto(ex.getMessage(), 400), HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(new StatusResponseDto("서비스 요청 중 오류가 발생했습니다.", 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

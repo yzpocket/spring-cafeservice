@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cafe Service</title>
+    <!-- 여기에 필요한 CSS 파일 및 스타일 시트 링크를 추가하세요 -->
+</head>
+<body>
+<style>
+    .nav {
+    }
+
+    .navBar {
+        display: flex;
+        flex-direction: row;
+        margin-left: 15vmax;
+        padding: 5px 5px 5px 5px;
+        align-items: center;
+    }
+
+    .a {
+        text-decoration: none;
+        color: black;
+    }
+
+    .e1 {
+        font-size: 25px;
+        display: flex;
+        margin-right: 17vmax;
+    }
+
+    .e2 {
+        font-size: 15px;
+        display: flex;
+        margin-right: 7vmax;
+    }
+
+    h1 {
+        text-align: center;
+        font-family: "Seymour One", sans-serif;
+        color: black;
+        margin-bottom: 6.67vmax;
+        font-size: 4vmax;
+        margin-top: 2.67vmax;
+        margin-bottom: 2.67vmax;
+    }
+
+    .fullBox1 {
+        padding-left: 15vmax;
+        padding-right: 15vmax;
+        text-align: center;
+        border: 1px solid rgb(240, 240, 240);
+        background-color: white;
+        padding-bottom: 2vmax;
+    }
+
+    .fullBox2 {
+        padding-left: 15vmax;
+        padding-right: 15vmax;
+        text-align: center;
+        border: 1px solid rgb(245, 245, 245);
+        background-color: rgb(245, 245, 245);
+        padding-bottom: 2vmax;
+    }
+
+    a {
+        color: black;
+    }
+
+    .button {
+        background-color: rgb(240, 230, 230);
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+    }
+
+    .button2 {
+        background-color: rgb(230, 230, 240);
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+    }
+
+    .button:hover {
+        transform: scale(1.1);
+    }
+
+    .button2:hover {
+        transform: scale(1.1);
+    }
+
+</style>
+<div class="navBar">
+    <div class="e1">
+        <a class="a" target="_blank" href="https://codepen.io/quang_ngo/full/rNaYXOb"><strong>Cafe Service</strong></a>
+    </div>
+
+    <div class="e2">
+        <a class="a" target="_blank" href="https://codepen.io/quang_ngo/full/rNaYXOb"
+           th:href="@{https://codepen.io/quang_ngo/full/rNaYXOb}">About Me</a>
+    </div>
+
+    <div class="e2">
+        <a class="a" target="_blank" href="https://codepen.io/quang_ngo/full/yLyzpvL"
+           th:href="@{https://codepen.io/quang_ngo/full/yLyzpvL}">My Motto</a>
+    </div>
+
+    <div class="e2">
+        <a class="a" target="_blank" href="https://codepen.io/quang_ngo/full/jOEepPG"
+           th:href="@{https://codepen.io/quang_ngo/full/jOEepPG}">storeName</a>
+    </div>
+
+    <div class="e2">
+        <a class="a" target="_blank" href="https://codepen.io/quang_ngo/full/dyPJpOM"
+           th:href="@{https://codepen.io/quang_ngo/full/dyPJpOM}">Contact</a>
+    </div>
+</div>
+<hr>
+
+<h1 th:text="${storeName}"></h1>
+
+<div class="fullBox1">
+    <h3 th:text="${storeAddress}"></h3>
+    <p th:text="${information}"></p>
+</div>
+
+<div class="fullBox2">
+    <h3>Menu</h3>
+    <!--카드 컨테이너-->
+    <div class="card-group">
+        <div class="card">
+            <img src="..." class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${menuName}">menuName</h5>
+                <p class="card-text" th:text="${price}">price</p>
+            </div>
+        </div>
+        <!-- 다른 카드들도 동일한 방식으로 추가 -->
+    </div>
+</div>
+
+<div class="button">
+    <a target="_blank" href="https://codepen.io/quang_ngo/full/wvBOmqw"
+       th:href="@{https://codepen.io/quang_ngo/full/wvBOmqw}">주문하기</a>
+</div>
+<div class="button2">
+    <a target="_blank" href="https://codepen.io/quang_ngo/full/povYLrb"
+       th:href="@{https://codepen.io/quang_ngo/full/povYLrb}">리뷰달기</a>
+</div>
+
+<div class="fullBox1">
+    <h3>Review</h3>
+    <!--리뷰 컨테이너-->
+    <div class="card">
+        <p th:text="${review}">review</p>
+        <p th:text="${star}">star</p>
+    </div>
+    <!--여기까지-->
+</div>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script>
+    $(window.document).ready(function () {
+        getStore();
+    })
+
+    function getStore() {
+        const id = document.location.href.split("=")[1];
+
+        $.ajax({
+            type: "GET",
+            url:"/api/stores/"+id, // URL 경로 수정
+            data: {},
+            success: function (response) {
+                const store = (response.data)
+                console.log(store)
+                $('#storeName').text(store['storeName'])
+                $('#storeAddress').text(store['storeAddress'])
+                $('#information').text(store['information'])
+                console.log(response)
+            }
+        })
+    }
+</script>
+
+</body>
+</html>
