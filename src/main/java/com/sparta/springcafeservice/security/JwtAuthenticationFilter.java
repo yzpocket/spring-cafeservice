@@ -61,8 +61,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
         String token = jwtUtil.createToken(email, role); // username -> email
-//        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token); // 헤더에 담기
-        jwtUtil.addJwtToCookie(token, response); // 쿠키에 담기
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token); // 헤더에 담기
+//        jwtUtil.addJwtToCookie(token, response); // 쿠키에 담기
 
         StatusResponseDto responseDto = new StatusResponseDto("로그인 성공", 200);
 

@@ -1,5 +1,6 @@
 package com.sparta.springcafeservice.controller;
 
+import com.sparta.springcafeservice.entity.Menu;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,16 @@ public class HomeController {
     public String store() {
         return "getStore"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
     }
+
+    @GetMapping("/add-menu")
+    public String menus(Model model) {
+        Menu menu = new Menu(); // 새로운 Menu 객체를 생성합니다. 필요에 따라 다른 로직으로 Menu 객체를 가져올 수도 있습니다.
+        model.addAttribute("menu", menu); // 모델에 Menu 객체를 추가합니다.
+        return "add-menu";
+    }
+
+
+
     //@GetMapping("/index")
     //public String index() {
     //    return "index"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.

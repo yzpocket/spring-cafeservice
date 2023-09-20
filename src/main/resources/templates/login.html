@@ -23,8 +23,8 @@
     회원 가입하기
   </button>
   <div>
-    <div class="login-id-label">아이디</div>
-    <input type="text" name="username" id="username" class="login-input-box">
+    <div class="login-id-label">이메일</div>
+    <input type="text" name="email" id="email" class="login-input-box">
 
     <div class="login-id-label">비밀번호</div>
     <input type="password" name="password" id="password" class="login-input-box">
@@ -50,14 +50,14 @@
   const host = 'http://' + window.location.host;
 
   function onLogin() {
-    let username = $('#username').val();
+    let email = $('#email').val(); // #->id 그 value값을 가져옴
     let password = $('#password').val();
 
     $.ajax({
       type: "POST",
-      url: `/api/user/login`,
+      url: `/api/auth/login`, // 최종 request 값을 컨트롤러로
       contentType: "application/json",
-      data: JSON.stringify({username: username, password: password}),
+      data: JSON.stringify({email: email, password: password}), // 키 : 값 으로 매핑 , 키 = dtd 필드
     })
             .done(function (res, status, xhr) {
               const token = xhr.getResponseHeader('Authorization');
@@ -68,7 +68,7 @@
                 jqXHR.setRequestHeader('Authorization', token);
               });
 
-              window.location.href = host;
+              window.location.href = '/';
             })
             .fail(function (jqXHR, textStatus) {
               alert("Login Fail");
