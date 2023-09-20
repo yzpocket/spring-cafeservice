@@ -68,13 +68,25 @@
 
         <div id="popup1" class="overlay">
             <div class="popup">
-                <h2>Info box</h2>
+                <h2>Create Store</h2>
                 <a class="close" href="#">&times;</a>
                 <div class="content">
-                    <p>This is done totally without JavaScript. Just HTML and CSS.</p>
+                    <form id="createStoreForm">
+                        <label for="storeName">Store Name:</label>
+                        <input type="text" id="storeName" name="storeName" required /><br />
+
+                        <label for="storeAddress">Store Address:</label>
+                        <input type="text" id="storeAddress" name="storeAddress" required /><br />
+
+                        <label for="information">Information:</label>
+                        <input type="text" id="information" name="information" required /><br />
+
+                        <input type="submit" value="Create" onclick="createStore()">
+                    </form>
                 </div>
             </div>
         </div>
+
 
         <div class="container px-5 my-5">
             <div class="row gx-5" id="cardBox">
@@ -97,6 +109,28 @@
 <!-- Footer 부분 생략 -->
 
 <!-- jQuery 스크립트와 Ajax 요청 스크립트 -->
+<script>
+    // 페이지 로드 후 팝업 높이 자동 조절
+    window.addEventListener("load", function () {
+        adjustPopupHeight();
+    });
+
+    // 팝업 높이 조절 함수
+    function adjustPopupHeight() {
+        const popup = document.querySelector(".popup");
+        const content = document.querySelector(".content");
+        const maxHeight = window.innerHeight - 100; // 높이 제한을 조절할 수 있습니다.
+
+        if (content.offsetHeight > maxHeight) {
+            popup.style.height = maxHeight + "px";
+        }
+    }
+
+    // 윈도우 크기 변경 시 팝업 높이 다시 조절
+    window.addEventListener("resize", function () {
+        adjustPopupHeight();
+    });
+</script>
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -151,6 +185,32 @@ console.log(response)
         })
     }
 
+    /**/
+    function createStore() {
+        const token = Cookies.get('Authorization');
+
+        $.ajax({
+            url: "/api/stores",
+            method: "POST",
+            timeout: 0,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token // 토큰을 헤더에 추가
+            },
+            data: JSON.stringify({
+                storeName: $("#storeName").val(),
+                storeAddress: $("#storeAddress").val(),
+                information: $("#information").val()
+            }),
+            success: function (response) {
+                alert("신청하였습니다.")
+            },
+            error: function (error) {
+                alert("등록 실패! 다시 확인해주세요.")
+
+            }
+        })
+    }
 </script>
 </body>
 </html>
