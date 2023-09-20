@@ -204,18 +204,21 @@
         });
     });
 </script>
+
+
 <script>
+    // ------------------------------------------------ REVIEW REQUEST ------------------------------------------------------
+
     function submitReview() {
         let review = $('#review').val();
         let star = $('#rating').val();
-        let storeId = Number($('#storeId').val());
+        let storeId = $('#dynamicStoreId').val();
 
 
         // 쿠키에서 JWT 토큰을 추출합니다.
         let jwtToken = getCookie("Authorization");
 
         console.log(jwtToken);
-        // ------------------------ REVIEW REQUEST ---------------------------
 
         $.ajax({
             type: "POST",
@@ -246,17 +249,29 @@
         }
     }
 </script>
+<script>
+    // 페이지 로딩 시 hidden 필드에 동적으로 가게 아이디 설정
+    document.addEventListener("DOMContentLoaded", function() {
+        // 현재 페이지 URL에서 가게 id 가져오기
+        const url = window.location.href;
+        const parts = url.split("/");
+        const storeId = parts[parts.length - 2]; // 가게 id는 URL에서 두 번째로 뒤에 위치함
+
+        // hidden 필드에 가게 아이디 설정
+        document.getElementById("dynamicStoreId").value = storeId;
+    });
+</script>
 <!-- 리뷰 남기기 본문 -->
 <div class="container">
     <div class="row" style="margin-top:40px;">
         <div class="col-md-8 col-md-offset-2">
             <div class="well well-sm">
+
+                <!-- 숨겨진 필드      -->
+                <input type="hidden" class="form-control" id="dynamicStoreId" name="dynamicStoreId" required disabled>
+
                 <!-- 리뷰 남기기 Form -->
                 <form accept-charset="UTF-8" action="" method="post">
-                    <div class="mb-3">
-                        <label for="storeId" class="form-label">가게 아이디</label>
-                        <input type="text" class="form-control" id="storeId" name="storeId"  required>
-                    </div>
                     <input id="ratings-hidden" name="rating" type="hidden">
                     <textarea class="form-control animated" cols="50" id="review" name="review"
                               placeholder="리뷰를 이곳에 작성하세요..." rows="5"></textarea>
