@@ -39,12 +39,4 @@ public class Review extends TimeStamped {
     public void update(ReviewRequestDto requestDto) {
         this.review = requestDto.getReview();
     }
-    //편의 메소드(Helper Method)를 대신하여 orphanRemoval로 일관성을 유지했다.
-    //하지만 JSON변환과정의 직렬화 무한루프를 방지하기 위해서는
-    //public void setStore(Store store) {
-    //    this.store = store;
-    //    if (!store.getReviewList().contains(this)) {
-    //        store.getReviewList().add(this);
-    //    }
-    //}
 }
