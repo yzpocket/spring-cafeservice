@@ -7,7 +7,6 @@ import com.sparta.springcafeservice.entity.UserRoleEnum;
 import com.sparta.springcafeservice.exception.RestApiException;
 import com.sparta.springcafeservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
