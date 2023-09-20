@@ -8,6 +8,7 @@ import com.sparta.springcafeservice.entity.Store;
 import com.sparta.springcafeservice.entity.User;
 import com.sparta.springcafeservice.repository.MenuRepository;
 import com.sparta.springcafeservice.repository.StoreRepository;
+import com.sparta.springcafeservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +30,16 @@ public class MenuService {
 
     private final StoreRepository storeRepository;
 
+    private final UserRepository userRepository;
+
     // 메뉴 등록
     @Transactional
     public ResponseEntity<StatusResponseDto> createMenu(MenuRequestDto menuRequestDto, User user) {
         Menu menu = new Menu(menuRequestDto);
         Menu checkMenu = menuRepository.findByMenuName(menu.getMenuName());
         Optional<Store> storeCheck = storeRepository.findById(menuRequestDto.getStoreId());
+        User authorRegistNum = userRepository.findByRegistNum(user.getRegistNum());
+
 
         // request에서 받아온 가게 ID와 DB의 가게 체크
         if (!storeCheck.isPresent()) {
@@ -43,7 +48,9 @@ public class MenuService {
         menu.setStore(storeCheck.get());
 
         // 사업자 구분
-        if (user.getRegistNum() == 0) {
+        // 사업자 번호 정규식, -> 유저 레포지토리 비교 유효성 검사
+
+        if (user.getRegistNum() == 0 && user.getRegistNum()!=authorRegistNum.getRegistNum()) {
             StatusResponseDto result = new StatusResponseDto("사업자가 아닙니다.", 400);
             return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
         }
