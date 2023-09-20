@@ -78,7 +78,10 @@ public class WebSecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/menus/{id}").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/stores").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/stores/{id}").permitAll()
-
+                                .requestMatchers(HttpMethod.GET, "/add-reviews").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/add-reviews").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/add-menus").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/add-menus").permitAll()
                 )
                 // 로그아웃 처리 추가 부분
                 .logout(logout -> {
