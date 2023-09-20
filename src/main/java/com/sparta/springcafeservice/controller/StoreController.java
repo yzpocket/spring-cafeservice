@@ -30,13 +30,6 @@ public class StoreController {
         return storeService.createStore(requestDto, userDetails.getUser());
     }
 
-    // ReadAll
-//    @GetMapping("/stores")
-//    public String getAllStores(Model model) {
-//        List<StoreAllResponseDto> storeList = storeService.getAllStores();
-//        model.addAttribute("stores", storeList); // 템플릿에 전달할 데이터 추가
-//        return "index"; // 뷰 이름은 templates 폴더에 있는 템플릿 파일명과 일치해야 합니다.
-//    }
     @GetMapping("/stores")
     public List<StoreAllResponseDto> getAllStores() {
         return storeService.getAllStores();

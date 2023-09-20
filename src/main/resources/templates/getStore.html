@@ -100,7 +100,7 @@
 </style>
 <div class="navBar">
     <div class="e1">
-        <a class="a" target="_blank" href="https://codepen.io/quang_ngo/full/rNaYXOb"><strong>Cafe Service</strong></a>
+        <a class="a" target="_blank" href="http://localhost:8080"><strong>Cafe Service</strong></a>
     </div>
 
     <div class="e2">
@@ -125,24 +125,20 @@
 </div>
 <hr>
 
-<h1 th:text="${storeName}"></h1>
 
 <div class="fullBox1">
-    <h3 th:text="${storeAddress}"></h3>
-    <p th:text="${information}"></p>
+    <h1 id="storeName" th:text="${storeName}">Loading...</h1>
+    <h3 id="storeAddress" th:text="${storeAddress}">Loading...</h3>
+    <p id="information" th:text="${information}">Loading...</p>
 </div>
 
 <div class="fullBox2">
     <h3>Menu</h3>
     <!--카드 컨테이너-->
-    <div class="card-group">
-        <div class="card">
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title" th:text="${menuName}">menuName</h5>
-                <p class="card-text" th:text="${price}">price</p>
-            </div>
-        </div>
+    <div class="card">
+        <p th:text="${menuName}">menuName</p>
+        <p th:text="${price}">price</p>
+    </div>
         <!-- 다른 카드들도 동일한 방식으로 추가 -->
     </div>
 </div>
@@ -167,7 +163,7 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script>
-    $(window.document).ready(function () {
+    $(document).ready(function () {
         getStore();
     })
 
@@ -176,17 +172,28 @@
 
         $.ajax({
             type: "GET",
-            url:"/api/stores/"+id, // URL 경로 수정
+            url: "/api/stores/" + id,
             data: {},
             success: function (response) {
-                const store = (response.data)
-                console.log(store)
-                $('#storeName').text(store['storeName'])
-                $('#storeAddress').text(store['storeAddress'])
-                $('#information').text(store['information'])
-                console.log(response)
+                const storeName = response.storeName;
+                const storeAddress = response.storeAddress;
+                const information = response.information;
+
+                // 값을 가져왔는지 로그로 확인
+                console.log("storeName:", storeName);
+                console.log("storeAddress:", storeAddress);
+                console.log("information:", information);
+
+                // 값을 가져온 후 Thymeleaf로 동적으로 설정
+                $('#storeName').text(storeName);
+                $('#storeAddress').text(storeAddress);
+                $('#information').text(information);
+
+            },
+            error: function (error) {
+                // AJAX 요청이 실패한 경우에 대한 처리
             }
-        })
+        });
     }
 </script>
 
