@@ -1,12 +1,19 @@
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<!------ Include the above in your HEAD tag ---------->
 <head>
     <meta charset="UTF-8">
-    <!-- 나머지 head 내용 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews</title>
+
+    <!-- Bootstrap CSS (3.0.1) -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery (3.6.0) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap JavaScript (3.4.1) -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
-<!-- CSS -->
+<!-------------------------------------------- 리뷰 관련 CSS (모듈화는 시간부족으로 생략..) -------------------------------------------->
 <style>
     .animated {
         -webkit-transition: height 0.2s;
@@ -19,8 +26,18 @@
         font-size: 24px;
         color: #d17581;
     }
+
+    .empty-star{
+
+        padding: 2px; /* 테두리와 별 사이의 간격 조정 */
+    }
+    .red-star {
+        color: red; /* 빨간색으로 채우기 */
+        padding: 2px; /* 테두리와 별 사이의 간격 조정 */
+    }
 </style>
-<!-- JS -->
+<!------------------------------------------ 리뷰 관련 JavaScript (모듈화는 시간부족으로 생략..) ------------------------------------------->
+<!-- 동적 페이지 꾸미기 관련 접히기, 폴딩, 별 커서 호버 등 함수 -->
 <script>
     (function (e) {
         var t, o = {className: "autosizejs", append: "", callback: !1, resizeDelay: 10},
@@ -204,14 +221,26 @@
         });
     });
 </script>
-
-
+<!-- 별을 꾸며주는 함수 -->
 <script>
-    // ------------------------------------------------ REVIEW REQUEST ------------------------------------------------------
-
+    // 숫자를 빨간색 별 아이콘으로 변환하는 함수
+    function convertToStars(num) {
+        let stars = '';
+        for (let i = 0; i < 5; i++) {
+            if (i < num) {
+                stars += '<span class="glyphicon glyphicon-star red-star"></span>';
+            } else {
+                stars += '<span class="glyphicon glyphicon-star empty-star"></span>';
+            }
+        }
+        return stars;
+    }
+</script>
+<!-------------------------------------------------- REVIEW CREATE REQUEST -------------------------------------------------------->
+<script>
     function submitReview() {
         let review = $('#review').val();
-        let star = $('#rating').val();
+        let star = $('#ratings-hidden').val();
         let storeId = $('#dynamicStoreId').val();
 
 
@@ -220,23 +249,229 @@
 
         console.log(jwtToken);
 
+        // 사용자의 로그인 상태 확인
+        let isLoggedIn = checkLoginStatus();
+
+        // 로그인 상태를 확인하여 리뷰 작성 여부 결정
+        if (isLoggedIn) {
         $.ajax({
             type: "POST",
             url: "/api/reviews",
             contentType: "application/json",
-            data: JSON.stringify({review: review, star: star, storeId: storeId }),
+            data: JSON.stringify({review: review, star: star, storeId: storeId}),
             headers: {
                 "Authorization": jwtToken // JWT 토큰을 "Bearer" 스키마와 함께 추가합니다. -> 백에서 이미 bearer처리중이니 엇ㅂ애기
             }
         })
             .done(function (response) {
                 alert('리뷰가 등록되었습니다.');
+                window.location.reload(); // 현재 페이지 리로드
                 // window.location.href = '/add-menu'
                 // 필요한 경우 페이지 리다이렉트나 다른 처리를 여기에 추가
             })
             .fail(function (error) {
                 alert('리뷰 등록에 실패했습니다.');
             });
+        } else {
+            // 로그인되지 않은 경우 알림 표시
+            alert('로그인 후에 리뷰를 작성할 수 있습니다.');
+            window.location.href = '/login';
+        }
+    }
+</script>
+<!-------------------------------------------------- REVIEW READ REQUEST -------------------------------------------------------->
+<script>
+    function getReviews() {
+        const storeId = $('#dynamicStoreId').val();
+
+        $.ajax({
+            type: "GET",
+            url: '/api/stores/' + storeId + '/reviews', // 수정된 URL 경로
+            dataType: "json"
+        })
+            .done(function (reviews) {
+                // 리뷰 목록을 성공적으로 가져온 경우
+                displayReviews(reviews);
+            })
+            .fail(function (error) {
+                alert('리뷰 목록을 가져오는데 실패했습니다.');
+            });
+    }
+</script>
+<!-------------------------------------------------- REVIEW LISTING & DELETE & UPDATE-FORM REQUEST -------------------------------------------------------->
+<script>
+    // 페이지 로딩 시 리뷰 목록 가져오기
+    $(document).ready(function () {
+        getReviews();
+    });
+</script>
+<script>
+    // 리뷰 목록을 화면에 표시
+    function displayReviews(reviews) {
+        const reviewContainer = $('.review-list'); // 리뷰 목록을 나타낼 컨테이너
+        reviewContainer.empty(); // 기존 리뷰를 지우고 새로운 리뷰 목록으로 대체
+
+        // 리뷰 목록을 반복해서 화면에 추가
+        reviews.forEach(function (review) {
+            const reviewDiv = $('<div class="review">');
+            const star = $('<strong>').html('별점: ' + convertToStars(review.star)); // 별점 출력
+            const reviewText = $('<p>').text('리뷰: ' + review.review); // 리뷰 내용 출력
+
+            // 리뷰 ID를 저장하는 히든 필드 --------------------------------------------------------------------------------
+            const reviewIdField = $('<input type="hidden" name="reviewId" value="' + review.id + '">');
+
+            // 수정 버튼 클릭 이벤트 리스너 --------------------------------------------------------------------------------
+            const editButton = $('<button class="btn btn-primary">수정</button>');
+            editButton.on('click', function() {
+                // 모달 창을 띄우고 해당 리뷰의 내용을 모달 폼에 미리 채움
+                $('#reviewModal').modal('show');
+                const reviewText = review.review;
+                $('#reviewId').val(review.id);
+                $('#reviewTextarea').val(reviewText);
+            });
+
+            // 삭제 버튼 클릭 이벤트 리스너 --------------------------------------------------------------------------------
+            const deleteButton = $('<button class="btn btn-danger">삭제</button>');
+            deleteButton.on('click', function() {
+                // 삭제 버튼을 클릭했을 때의 동작 추가
+                const reviewId = $(this).siblings('input[name="reviewId"]').val(); // 리뷰의 ID 가져오기
+
+                // 쿠키에서 JWT 토큰을 추출합니다.
+                const jwtToken = getCookie("Authorization");
+
+                // 사용자의 로그인 상태 확인
+                const isLoggedIn = checkLoginStatus();
+
+                // 로그인 상태를 확인하여 리뷰 삭제 여부 결정
+                if (isLoggedIn) {
+                    // 서버로 현재 로그인한 사용자와 리뷰 작성자를 확인하는 요청을 보냄
+                    $.ajax({
+                        type: "GET",
+                        url: '/api/reviews/' + reviewId + '/check-ownership', // 서버에 해당 기능을 추가해야 함
+                        headers: {
+                            "Authorization": jwtToken // JWT 토큰을 "Bearer" 스키마와 함께 추가
+                        }
+                    })
+                        .done(function (response) {
+                            // 현재 로그인한 사용자와 리뷰 작성자가 일치하는 경우
+                            // 서버로 리뷰 삭제 요청을 보냄
+                            $.ajax({
+                                type: "DELETE",
+                                url: '/api/reviews/' + reviewId, // 리뷰 삭제 API 엔드포인트
+                                headers: {
+                                    "Authorization": jwtToken // JWT 토큰을 "Bearer" 스키마와 함께 추가
+                                }
+                            })
+                                .done(function () {
+                                    // 삭제 요청이 성공한 경우, 화면에서 해당 리뷰를 제거
+                                    $(this).closest('.review').remove(); // 해당 리뷰를 DOM에서 제거
+
+                                    // 리뷰 삭제 알림 표시
+                                    alert('리뷰가 삭제되었습니다.');
+
+                                    // 리뷰 목록 새로고침
+                                    window.location.reload(); // 현재 페이지 리로드
+                                })
+                                .fail(function () {
+                                    alert('리뷰 삭제에 실패했습니다.');
+                                });
+                        })
+                        .fail(function () {
+                            // 현재 로그인한 사용자와 리뷰 작성자가 일치하지 않는 경우
+                            alert('해당 리뷰를 삭제할 권한이 없습니다.');
+                        });
+                } else {
+                    // 로그인되지 않은 경우 알림 표시
+                    alert('로그인 후에 리뷰를 삭제할 수 있습니다.');
+                    window.location.href = '/login';
+                }
+            });
+            // 삭제 버튼 클릭 이벤트 리스너 끝 --------------------------------------------------------------------------------
+
+            // 위 기능을 포함한 댓글 리스트 append --------------------------------------------------------------------------------
+            reviewDiv.append(star); // 별점
+            reviewDiv.append(reviewText); // 리뷰내용
+            reviewDiv.append(reviewIdField); // 리뷰 ID를 저장하는 히든 필드 추가
+            reviewDiv.append(editButton); // 수정 버튼 추가
+            reviewDiv.append(deleteButton); // 삭제 버튼 추가
+            reviewContainer.append(reviewDiv);
+        });
+    }
+</script>
+<!-- 삭제 버튼 클릭 이벤트 리스너가 해당 댓글의 id를 가져오는 함수 -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // 현재 페이지 URL에서 가게 id 가져오기
+        const url = window.location.href;
+        const parts = url.split("/");
+        const storeId = parts[parts.length - 2]; // 가게 id는 URL에서 두 번째로 뒤에 위치함
+
+        // hidden 필드에 가게 아이디 설정
+        document.getElementById("dynamicStoreId").value = storeId;
+    });
+</script>
+<!-------------------------------------------------- REVIEW UPDATE REQUEST -------------------------------------------------------->
+<script>
+    // 리뷰 수정 버튼 클릭 이벤트 핸들러
+    function submitReviewModify() {
+        // 수정할 리뷰의 정보 가져오기
+        const reviewId = $('#reviewId').val();
+        const modifiedRating = $('#ratings-hidden-modify').val();
+        const modifiedReview = $('#reviewTextarea').val();
+
+        // Ajax 요청을 보낼 URL 설정
+        const url = '/api/reviews/' + reviewId;
+
+        // 서버로 보낼 데이터
+        const data = {
+            rating: modifiedRating,
+            review: modifiedReview
+        };
+
+        // 쿠키에서 JWT 토큰을 추출합니다.
+        const jwtToken = getCookie("Authorization");
+
+        // Ajax 요청 설정
+        $.ajax({
+            type: "PUT",
+            url: url,
+            data: JSON.stringify(data), // 데이터를 JSON 문자열로 변환
+            contentType: 'application/json', // 요청의 컨텐츠 타입을 JSON으로 설정
+            headers: {
+                "Authorization": jwtToken // JWT 토큰을 "Bearer" 스키마와 함께 추가
+            },
+            success: function () {
+                // 수정 요청이 성공한 경우
+                // 모달 창을 닫고 페이지를 다시 로드하여 수정 내용을 업데이트
+                alert('리뷰 수정에 성공했습니다.');
+                $('#reviewModal').modal('hide');
+                window.location.reload(); // 현재 페이지 리로드
+            },
+            error: function () {
+                // 수정 요청이 실패한 경우만
+                alert('작성자만 수정 가능합니다. 로그인을 진행해주세요.');
+                window.location.href = '/login';
+            }
+        });
+    }
+</script>
+<!-------------------------------------------------- REVIEW AUTHORIZATION -------------------------------------------------------->
+<script>
+    // 사용자의 로그인 상태 여부를 확인하고 처리하는 함수
+    function checkLoginStatusAndRedirect() {
+        // 세션 정보나 토큰을 사용하여 로그인 상태를 확인
+        // isLoggedIn 변수에 true 또는 false를 설정
+        // 예를 들어, 로그인 토큰이 존재하는지 여부를 확인하는 코드 추가
+        let jwtToken = getCookie("Authorization");
+        const isLoggedIn = !!jwtToken; // 토큰이 존재하면 true, 그렇지 않으면 false 반환
+
+        if (!isLoggedIn) {
+            // 로그인이 필요한 경우, /login 페이지로 리다이렉트
+            window.location.href = '/login';
+
+            // 로그인이 필요하다는 알림 메시지 표시
+            alert('로그인이 필요합니다.');
+        }
     }
 
     // 쿠키에서 특정 이름의 쿠키 값을 추출하는 함수
@@ -249,57 +484,94 @@
         }
     }
 </script>
-<script>
-    // 페이지 로딩 시 hidden 필드에 동적으로 가게 아이디 설정
-    document.addEventListener("DOMContentLoaded", function() {
-        // 현재 페이지 URL에서 가게 id 가져오기
-        const url = window.location.href;
-        const parts = url.split("/");
-        const storeId = parts[parts.length - 2]; // 가게 id는 URL에서 두 번째로 뒤에 위치함
-
-        // hidden 필드에 가게 아이디 설정
-        document.getElementById("dynamicStoreId").value = storeId;
-    });
-</script>
-<!-- 리뷰 남기기 본문 -->
+<!---------------------------------------------- 리뷰 남기기 본문 add-reviews.html ------------------------------------------------>
 <div class="container">
     <div class="row" style="margin-top:40px;">
         <div class="col-md-8 col-md-offset-2">
             <div class="well well-sm">
-
+                <div class="text-right">
+                    <a class="btn btn-success btn-green" href="#reviews-anchor" id="open-review-box">리뷰를 작성해주세요</a>
+                </div>
                 <!-- 숨겨진 필드      -->
+                <!-- Hidden 값 있음-->
                 <input type="hidden" class="form-control" id="dynamicStoreId" name="dynamicStoreId" required disabled>
-
-                <!-- 리뷰 남기기 Form -->
-                <form accept-charset="UTF-8" action="" method="post">
-                    <input id="ratings-hidden" name="rating" type="hidden">
-                    <textarea class="form-control animated" cols="50" id="review" name="review"
-                              placeholder="리뷰를 이곳에 작성하세요..." rows="5"></textarea>
-                    <div class="text-right">
-                        <div class="stars starrr" data-rating="0"></div>
-                        <a class="btn btn-danger btn-sm" href="#" id="close-review-box"
-                           style="display:none; margin-right: 10px;">
-                            <span class="glyphicon glyphicon-remove"></span>취소</a>
-                        <button class="btn btn-success btn-lg" type="button" onclick="submitReview()">리뷰 남기기!</button>
+                <div class="row" id="post-review-box" style="display:none;">
+                    <div class="col-md-12">
+                        <!-- 리뷰 남기기 Form -->
+                        <form accept-charset="UTF-8" action="" method="post">
+                            <!-- Hidden 값 있음-->
+                            <input id="ratings-hidden" name="rating" type="hidden">
+                            <textarea class="form-control animated" cols="50" id="review" name="review"
+                                      placeholder="리뷰를 이곳에 작성하세요..." rows="5"></textarea>
+                            <div class="text-right">
+                                <div class="stars starrr" data-rating="0"></div>
+                                <a class="btn btn-danger btn-sm" href="#" id="close-review-box"
+                                   style="display:none; margin-right: 10px;">
+                                    <span class="glyphicon glyphicon-remove"></span>취소</a>
+                                <button class="btn btn-success btn-lg" type="button" onclick="submitReview()">리뷰 남기기</button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
-
             <!-- 리뷰 리스트를 나타내는 부분 -->
             <div class="well well-sm">
                 <h3>리뷰 리스트</h3>
-                <!-- 각 리뷰 한 줄씩 표시 -->
-                <div class="review">
-                    <strong>사용자1:</strong>
-                    <p>이 리뷰는 예시입니다.</p>
+                <!-- 리뷰 목록을 나타낼 컨테이너 -->
+                <div class="review-list">
+                    <!-- 아래의 코드를 추가하여 실제 리뷰를 표시합니다. -->
                 </div>
-                <div class="review">
-                    <strong>사용자2:</strong>
-                    <p>또 다른 예시 리뷰입니다.</p>
-                </div>
-                <!-- 실제 데이터베이스에서 가져온 리뷰를 반복문을 통해 여기에 추가 -->
             </div>
 
         </div>
     </div>
 </div>
+<!-- 모달 창 -->
+<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title" id="reviewModalLabel" style="text-align: center">리뷰 수정</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">X</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- 별점을 선택할 드롭다운 메뉴를 구현합니다. -->
+                <div class="form-group">
+                    <label for="ratings-select">별점 선택:</label>
+                    <select id="ratings-select" name="rating-modify" class="form-control">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <!-- 선택한 별점을 저장할 히든 필드 -->
+                <!-- Hidden 값 있음-->
+                <input id="ratings-hidden-modify" name="rating-modify" type="hidden" value="1">
+                <form accept-charset="UTF-8" action="" method="post">
+                    <!-- Hidden 값 있음-->
+                    <input type="hidden" id="reviewId" name="reviewId">
+                    <div class="form-group">
+                        <textarea class="form-control" id="reviewTextarea" name="review"
+                                  placeholder="리뷰를 이곳에 작성하세요..." rows="5"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" onclick="submitReviewModify()">수정 완료</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 드롭다운 메뉴 선택 시 히든 필드에 값 설정 -->
+<script>
+    $('#ratings-select').on('change', function() {
+        const rating = $(this).val();
+        $('#ratings-hidden-modify').val(rating);
+    });
+</script>

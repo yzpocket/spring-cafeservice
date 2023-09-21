@@ -26,6 +26,7 @@ public class Review extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     private Store store;
 
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;

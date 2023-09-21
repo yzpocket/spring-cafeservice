@@ -38,6 +38,7 @@ public class Store extends TimeStamped{
     @OneToMany(mappedBy = "store", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Menu> menuList = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "store", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Review> reviewList = new ArrayList<>();
 

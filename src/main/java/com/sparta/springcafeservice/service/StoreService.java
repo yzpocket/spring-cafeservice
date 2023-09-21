@@ -4,9 +4,11 @@ package com.sparta.springcafeservice.service;
 import com.sparta.springcafeservice.dto.StoreAllResponseDto;
 import com.sparta.springcafeservice.dto.StoreRequestDto;
 import com.sparta.springcafeservice.dto.StoreResponseDto;
+import com.sparta.springcafeservice.entity.Review;
 import com.sparta.springcafeservice.entity.Store;
 import com.sparta.springcafeservice.entity.User;
 import com.sparta.springcafeservice.exception.RestApiException;
+import com.sparta.springcafeservice.repository.ReviewRepository;
 import com.sparta.springcafeservice.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class StoreService {
 
     private final StoreRepository storeRepository;
+    private final ReviewRepository reviewRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -99,5 +102,10 @@ public class StoreService {
         return storeRepository.findById(id).orElseThrow(() ->
                 new RestApiException("선택한 가게는 존재하지 않습니다.", HttpStatus.NOT_FOUND.value())
         );
+    }
+
+    // 특정 가게 리뷰 모두 조회
+    public List<Review> getReviewsByStoreId(Long storeId) {
+        return reviewRepository.findAllByStoreId(storeId);
     }
 }
