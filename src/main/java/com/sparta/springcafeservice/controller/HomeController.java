@@ -30,22 +30,22 @@ public class HomeController {
         model.addAttribute("review", review); // 모델에 Menu 객체를 추가합니다.
         return "add-reviews";
     }
-    @GetMapping("/getStore/{storeId}/reviews")
+    @GetMapping("/stores/{storeId}/reviews")
     public String showReviewForm(@PathVariable Long storeId, Model model) {
         Review review = new Review(); // 새로운 Menu 객체를 생성합니다. 필요에 따라 다른 로직으로 Menu 객체를 가져올 수도 있습니다.
         model.addAttribute("review", review); // 모델에 Menu 객체를 추가합니다.
         return "add-reviews";
     }
 
-    @GetMapping("/getStore")
+    @GetMapping("/stores")
     public String store() {
         return "getStore"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
     }
 
-    @GetMapping("/getStore/{storeId}/menus")
+    @GetMapping("/stores/{storeId}/menus")
     public String menus(@PathVariable Long storeId, Model model) {
         Menu menu = new Menu(); // 새로운 Menu 객체를 생성합니다. 필요에 따라 다른 로직으로 Menu 객체를 가져올 수도 있습니다.
         model.addAttribute("menu", menu); // 모델에 Menu 객체를 추가합니다.
-        return "add-menu";
+        return "add-menus"; // 임시 add-menus
     }
 }

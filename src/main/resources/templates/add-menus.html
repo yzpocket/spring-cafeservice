@@ -1,0 +1,352 @@
+
+<!doctype html>
+<html lang="en" data-bs-theme="auto" xmlns:th="http://www.thymeleaf.org">  <!-- 타임리프 추가 -->
+<head><script src="/docs/5.3/assets/js/color-modes.js"></script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, 그리고 Bootstrap 기여자들">
+  <meta name="generator" content="Hugo 0.115.4">
+  <title>메뉴등록하기</title>
+
+  <link rel="canonical" href="https://getbootstrap.kr/docs/5.3/examples/album/">
+
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+
+  <link href="/docs/5.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" href="/docs/5.3/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" href="/docs/5.3/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="/docs/5.3/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+  <link rel="manifest" href="/docs/5.3/assets/img/favicons/manifest.json">
+  <link rel="mask-icon" href="/docs/5.3/assets/img/favicons/safari-pinned-tab.svg" color="#712cf9">
+  <link rel="icon" href="/docs/5.3/assets/img/favicons/favicon.ico">
+  <meta name="theme-color" content="#712cf9">
+
+
+
+  <script>
+    function addCommas(nStr) {
+      nStr += '';
+      var x = nStr.split('.');
+      var x1 = x[0];
+      var x2 = x.length > 1 ? '.' + x[1] : '';
+      var rgx = /(\d+)(\d{3})/;
+      while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + ',' + '$2');
+      }
+      return x1 + x2;
+    }
+
+    function updatePriceDisplay() {
+      var priceInput = document.getElementById("price");
+      priceInput.value = addCommas(priceInput.value.replace(/,/g, ''));
+    }
+  </script>
+
+
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="check2" viewBox="0 0 16 16">
+    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+  </symbol>
+  <symbol id="circle-half" viewBox="0 0 16 16">
+    <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+  </symbol>
+  <symbol id="moon-stars-fill" viewBox="0 0 16 16">
+    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+    <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+  </symbol>
+  <symbol id="sun-fill" viewBox="0 0 16 16">
+    <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+  </symbol>
+</svg>
+
+
+<style>
+  /* 추가 스타일 */
+  #menuForm {
+    max-width: 500px;
+    margin: 50px auto 20px;  /* 화면 중앙 정렬을 위한 마진 추가 */
+    padding-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+  }
+
+  #menu-card {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    background: #f9f9f9;
+  }
+
+  .card-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  #menuList {
+    display: flex;
+    flex-direction: row;  /* 행 방향으로 카드를 나열합니다. */
+    flex-wrap: wrap;  /* 화면 크기에 따라 카드가 줄바꿈되도록 설정합니다. */
+    justify-content: space-around;  /* 카드 사이의 간격을 동일하게 합니다. */
+  }
+
+  .col-md-4 {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;  /* 카드 사이의 수직 간격을 추가합니다. */
+  }
+
+  .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* 카드에 그림자를 추가합니다. */
+    transition: transform .2s;  /* 마우스 오버시 약간 확대 효과를 줍니다. */
+  }
+
+  .card:hover {
+    transform: scale(1.05);  /* 카드를 약간 확대합니다. */
+  }
+</style>
+
+
+<main>
+
+
+
+  <div class="container mt-5">
+    <h2>메뉴 등록</h2>
+
+    <form id="menuForm">
+      <div class="mb-3">
+        <label for="menuName" class="form-label">메뉴 이름</label>
+        <input type="text" class="form-control" id="menuName" name="menuName" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="image" class="form-label">메뉴 이미지</label>
+        <input type="file" class="form-control" id="image" name="image"  required>
+      </div>
+
+
+      <!-- 이미지를 미리보기로 보여줄 컨테이너 추가 -->
+      <div class="mb-3" id="image-preview-container">
+        <label for="image-preview" class="form-label">메뉴 이미지 미리보기</label>
+        <img id="image-preview" src="#" alt="메뉴 이미지 미리보기" style="max-width: 100%; max-height: 200px;">
+      </div>
+
+
+      <div class="mb-3">
+        <label for="price" class="form-label">메뉴 가격</label>
+        <input type="text" class="form-control" id="price" name="price"  onkeyup="updatePriceDisplay()" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary"  onclick="submitMenu()">등록</button>
+    </form>
+  </div>
+
+
+  <!-- 등록한 메뉴 리스트 -->
+  <div class="mt-4">
+    <form id="menu-card">
+    <h3 class="mb-3">등록한 메뉴 리스트</h3>
+    <div class="row" id="menuList">
+      <!-- 자바스크립트에서 동적으로 메뉴 카드가 여기에 생성됩니다. -->
+      <!-- 예시 카드 -->
+    </div>
+  </div>
+
+  <!-- 수정 확인 팝업 -->
+  <div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">메뉴 수정</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <!-- 수정 폼 추가 -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          <button type="button" class="btn btn-primary">수정 완료</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 삭제 확인 팝업 (비밀번호 입력) -->
+  <div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">삭제 확인</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>비밀번호를 입력하여 메뉴를 삭제하세요.</p>
+          <input type="password" class="form-control" placeholder="비밀번호" id="deletePassword">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          <button type="button" class="btn btn-danger" onclick="confirmDelete()">삭제</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</main>
+
+
+
+
+
+
+<script src="/docs/5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+<!-- jquery 라이브러리 추가 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/docs/5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+
+<!-- RequestBody 보내는 부분 -->
+
+<script>
+  function submitMenu() {
+    let menuName = $('#menuName').val();
+    // let image = $('#image').val();
+    let price = $('#price').val().replace(/,/g, '');
+
+    const urlSegments = window.location.pathname.split('/');
+    const storeId = urlSegments[2];  // "/stores/1/menus"에서 "1"을 가져옵니다.
+
+    let formData = new FormData();
+    formData.append('menuName', menuName);
+    formData.append('image', $('#image')[0].files[0]); // 이미지 파일 추가
+    formData.append('price', price);
+    formData.append('storeId', storeId);
+
+
+
+    // 쿠키에서 JWT 토큰을 추출합니다.
+    let jwtToken = getCookie("Authorization");
+
+    $.ajax({
+      type: "POST",
+      url: "/api/" + storeId + "/menus",
+      // contentType: "application/json",
+      // data: JSON.stringify({ menuName: menuName, image: image, price: price, storeId: storeId }),
+      contentType: false, // FormData를 사용할 때는 이렇게 설정
+      processData: false, // FormData를 사용할 때는 이렇게 설정
+      data: formData,
+      headers: {
+        "Authorization":  jwtToken
+      }
+    })
+            .done(function(response) {
+              alert('메뉴가 등록되었습니다.');
+              window.location.href = '/add-menus'
+            })
+            .fail(function(error) {
+              alert('메뉴 등록에 실패했습니다.');
+            });
+  }
+
+  // 쿠키에서 특정 이름의 쿠키 값을 추출하는 함수
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+      const decodedValue = decodeURIComponent(parts.pop().split(';').shift()).trim();
+      return decodedValue;
+    }
+  }
+
+
+  // 메뉴 이미지 등록, 미리보기 -------------------------------------------------메뉴 데이터를 서버에서 가져옴
+
+  document.getElementById('image').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+      const imgPreview = document.getElementById('image-preview');
+      imgPreview.src = event.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+
+  // 이미지 크기 제한
+  document.getElementById('image').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    const maxSizeInBytes = 10 * 1024 * 1024; // 예: 10MB 제한
+    if (file.size > maxSizeInBytes) {
+      alert('이미지 크기가 너무 큽니다. 10MB 이하의 이미지를 업로드하세요.');
+      this.value = ''; // 업로드된 파일 지우기
+    }
+  });
+
+
+
+
+  // 메뉴 조회 -------------------------------------------------메뉴 데이터를 서버에서 가져옴
+  function fetchMenus() {
+    fetch('/api/menus') // 여기에 실제 서버의 API 엔드포인트 주소를 입력
+            .then(response => response.json())
+            .then(data => {
+              displayMenus(data); // 서버에서 가져온 데이터를 displayMenus 함수에 전달
+            })
+            .catch(error => {
+              console.error('메뉴 데이터를 가져오는데 실패했습니다.', error);
+            });
+  }
+
+  function displayMenus(menus) {
+    const menuList = document.getElementById('menuList');
+    menuList.innerHTML = ''; // 초기화
+
+    menus.forEach(menu => {
+      const menuCard = `
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <img src="${menu.image}" class="card-img-top" alt="${menu.menuName}">
+          <div class="card-body">
+            <h5 class="card-title">${menu.menuName}</h5>
+            <p class="card-text">${menu.price}원</p>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal" onclick="editMenu(${menu.id})">수정</button>
+            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="prepareDelete(${menu.id})">삭제</button>
+          </div>
+        </div>
+      </div>
+    `;
+      menuList.innerHTML += menuCard;
+    });
+  }
+
+  function editMenu(menuId) {
+    // 메뉴 ID를 사용하여 메뉴를 수정하는 로직을 여기에 구현
+    // 예를 들면, modal 안에 해당 메뉴의 정보를 채워넣기
+  }
+
+  function prepareDelete(menuId) {
+    // 삭제 버튼을 클릭하면 해당 메뉴의 ID를 어딘가 저장하고 (예: hidden input field)
+    // confirmDelete()에서 해당 ID를 사용하여 삭제를 진행
+  }
+
+  // 페이지 로드 시 메뉴 데이터 서버에서 가져옴
+  window.onload = fetchMenus;
+
+
+
+</script>
+
+
+</body>
+</html>

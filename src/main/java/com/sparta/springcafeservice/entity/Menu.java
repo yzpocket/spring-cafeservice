@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Entity @Getter
@@ -38,6 +39,12 @@ public class Menu {
         this.menuName = menuRequestDto.getMenuName();
         this.image = menuRequestDto.getImage();
         this.price = menuRequestDto.getPrice();
+    }
+
+    public Menu(String menuName, String price, byte[] imageBytes) {
+        this.menuName = menuName;
+        this.price = Integer.parseInt(price); // 문자열을 정수로 변환
+        this.image = Base64.getEncoder().encodeToString(imageBytes); // 바이트 배열을 Base64로 인코딩하여 저장
     }
 
     public void update(MenuRequestDto menuRequestDto) {

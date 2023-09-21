@@ -12,5 +12,5 @@ public class MenuRequestDto {
 
     private int price;
 
-    private Long storeId;
+//    private Long storeId;
 }

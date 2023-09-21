@@ -32,14 +32,17 @@ public class MenuService {
 
     private final UserRepository userRepository;
 
-    // 메뉴 등록
-    @Transactional
-    public ResponseEntity<StatusResponseDto> createMenu(MenuRequestDto menuRequestDto, User user) {
-        Menu menu = new Menu(menuRequestDto);
-        Menu checkMenu = menuRepository.findByMenuName(menu.getMenuName());
-        Optional<Store> storeCheck = storeRepository.findById(menuRequestDto.getStoreId());
-        User authorRegistNum = userRepository.findByRegistNum(user.getRegistNum());
 
+
+
+
+
+    @Transactional
+    public ResponseEntity<StatusResponseDto> createMenu(Long storeId, String menuName, String price, byte[] imageBytes, User user) {
+        Menu menu = new Menu(menuName, price, imageBytes);
+        Menu checkMenu = menuRepository.findByMenuName(menuName);
+        Optional<Store> storeCheck = storeRepository.findById(storeId);
+        User authorRegistNum = userRepository.findByRegistNum(user.getRegistNum());
 
         // request에서 받아온 가게 ID와 DB의 가게 체크
         if (!storeCheck.isPresent()) {
@@ -49,15 +52,14 @@ public class MenuService {
 
         // 사업자 구분
         // 사업자 번호 정규식, -> 유저 레포지토리 비교 유효성 검사
-
-        if (user.getRegistNum() == 0 && user.getRegistNum()!=authorRegistNum.getRegistNum()) {
+        if (user.getRegistNum() == 0 || user.getRegistNum() != authorRegistNum.getRegistNum()) {
             StatusResponseDto result = new StatusResponseDto("사업자가 아닙니다.", 400);
             return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
         }
 
         // 중복 메뉴 이름
         // entity unique에서 예외 터질 때 -> 예외 발생
-        // 예외는 바디로 안보여서 서비스로직 작성
+        // 예외는 바디로 안보여서 서비스 로직 작성
         if (checkMenu != null){
             StatusResponseDto result = new StatusResponseDto("중복된 메뉴 이름입니다.", 400);
             return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
@@ -67,6 +69,44 @@ public class MenuService {
         StatusResponseDto result = new StatusResponseDto("메뉴를 등록했습니다.", 200);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+
+
+    // 메뉴 등록
+//    @Transactional
+//    public ResponseEntity<StatusResponseDto> createMenu(Long id, MenuRequestDto menuRequestDto, User user) {
+//        Menu menu = new Menu(menuRequestDto);
+//        Menu checkMenu = menuRepository.findByMenuName(menu.getMenuName());
+//        Optional<Store> storeCheck = storeRepository.findById(id);
+//        User authorRegistNum = userRepository.findByRegistNum(user.getRegistNum());
+//
+//
+//        // request에서 받아온 가게 ID와 DB의 가게 체크
+//        if (!storeCheck.isPresent()) {
+//            throw new IllegalArgumentException("해당 가게는 존재하지 않습니다.");
+//        }
+//        menu.setStore(storeCheck.get());
+//
+//        // 사업자 구분
+//        // 사업자 번호 정규식, -> 유저 레포지토리 비교 유효성 검사
+//
+//        if (user.getRegistNum() == 0 && user.getRegistNum()!=authorRegistNum.getRegistNum()) {
+//            StatusResponseDto result = new StatusResponseDto("사업자가 아닙니다.", 400);
+//            return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+//        }
+//
+//        // 중복 메뉴 이름
+//        // entity unique에서 예외 터질 때 -> 예외 발생
+//        // 예외는 바디로 안보여서 서비스로직 작성
+//        if (checkMenu != null){
+//            StatusResponseDto result = new StatusResponseDto("중복된 메뉴 이름입니다.", 400);
+//            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+//        }
+//
+//        menuRepository.save(menu);
+//        StatusResponseDto result = new StatusResponseDto("메뉴를 등록했습니다.", 200);
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+//    }
 
 
     // 메뉴 조회

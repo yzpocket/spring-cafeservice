@@ -110,7 +110,10 @@
     let menuName = $('#menuName').val();
     let image = $('#image').val();
     let price = $('#price').val().replace(/,/g, '');
-    let storeId = Number($('#storeId').val());
+    // let storeId = Number($('#storeId').val()); -> 기존에 input 값 long을 받아올 수 있는 코드
+
+    const urlSegments = window.location.pathname.split('/');
+    const storeId = urlSegments[2];  // "/stores/1/menus"에서 "1"을 가져옵니다.
 
     // 쿠키에서 JWT 토큰을 추출합니다.
     let jwtToken = getCookie("Authorization");
@@ -119,7 +122,7 @@
 
     $.ajax({
       type: "POST",
-      url: "/api/menus",
+      url: "/api/" + storeId + "/menus",
       contentType: "application/json",
       data: JSON.stringify({ menuName: menuName, image: image, price: price, storeId: storeId }),
       headers: {
