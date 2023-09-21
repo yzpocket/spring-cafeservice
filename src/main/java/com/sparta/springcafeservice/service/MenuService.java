@@ -4,6 +4,7 @@ import com.sparta.springcafeservice.dto.MenuRequestDto;
 import com.sparta.springcafeservice.dto.MenuResponseDto;
 import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.entity.Menu;
+import com.sparta.springcafeservice.entity.Review;
 import com.sparta.springcafeservice.entity.Store;
 import com.sparta.springcafeservice.entity.User;
 import com.sparta.springcafeservice.repository.MenuRepository;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Service
 @RequiredArgsConstructor
@@ -110,18 +112,35 @@ public class MenuService {
 
 
     // 메뉴 삭제
-    public ResponseEntity<StatusResponseDto> deleteMenu(Long id, String password, User user) {
-        Menu menu = findMenu(id);
-
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            StatusResponseDto res = new StatusResponseDto("비밀번호가 틀렸습니다.", 400);
-            return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
-        } else {
-            menuRepository.delete(menu);
-            StatusResponseDto res = new StatusResponseDto("메뉴가 삭제되었습니다.", 200);
-            return new ResponseEntity<>(res, HttpStatus.OK);
-        }
+    @Transactional
+    public ResponseEntity<StatusResponseDto> deleteMenu(Long id, User user) {
+        return handleServiceRequest(() -> {
+            Menu menu = findMenu(id);
+            if(validateUserAuthority(user)){
+                menuRepository.delete(menu);
+            }else{
+                throw new IllegalArgumentException("잘못된 접근 입니다.");
+            }
+            return new StatusResponseDto("메뉴가 삭제되었습니다.", 200);
+        });
     }
+
+
+    // 프론트 문제 -> 메뉴 삭제
+//    public ResponseEntity<StatusResponseDto> deleteMenu(Long id,  User user) {
+//        Menu menu = findMenu(id);
+//
+//        menuRepository.delete(menu);
+//        StatusResponseDto res = new StatusResponseDto("메뉴가 삭제되었습니다.", 200);
+//        return new ResponseEntity<>(res, HttpStatus.OK);
+
+//        if (!passwordEncoder.matches(password, user.getPassword())) {
+//            StatusResponseDto res = new StatusResponseDto("비밀번호가 틀렸습니다.", 400);
+//            return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
+//        } else {
+//
+//        }
+//    }
 
 
 
@@ -141,4 +160,16 @@ public class MenuService {
         }
     }
 
+    // 중복 코드 제거를 위한 메소드
+    private ResponseEntity<StatusResponseDto> handleServiceRequest(Supplier<StatusResponseDto> action) {
+        try {
+            return new ResponseEntity<>(action.get(), HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(new StatusResponseDto(ex.getMessage(), 400), HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(new StatusResponseDto("서비스 요청 중 오류가 발생했습니다.", 500), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

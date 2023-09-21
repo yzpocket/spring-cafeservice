@@ -1,5 +1,7 @@
 package com.sparta.springcafeservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sparta.springcafeservice.dto.MenuRequestDto;
 import com.sparta.springcafeservice.repository.StoreRepository;
 import jakarta.persistence.*;
@@ -27,6 +29,7 @@ public class Menu {
     @Column(nullable = false)
     private int price;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Store store;
 

@@ -1,18 +1,18 @@
 package com.sparta.springcafeservice.service;
 
 
-import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.dto.StoreAllResponseDto;
 import com.sparta.springcafeservice.dto.StoreRequestDto;
 import com.sparta.springcafeservice.dto.StoreResponseDto;
+import com.sparta.springcafeservice.entity.Menu;
 import com.sparta.springcafeservice.entity.Review;
 import com.sparta.springcafeservice.entity.Store;
 import com.sparta.springcafeservice.entity.User;
 import com.sparta.springcafeservice.exception.RestApiException;
+import com.sparta.springcafeservice.repository.MenuRepository;
 import com.sparta.springcafeservice.repository.ReviewRepository;
 import com.sparta.springcafeservice.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,8 +28,8 @@ public class StoreService {
 
     private final StoreRepository storeRepository;
     private final ReviewRepository reviewRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final MenuRepository menuRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // Create
     public StoreAllResponseDto createStore(StoreRequestDto requestDto, User user) {
@@ -116,5 +116,9 @@ public class StoreService {
     // 특정 가게 리뷰 모두 조회
     public List<Review> getReviewsByStoreId(Long storeId) {
         return reviewRepository.findAllByStoreId(storeId);
+    }
+
+    public List<Menu> getMenusByStoreId(Long storeId) {
+        return menuRepository.findAllByStoreId(storeId);
     }
 }

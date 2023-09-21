@@ -4,10 +4,12 @@ import com.sparta.springcafeservice.dto.LoginRequestDto;
 import com.sparta.springcafeservice.dto.MenuRequestDto;
 import com.sparta.springcafeservice.dto.MenuResponseDto;
 import com.sparta.springcafeservice.dto.StatusResponseDto;
+import com.sparta.springcafeservice.entity.Menu;
 import com.sparta.springcafeservice.entity.User;
 import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.MenuService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -55,8 +57,9 @@ public class MenuController {
     // 메뉴 삭제
     @ResponseBody
     @DeleteMapping("/menus/{id}")
-    public ResponseEntity<StatusResponseDto> deleteMenu(@PathVariable Long id, @RequestBody LoginRequestDto loginRequestDto,
+    public ResponseEntity<StatusResponseDto> deleteMenu(@PathVariable Long id,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return menuService.deleteMenu(id, loginRequestDto.getPassword(), userDetails.getUser());
+        return menuService.deleteMenu(id, userDetails.getUser());
     }
+
 }
