@@ -13,21 +13,26 @@ h1 {
     background: #fff;
     padding: 20px;
     border-radius: 15px;
+
+    display: flex;
+    justify-content: space-between;
 }
 
 .button {
-    color: #fff;
+    color: rgb(230, 230, 240);
     background: transparent;
     border: 2px solid #30336b;
-    padding: 10px 20px; /* padding 값을 조정하여 버튼 크기를 줄임 */
+    padding: 15px 32px; /* padding 값을 조정하여 버튼 크기를 줄임 */
     text-transform: uppercase;
     font-weight: 700;
-    font-size: 20px;
-    line-height: 32px;
-    border-radius: 100px;
+    font-size: 10px;
+    line-height: 15px;
+    border-radius: 0;
     cursor: pointer;
-    margin: 0 10px;
+    margin: 0 auto; /* 가운데로 배치합니다. */
     transition: 0.3s;
+
+    margin-right: 10px; /* 버튼 사이의 간격을 조절할 수 있습니다. */
 }
 .button:hover {
     border-color: #999;
@@ -102,9 +107,3 @@ h1 {
     max-height: 400px;
     overflow: auto;
 }
-/*.popup p {*/
-/*    margin: 0 0 1em;*/
-/*}*/
-/*.popup p:last-child {*/
-/*    margin: 0;*/
-/*}*/

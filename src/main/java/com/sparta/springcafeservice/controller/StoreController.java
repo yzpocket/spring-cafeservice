@@ -43,7 +43,7 @@ public class StoreController {
 
     // Update
     @PutMapping("/stores/{id}")
-    public ResponseEntity<String> updateStore(@PathVariable Long id, @RequestBody StoreRequestDto requestDto
+    public ResponseEntity<StoreAllResponseDto> updateStore(@PathVariable Long id, @RequestBody StoreRequestDto requestDto
             , @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return storeService.updateStore(id, requestDto, userDetails.getUser());
 
@@ -52,7 +52,7 @@ public class StoreController {
 
     // Delete
     @DeleteMapping("/stores/{id}")
-    public ResponseEntity<String> deleteStore(@PathVariable Long id,  @RequestBody StoreRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<StoreAllResponseDto> deleteStore(@PathVariable Long id,  @RequestBody StoreRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return storeService.deleteStore(id, requestDto, userDetails.getUser());
     }
 

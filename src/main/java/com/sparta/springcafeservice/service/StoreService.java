@@ -55,8 +55,12 @@ public class StoreService {
 
     // Update
     @Transactional
-    public ResponseEntity<String> updateStore(Long id, StoreRequestDto requestDto, User user) {
+    public ResponseEntity<StoreAllResponseDto> updateStore(Long id, StoreRequestDto requestDto, User user) {
         Store store = findStore(id);
+
+        if (!user.getEmail().equals(store.getUser().getEmail())) {
+            throw new IllegalArgumentException("수정 권한이 없습니다");
+        }
 
         // 비밀 번호가 다를 시 예외처리
         if (!passwordEncoder.matches(requestDto.getPassword(), store.getUser().getPassword())) {
@@ -69,15 +73,19 @@ public class StoreService {
 
         store.update(requestDto);
         // 수정 성공
-        return ResponseEntity.ok("수정 성공!");
+        return ResponseEntity.ok(new StoreAllResponseDto(store));
 
     }
 
 
     // Delete
     @Transactional
-    public ResponseEntity<String> deleteStore(Long id, StoreRequestDto requestDto, User user) {
+    public ResponseEntity<StoreAllResponseDto> deleteStore(Long id, StoreRequestDto requestDto, User user) {
         Store store = findStore(id);
+
+        if (!user.getEmail().equals(store.getUser().getEmail())) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다");
+        }
 
         // 비밀 번호가 다를 시 예외처리
         if (!passwordEncoder.matches(requestDto.getPassword(), store.getUser().getPassword())) {
@@ -90,7 +98,7 @@ public class StoreService {
 
         storeRepository.delete(store);
 
-        return ResponseEntity.ok("삭제 성공!");
+        return ResponseEntity.ok(new StoreAllResponseDto(store));
     }
 
 
