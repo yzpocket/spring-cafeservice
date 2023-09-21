@@ -66,6 +66,6 @@ public class HomeController {
     public String menus(@PathVariable Long storeId, Model model) {
         Menu menu = new Menu(); // 새로운 Menu 객체를 생성합니다. 필요에 따라 다른 로직으로 Menu 객체를 가져올 수도 있습니다.
         model.addAttribute("menu", menu); // 모델에 Menu 객체를 추가합니다.
-        return "add-menu";
+        return "add-menus";
     }
 }
