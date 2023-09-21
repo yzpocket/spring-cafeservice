@@ -30,7 +30,7 @@ public class Store extends TimeStamped{
     @Column(name = "information")
     private String information; //가게 정보
 
-//  @JsonIgnore
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

@@ -4,6 +4,7 @@ import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.dto.StoreAllResponseDto;
 import com.sparta.springcafeservice.dto.StoreRequestDto;
 import com.sparta.springcafeservice.dto.StoreResponseDto;
+import com.sparta.springcafeservice.entity.Menu;
 import com.sparta.springcafeservice.entity.Review;
 import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.StoreService;
@@ -61,4 +62,9 @@ public class StoreController {
         return storeService.getReviewsByStoreId(storeId);
     }
 
+    // Read - [select * from menus where store_id = id]
+    @GetMapping("/stores/{storeId}/menus")
+    public List<Menu> getMenusByStoreId(@PathVariable Long storeId) {
+        return storeService.getMenusByStoreId(storeId);
+    }
 }

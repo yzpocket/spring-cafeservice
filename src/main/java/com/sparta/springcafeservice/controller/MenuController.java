@@ -57,8 +57,9 @@ public class MenuController {
     // 메뉴 삭제
     @ResponseBody
     @DeleteMapping("/menus/{id}")
-    public ResponseEntity<StatusResponseDto> deleteMenu(@PathVariable Long id, @RequestBody LoginRequestDto loginRequestDto,
+    public ResponseEntity<StatusResponseDto> deleteMenu(@PathVariable Long id,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return menuService.deleteMenu(id, loginRequestDto.getPassword(), userDetails.getUser());
+        return menuService.deleteMenu(id, userDetails.getUser());
     }
+
 }
