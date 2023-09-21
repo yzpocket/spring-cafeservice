@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Cafe Service</title>
     <!-- 여기에 필요한 CSS 파일 및 스타일 시트 링크를 추가하세요 -->
+    <link href="/css/popup.css" rel="stylesheet" />
+
 </head>
 <body>
 <style>
@@ -100,7 +102,7 @@
 </style>
 <div class="navBar">
     <div class="e1">
-        <a class="a" target="_blank" href="http://localhost:8080"><strong>Cafe Service</strong></a>
+        <a class="a"  href="http://localhost:8080"><strong>Cafe Service</strong></a>
     </div>
 
     <div class="e2">
@@ -130,7 +132,57 @@
     <h1 id="storeName" th:text="${storeName}">Loading...</h1>
     <h3 id="storeAddress" th:text="${storeAddress}">Loading...</h3>
     <p id="information" th:text="${information}">Loading...</p>
+
+    <!--        <p><a button type="button" class="button2" href="#popup1">UPDATE CAFE</a></p>-->
+    <!--        <p><a button type="button" class="button2" href="#popup2">DELETE CAFE</a></p>-->
+    <div class="button2">
+        <p><a href="#popup1">UPDATE CAFE</a></p>
+    </div>
+    <div class="button2">
+        <p><a href="#popup2">DELETE CAFE</a></p>
+    </div>
+
 </div>
+
+
+<div id="popup1" class="overlay">
+    <div class="popup">
+        <h2>UPDATE</h2>
+        <a class="close" href="#">&times;</a>
+        <div class="content">
+            <form id="updateStoreForm">
+                <label for="storeName">Store Name:</label>
+                <input type="text" id="updateStoreName" name="storeName" required /><br />
+
+                <label for="storeAddress">Store Address:</label>
+                <input type="text" id="updateStoreAddress" name="storeAddress" required /><br />
+
+                <label for="information">Information:</label>
+                <input type="text" id="updateInformation" name="information" required /><br />
+
+                <label for="information">Password:</label>
+                <input type="text" id="updatePassword" name="password" required /><br />
+
+                <input type="submit" value="Update" onclick="updateStore()">
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="popup2" class="overlay">
+    <div class="popup">
+        <h2>DELETE</h2>
+        <a class="close" href="#">&times;</a>
+        <div class="content">
+            <form id="createStoreForm">
+                <label for="storeName">Password:</label>
+                <input type="text" id="deletePassword" name="password" required /><br />
+                <input type="submit" value="Delete" onclick="deleteStore()">
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <div class="fullBox2">
     <h3>Menu</h3>
@@ -139,11 +191,11 @@
         <p th:text="${menuName}">menuName</p>
         <p th:text="${price}">price</p>
     </div>
-        <!-- 다른 카드들도 동일한 방식으로 추가 -->
-    </div>
+    <!-- 다른 카드들도 동일한 방식으로 추가 -->
+</div>
 </div>
 
-<div class="button">
+<div class="button2">
     <a target="_blank" href="https://codepen.io/quang_ngo/full/wvBOmqw"
        th:href="@{https://codepen.io/quang_ngo/full/wvBOmqw}">주문하기</a>
 </div>
@@ -162,17 +214,21 @@
     <!--여기까지-->
 </div>
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+
 <script>
     $(document).ready(function () {
         getStore();
     })
 
     function getStore() {
-        const id = document.location.href.split("=")[1];
+        const url = window.location.href;
+        const parts = url.split("/");
+        const storeId = parts[parts.length - 1];
 
         $.ajax({
             type: "GET",
-            url: "/api/stores/" + id,
+            url: "/api/stores/" + storeId,
             data: {},
             success: function (response) {
                 const storeName = response.storeName;
@@ -194,6 +250,74 @@
                 // AJAX 요청이 실패한 경우에 대한 처리
             }
         });
+    }
+
+
+    /**/
+    function updateStore() {
+        const url = window.location.href;
+        const parts = url.split("#");
+        const Id = parts[parts.length - 2];
+        const parts2 = Id.split("/");
+        const storeId = parts2[parts2.length - 1];
+        const token = Cookies.get('Authorization');
+        console.log(storeId);
+
+        $.ajax({
+            url: "/api/stores/"+storeId,
+            method: "PUT",
+            timeout: 0,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token // 토큰을 헤더에 추가
+            },
+            data: JSON.stringify({
+                password: $("#updatePassword").val(),
+                storeName: $("#updateStoreName").val(),
+                storeAddress: $("#updateStoreAddress").val(),
+                information: $("#updateInformation").val()
+                // hiddn: $("#updateInformation").val()
+            }),
+            success: function (response) {
+                alert("수정되었습니다.")
+                window.location.href = "";
+            },
+            error: function (error) {
+                alert("수정 실패! 다시 시도해주세요.")
+            },
+            fail: function (fail) {
+              alert("수정 실패!")
+            },
+        });
+
+    }
+
+    /**/
+    function deleteStore() {
+        const url = window.location.href;
+        const parts = url.split("#");
+        const Id = parts[parts.length - 2];
+        const parts2 = Id.split("/");
+        const storeId = parts2[parts2.length - 1];
+        const token = Cookies.get('Authorization');
+
+        $.ajax({
+            type: "DELETE",
+            url: "/api/stores/" + storeId,
+            data: {},
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token // 토큰을 헤더에 추가
+            },
+            success: function (response) {
+                alert(response["responseJSON"]["message"])
+                window.location.href = "/index.html"
+            },
+            error: function (errorMessage) {
+                alert(errorMessage["responseJSON"]["message"])
+            }
+        })
+
     }
 </script>
 

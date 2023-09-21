@@ -1,5 +1,6 @@
 package com.sparta.springcafeservice.controller;
 
+import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.dto.StoreAllResponseDto;
 import com.sparta.springcafeservice.dto.StoreRequestDto;
 import com.sparta.springcafeservice.dto.StoreResponseDto;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-//@Controller
 @RestController
 @CrossOrigin(origins = "http://localhost:8080") // 로컬 웹 애플리케이션의 도메인을 지정
 @RequestMapping("/api")
@@ -35,24 +35,24 @@ public class StoreController {
     }
 
     // Read
-    @GetMapping("/stores/{id}")
-    public StoreResponseDto getStore(@PathVariable Long id) {
-        return storeService.getStore(id);
+    @GetMapping("/stores/{storeId}")
+    public StoreResponseDto getStore(@PathVariable Long storeId) {
+        return storeService.getStore(storeId);
     }
 
     // Update
-    @PutMapping("/stores/{id}")
-    public ResponseEntity<String> updateStore(@PathVariable Long id, @RequestBody StoreRequestDto requestDto
+    @PutMapping("/stores/{storeId}")
+    public ResponseEntity<StoreAllResponseDto> updateStore(@PathVariable Long storeId, @RequestBody StoreRequestDto requestDto
             , @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return storeService.updateStore(id, requestDto, userDetails.getUser());
+        return storeService.updateStore(storeId, requestDto, userDetails.getUser());
 
     }
 
 
     // Delete
-    @DeleteMapping("/stores/{id}")
-    public ResponseEntity<String> deleteStore(@PathVariable Long id,  @RequestBody StoreRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return storeService.deleteStore(id, requestDto, userDetails.getUser());
+    @DeleteMapping("/stores/{storeId}")
+    public ResponseEntity<StoreAllResponseDto> deleteStore(@PathVariable Long storeId,  @RequestBody StoreRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return storeService.deleteStore(storeId, requestDto, userDetails.getUser());
     }
 
     // Read - [select * from reviews where store_id = id]

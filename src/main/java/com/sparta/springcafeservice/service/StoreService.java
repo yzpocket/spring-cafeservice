@@ -1,6 +1,7 @@
 package com.sparta.springcafeservice.service;
 
 
+import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.dto.StoreAllResponseDto;
 import com.sparta.springcafeservice.dto.StoreRequestDto;
 import com.sparta.springcafeservice.dto.StoreResponseDto;
@@ -50,16 +51,20 @@ public class StoreService {
 
 
     // Read
-    public StoreResponseDto getStore(Long id) {
+    public StoreResponseDto getStore(Long storeId) {
 
-        return new StoreResponseDto(findStore(id));
+        return new StoreResponseDto(findStore(storeId));
     }
 
 
     // Update
     @Transactional
-    public ResponseEntity<String> updateStore(Long id, StoreRequestDto requestDto, User user) {
+    public ResponseEntity<StoreAllResponseDto> updateStore(Long id, StoreRequestDto requestDto, User user) {
         Store store = findStore(id);
+
+        if (!user.getEmail().equals(store.getUser().getEmail())) {
+            throw new IllegalArgumentException("수정 권한이 없습니다");
+        }
 
         // 비밀 번호가 다를 시 예외처리
         if (!passwordEncoder.matches(requestDto.getPassword(), store.getUser().getPassword())) {
@@ -72,15 +77,19 @@ public class StoreService {
 
         store.update(requestDto);
         // 수정 성공
-        return ResponseEntity.ok("수정 성공!");
+        return ResponseEntity.ok(new StoreAllResponseDto(store));
 
     }
 
 
     // Delete
     @Transactional
-    public ResponseEntity<String> deleteStore(Long id, StoreRequestDto requestDto, User user) {
-        Store store = findStore(id);
+    public ResponseEntity<StoreAllResponseDto> deleteStore(Long storeId, StoreRequestDto requestDto, User user) {
+        Store store = findStore(storeId);
+
+        if (!user.getId().equals(store.getUser().getId())) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다");
+        }
 
         // 비밀 번호가 다를 시 예외처리
         if (!passwordEncoder.matches(requestDto.getPassword(), store.getUser().getPassword())) {
@@ -93,7 +102,7 @@ public class StoreService {
 
         storeRepository.delete(store);
 
-        return ResponseEntity.ok("삭제 성공!");
+        return ResponseEntity.ok(new StoreAllResponseDto(store));
     }
 
 
