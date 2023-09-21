@@ -100,4 +100,9 @@ public class ReviewService {
             return new ResponseEntity<>(new StatusResponseDto("서비스 요청 중 오류가 발생했습니다.", 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    // 프론트 삭제 권한 확인용 메소드
+    public Review getReviewById(Long id) {
+        return reviewRepository.findById(id).orElse(null);
+    }
 }

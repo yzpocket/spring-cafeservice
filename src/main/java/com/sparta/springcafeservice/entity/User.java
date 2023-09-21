@@ -38,6 +38,8 @@ public class User {
     @OneToOne(mappedBy = "user")
     private Store store;
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
 
 
     public User(String username, String password, String email, UserRoleEnum role) {
@@ -59,6 +61,5 @@ public class User {
     public void setPoint(int point){
         this.point = point;
     }
-
 
 }

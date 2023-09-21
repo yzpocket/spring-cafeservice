@@ -4,6 +4,7 @@ import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.dto.StoreAllResponseDto;
 import com.sparta.springcafeservice.dto.StoreRequestDto;
 import com.sparta.springcafeservice.dto.StoreResponseDto;
+import com.sparta.springcafeservice.entity.Review;
 import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.StoreService;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,12 @@ public class StoreController {
     @DeleteMapping("/stores/{storeId}")
     public ResponseEntity<StoreAllResponseDto> deleteStore(@PathVariable Long storeId,  @RequestBody StoreRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return storeService.deleteStore(storeId, requestDto, userDetails.getUser());
+    }
+
+    // Read - [select * from reviews where store_id = id]
+    @GetMapping("/stores/{storeId}/reviews")
+    public List<Review> getReviewsByStoreId(@PathVariable Long storeId) {
+        return storeService.getReviewsByStoreId(storeId);
     }
 
 }
