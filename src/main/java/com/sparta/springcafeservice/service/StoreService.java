@@ -1,6 +1,7 @@
 package com.sparta.springcafeservice.service;
 
 
+import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.dto.StoreAllResponseDto;
 import com.sparta.springcafeservice.dto.StoreRequestDto;
 import com.sparta.springcafeservice.dto.StoreResponseDto;
@@ -80,10 +81,10 @@ public class StoreService {
 
     // Delete
     @Transactional
-    public ResponseEntity<StoreAllResponseDto> deleteStore(Long id, StoreRequestDto requestDto, User user) {
-        Store store = findStore(id);
+    public ResponseEntity<StoreAllResponseDto> deleteStore(Long storeId, StoreRequestDto requestDto, User user) {
+        Store store = findStore(storeId);
 
-        if (!user.getEmail().equals(store.getUser().getEmail())) {
+        if (!user.getId().equals(store.getUser().getId())) {
             throw new IllegalArgumentException("삭제 권한이 없습니다");
         }
 

@@ -1,14 +1,20 @@
 package com.sparta.springcafeservice.controller;
 
+import com.sparta.springcafeservice.dto.StoreAllResponseDto;
+import com.sparta.springcafeservice.dto.StoreRequestDto;
 import com.sparta.springcafeservice.dto.StoreResponseDto;
 import com.sparta.springcafeservice.entity.Menu;
 import com.sparta.springcafeservice.entity.Review;
+import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.StoreService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -45,14 +51,17 @@ public class HomeController {
     }
 
     @GetMapping("/stores")
-    public String store() {
-        return "getStore"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
+    public String getAllStores(Model model) {
+        List<StoreAllResponseDto> stores = storeService.getAllStores();
+        model.addAttribute("stores", stores);
+        return "index";
     }
+
     @GetMapping("/stores/{storeId}")
-    public String getStore(@PathVariable Long storeId, Model model) {
+    public String getStore(@PathVariable(name = "storeId") Long storeId, Model model) {
         StoreResponseDto storeResponse = storeService.getStore(storeId);
-        model.addAttribute("store", storeResponse); // 모델에 상점 정보를 추가
-        return "getStore"; // "getStore"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
+        model.addAttribute("store", storeResponse);
+        return "getStore";
     }
 
 

@@ -1,5 +1,6 @@
 package com.sparta.springcafeservice.controller;
 
+import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.dto.StoreAllResponseDto;
 import com.sparta.springcafeservice.dto.StoreRequestDto;
 import com.sparta.springcafeservice.dto.StoreResponseDto;
@@ -8,8 +9,6 @@ import com.sparta.springcafeservice.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,18 +40,18 @@ public class StoreController {
     }
 
     // Update
-    @PutMapping("/stores/{id}")
-    public ResponseEntity<StoreAllResponseDto> updateStore(@PathVariable Long id, @RequestBody StoreRequestDto requestDto
+    @PutMapping("/stores/{storeId}")
+    public ResponseEntity<StoreAllResponseDto> updateStore(@PathVariable Long storeId, @RequestBody StoreRequestDto requestDto
             , @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return storeService.updateStore(id, requestDto, userDetails.getUser());
+        return storeService.updateStore(storeId, requestDto, userDetails.getUser());
 
     }
 
 
     // Delete
-    @DeleteMapping("/stores/{id}")
-    public ResponseEntity<StoreAllResponseDto> deleteStore(@PathVariable Long id,  @RequestBody StoreRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return storeService.deleteStore(id, requestDto, userDetails.getUser());
+    @DeleteMapping("/stores/{storeId}")
+    public ResponseEntity<StoreAllResponseDto> deleteStore(@PathVariable Long storeId,  @RequestBody StoreRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return storeService.deleteStore(storeId, requestDto, userDetails.getUser());
     }
 
 }
