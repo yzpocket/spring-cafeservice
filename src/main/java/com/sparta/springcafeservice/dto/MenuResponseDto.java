@@ -14,7 +14,7 @@ public class MenuResponseDto {
 
     public MenuResponseDto(Menu menu) {
         this.menuName = menu.getMenuName();
-        this.image = menu.getImage();
+        this.image = menu.getImagePath();
         this.price = menu.getPrice();
     }
 }

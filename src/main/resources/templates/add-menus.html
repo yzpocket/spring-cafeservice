@@ -121,7 +121,7 @@
   <div class="container mt-5">
     <h2>메뉴 등록</h2>
 
-    <form id="menuForm">
+    <form id="menuForm" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="menuName" class="form-label">메뉴 이름</label>
         <input type="text" class="form-control" id="menuName" name="menuName" required>
@@ -173,7 +173,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-          <button type="button" class="btn btn-primary">수정 완료</button>
+          <button type="button" class="btn btn-primary" onclick="confirmEdit()">수정 완료</button>
         </div>
       </div>
     </div>
@@ -313,10 +313,11 @@
     menuList.innerHTML = ''; // 초기화
 
     menus.forEach(menu => {
+      console.log("메뉴 ID:", menu.id);  // 메뉴의 ID를 콘솔에 출력
       const menuCard = `
       <div class="col-md-4 mb-4">
         <div class="card">
-          <img src="${menu.image}" class="card-img-top" alt="${menu.menuName}">
+          <img src="${menu.imagePath}" ... class="card-img-top" alt="${menu.menuName}">
           <div class="card-body">
             <h5 class="card-title">${menu.menuName}</h5>
             <p class="card-text">${menu.price}원</p>
@@ -330,15 +331,84 @@
     });
   }
 
-  function editMenu(menuId) {
-    // 메뉴 ID를 사용하여 메뉴를 수정하는 로직을 여기에 구현
-    // 예를 들면, modal 안에 해당 메뉴의 정보를 채워넣기
-  }
+  // // 현재 수정하려는 메뉴의 ID를 저장하는 변수
+  // let currentMenuId = null;
+  //
+  // function editMenu(menuId) {
+  //   console.log("editMenu 함수 호출, 메뉴 ID:", menuId);
+  //   currentMenuId = menuId; // 현재 수정하려는 메뉴의 ID 저장
+  //
+  //   // 서버에서 해당 메뉴의 정보를 가져옵니다.
+  //   fetch(`/api/menus/${menuId}`)
+  //           .then(response => response.json())
+  //           .then(menu => {
+  //             // 수정 모달에 메뉴 정보 채워넣기
+  //             document.getElementById('menuName').value = menu.menuName;
+  //             document.getElementById('image-preview').src = menu.imagePath;
+  //             document.getElementById('price').value = menu.price;
+  //           })
+  //           .catch(error => {
+  //             console.error('메뉴 정보를 가져오는데 실패했습니다.', error);
+  //           });
+  // }
+  //
+  // function confirmEdit() {
+  //
+  //   // 수정 모달에서 변경된 정보를 가져옵니다.
+  //   let menuName = document.getElementById('menuName').value;
+  //   let imagePath = document.getElementById('image-preview').src;
+  //   let price = document.getElementById('price').value;
+  //
+  //   // 서버에 수정 요청을 보냅니다.
+  //   fetch(`/api/menus/${currentMenuId}`, {
+  //     method: 'PUT',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify({
+  //       menuName: menuName,
+  //       imagePath: imagePath,
+  //       price: price
+  //     })
+  //   })
+  //           .then(response => response.json())
+  //           .then(data => {
+  //             alert('메뉴가 수정되었습니다.');
+  //             fetchMenus(); // 메뉴 리스트를 다시 불러옵니다.
+  //           })
+  //           .catch(error => {
+  //             console.error('메뉴 수정에 실패했습니다.', error);
+  //           });
+  // }
+  //
+  // function prepareDelete(menuId) {
+  //   console.log("prepareDelete 함수 호출, 메뉴 ID:", menuId);
+  //   currentMenuId = menuId; // 현재 삭제하려는 메뉴의 ID 저장
+  // }
+  //
+  // function confirmDelete() {
+  //   let password = document.getElementById('deletePassword').value;
+  //
+  //   // 서버에 삭제 요청을 보냅니다.
+  //   fetch(`/api/menus/${currentMenuId}`, {
+  //     method: 'DELETE',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify({
+  //       password: password
+  //     })
+  //   })
+  //           .then(response => response.json())
+  //           .then(data => {
+  //             alert('메뉴가 삭제되었습니다.');
+  //             fetchMenus(); // 메뉴 리스트를 다시 불러옵니다.
+  //           })
+  //           .catch(error => {
+  //             console.error('메뉴 삭제에 실패했습니다.', error);
+  //           });
+  // }
 
-  function prepareDelete(menuId) {
-    // 삭제 버튼을 클릭하면 해당 메뉴의 ID를 어딘가 저장하고 (예: hidden input field)
-    // confirmDelete()에서 해당 ID를 사용하여 삭제를 진행
-  }
 
   // 페이지 로드 시 메뉴 데이터 서버에서 가져옴
   window.onload = fetchMenus;

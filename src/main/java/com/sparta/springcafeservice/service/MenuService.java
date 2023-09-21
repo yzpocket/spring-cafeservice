@@ -15,10 +15,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,11 +44,21 @@ public class MenuService {
 
 
     @Transactional
-    public ResponseEntity<StatusResponseDto> createMenu(Long storeId, String menuName, String price, byte[] imageBytes, User user) {
-        Menu menu = new Menu(menuName, price, imageBytes);
-        Menu checkMenu = menuRepository.findByMenuName(menuName);
+    public ResponseEntity<StatusResponseDto> createMenu(Long storeId, String menuName, String price, MultipartFile file, User user) throws IOException{
+        // MultipartFile을 사용하여 업로드된 파일을 처리하고 저장
+//            String uploadDir = "static/uploads/";
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+//            Path filePath = Paths.get(uploadDir + fileName);
+//            Files.write(filePath, file.getBytes());
+
+        // 나머지 데이터를 사용하여 메뉴를 생성하고 저장하는 로직
+        Menu menu = new Menu(menuName, price, fileName);
+        // 나머지 로직 (가게 체크, 사업자 구분, 중복 메뉴 이름 등)
+
+        Menu checkMenu = menuRepository.findByMenuName(menu.getMenuName());
         Optional<Store> storeCheck = storeRepository.findById(storeId);
         User authorRegistNum = userRepository.findByRegistNum(user.getRegistNum());
+
 
         // request에서 받아온 가게 ID와 DB의 가게 체크
         if (!storeCheck.isPresent()) {
@@ -52,22 +68,33 @@ public class MenuService {
 
         // 사업자 구분
         // 사업자 번호 정규식, -> 유저 레포지토리 비교 유효성 검사
-        if (user.getRegistNum() == 0 || user.getRegistNum() != authorRegistNum.getRegistNum()) {
+
+        if (user.getRegistNum() == 0 && user.getRegistNum()!=authorRegistNum.getRegistNum()) {
             StatusResponseDto result = new StatusResponseDto("사업자가 아닙니다.", 400);
             return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
         }
 
         // 중복 메뉴 이름
         // entity unique에서 예외 터질 때 -> 예외 발생
-        // 예외는 바디로 안보여서 서비스 로직 작성
+        // 예외는 바디로 안보여서 서비스로직 작성
         if (checkMenu != null){
             StatusResponseDto result = new StatusResponseDto("중복된 메뉴 이름입니다.", 400);
             return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
         }
 
+
+        // 저장된 메뉴 정보를 반환
         menuRepository.save(menu);
         StatusResponseDto result = new StatusResponseDto("메뉴를 등록했습니다.", 200);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    private String saveImage(MultipartFile file) throws IOException {
+        String uploadDir = "uploads/";
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        Path filePath = Paths.get(uploadDir + fileName);
+        Files.write(filePath, file.getBytes());
+        return fileName;
     }
 
 

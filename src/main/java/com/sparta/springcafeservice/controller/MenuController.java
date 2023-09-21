@@ -16,7 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -35,7 +39,6 @@ public class MenuController {
 //    }
 
     // 메뉴 등록 (파일 업로드 지원)
-    // 메뉴 등록 (파일 업로드 지원)
     @PostMapping("/{storeId}/menus")
     public ResponseEntity<StatusResponseDto> createMenu(@PathVariable Long storeId,
                                                         @RequestParam("menuName") String menuName,
@@ -43,12 +46,8 @@ public class MenuController {
                                                         @RequestParam("image") MultipartFile file,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            // MultipartFile을 사용하여 업로드된 파일을 처리
-            byte[] imageBytes = file.getBytes();
-            // 여기에서 업로드된 파일을 저장하거나 처리하는 로직을 추가할 수 있습니다.
-
-            // 나머지 데이터를 사용하여 메뉴를 생성하고 저장하는 로직
-            ResponseEntity<StatusResponseDto> response = menuService.createMenu(storeId, menuName, price, imageBytes, userDetails.getUser());
+            // 이미지 업로드 및 저장 로직을 서비스로 이동하여 호출
+            ResponseEntity<StatusResponseDto> response = menuService.createMenu(storeId, menuName, price, file, userDetails.getUser());
 
             return response;
         } catch (IOException e) {
