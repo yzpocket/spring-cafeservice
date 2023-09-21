@@ -1,14 +1,21 @@
 package com.sparta.springcafeservice.controller;
 
+import com.sparta.springcafeservice.dto.StoreResponseDto;
 import com.sparta.springcafeservice.entity.Menu;
 import com.sparta.springcafeservice.entity.Review;
+import com.sparta.springcafeservice.service.StoreService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
+@RequiredArgsConstructor
 public class HomeController {
+
+    private final StoreService storeService; // 서비스 클래스 주입
+
     @GetMapping("/")
     public String home(Model model) {
         // 모델에 데이터를 추가하여 템플릿에 전달
@@ -37,10 +44,18 @@ public class HomeController {
         return "add-reviews";
     }
 
-    @GetMapping("/getStore")
+    @GetMapping("/stores")
     public String store() {
         return "getStore"; // "index"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
     }
+    @GetMapping("/stores/{storeId}")
+    public String getStore(@PathVariable Long storeId, Model model) {
+        StoreResponseDto storeResponse = storeService.getStore(storeId);
+        model.addAttribute("store", storeResponse); // 모델에 상점 정보를 추가
+        return "getStore"; // "getStore"는 templates 디렉터리에 있는 HTML 템플릿 파일의 이름입니다.
+    }
+
+
 
     @GetMapping("/getStore/{storeId}/menus")
     public String menus(@PathVariable Long storeId, Model model) {

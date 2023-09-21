@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-//@Controller
 @RestController
 @CrossOrigin(origins = "http://localhost:8080") // 로컬 웹 애플리케이션의 도메인을 지정
 @RequestMapping("/api")
@@ -36,9 +35,9 @@ public class StoreController {
     }
 
     // Read
-    @GetMapping("/stores/{id}")
-    public StoreResponseDto getStore(@PathVariable Long id) {
-        return storeService.getStore(id);
+    @GetMapping("/stores/{storeId}")
+    public StoreResponseDto getStore(@PathVariable Long storeId) {
+        return storeService.getStore(storeId);
     }
 
     // Update

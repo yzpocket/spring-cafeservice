@@ -47,9 +47,9 @@ public class StoreService {
 
 
     // Read
-    public StoreResponseDto getStore(Long id) {
+    public StoreResponseDto getStore(Long storeId) {
 
-        return new StoreResponseDto(findStore(id));
+        return new StoreResponseDto(findStore(storeId));
     }
 
 
