@@ -95,8 +95,10 @@
 
 
         <div class="container px-5 my-5">
+            <span id="searchResultSpan"></span>
             <div class="row gx-5" id="cardBox">
-                <!-- 여기에 상점 리스트가 append 됩니다. (id ="cardBox" 기준) -->
+                <!-- 여기에 기본 상점 리스트가 append 됩니다. (id ="cardBox" 기준) -->
+                <!-- 여기에 검색 결과 상점 리스트가 위 기본 리스트를 대체하여 (empty) append 됩니다. (id ="cardBox" 기준) -->
             </div>
         </div>
     </section>
@@ -234,6 +236,11 @@
             alert("검색어를 입력하세요.");
             return;
         }
+
+        // 스팬을 검색 버튼을 누를 때만 보여주기
+        const searchResultSpan = $("#searchResultSpan");
+        searchResultSpan.text('"'+keyword+'"' + "라는 keyword 검색 결과 가게 리스트 :").show();
+
 
         // Ajax 요청 설정
         $.ajax({

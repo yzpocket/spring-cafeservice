@@ -10,4 +10,12 @@ public class ReviewRequestDto {
     private String review;
 
     private Long storeId;
+
+    @Override
+    public String toString() {
+        return "ReviewRequestDto{" +
+                "star='" + star + '\'' +
+                ", review='" + review + '\'' +
+                '}';
+    }
 }
