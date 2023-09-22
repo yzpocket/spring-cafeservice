@@ -308,16 +308,15 @@
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": token // 토큰을 헤더에 추가
-            },
-            success: function (response) {
-                alert(response["responseJSON"]["message"])
-                window.location.href = "/index.html"
-            },
-            error: function (errorMessage) {
-                alert(errorMessage["responseJSON"]["message"])
             }
         })
-
+            .done(function (response) {
+                alert("삭제되었습니다.")
+                window.location.href = "/index.html"
+            })
+            .fail (function (errorMessage) {
+                alert(errorMessage["responseJSON"]["message"])
+            })
     }
 </script>
 
