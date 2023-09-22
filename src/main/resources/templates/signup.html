@@ -25,25 +25,69 @@
     }
   </script>
 </head>
+<script>
+  function submitSignup() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const email = document.getElementById('email').value;
+    const registnum = document.getElementById('registNum').value;
+
+    // 폼 데이터를 JSON으로 변환
+    const formData = {
+      username: username,
+      password: password,
+      email: email,
+      registNum: registnum
+      // 나머지 필드 추가
+    };
+
+    // JSON 데이터를 문자열로 변환
+    const jsonData = JSON.stringify(formData);
+
+    // 서버로 POST 요청 보내기
+    fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonData,
+    })
+            .then(response => response.json())
+            .then(data => {
+              // 응답 처리
+              console.log(data);
+              // 여기서 필요한 로직을 수행할 수 있습니다.
+              // 회원가입이 성공한 경우 "/" 페이지로 리디렉션
+
+              window.location.href = "/";
+
+            })
+            .catch(error => {
+              console.error('에러 발생:', error);
+            });
+  }
+</script>
 <body>
 <div id="login-form">
   <div id="login-title">Sign up CafeService</div>
 
-  <form action="/api/user/signup" method="post">
     <div class="login-id-label">Username</div>
-    <input type="text" name="username" placeholder="Username" class="login-input-box">
+    <input type="text" id="username" placeholder="Username" class="login-input-box">
 
     <div class="login-id-label">Password</div>
-    <input type="password" name="password" class="login-input-box">
+    <input type="password" id="password" class="login-input-box">
 
     <div class="login-id-label">E-mail</div>
-    <input type="text" name="email" placeholder="E-mail" class="login-input-box">
+    <input type="text" id="email" placeholder="E-mail" class="login-input-box">
+
+    <div class="login-id-label">registNum</div>
+    <input type="text" id="registNum" placeholder="registNum" class="login-input-box">
 
     <div>
       <input id="admin-check" type="checkbox" name="admin" onclick="onclickAdmin()" style="margin-top: 40px;">사업자 회원
       <input id="admin-token" type="password" name="adminToken" placeholder="사업자 인증번호" class="login-input-box" style="display:none">
     </div>
-    <button id="login-id-submit">회원 가입</button>
+    <button id="login-id-submit" onclick="submitSignup()">회원 가입</button>
   </form>
 </div>
 </body>

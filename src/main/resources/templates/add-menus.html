@@ -13,7 +13,7 @@
   <!-- Bootstrap JavaScript (3.4.1) -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
-<!-------------------------------------------- 리뷰 관련 CSS (모듈화는 시간부족으로 생략..) -------------------------------------------->
+<!-------------------------------------------- 메뉴 관련 CSS (모듈화는 시간부족으로 생략..) -------------------------------------------->
 <style>
   .animated {
     -webkit-transition: height 0.2s;
@@ -36,7 +36,7 @@
     padding: 2px; /* 테두리와 별 사이의 간격 조정 */
   }
 </style>
-<!------------------------------------------ 리뷰 관련 JavaScript (모듈화는 시간부족으로 생략..) ------------------------------------------->
+<!------------------------------------------ 메뉴 관련 JavaScript (모듈화는 시간부족으로 생략..) ------------------------------------------->
 <!-- 동적 페이지 꾸미기 관련 접히기, 폴딩, 별 커서 호버 등 함수 -->
 <script>
   (function (e) {
@@ -253,7 +253,7 @@
     // 사용자의 로그인 상태 확인
     let isLoggedIn = checkLoginStatus();
 
-    // 로그인 상태를 확인하여 리뷰 작성 여부 결정
+    // 로그인 상태를 확인하여 메뉴 작성 여부 결정
     if (isLoggedIn) {
       $.ajax({
         type: "POST",
@@ -291,11 +291,11 @@
       dataType: "json"
     })
             .done(function (menus) {
-              // 리뷰 목록을 성공적으로 가져온 경우
+              // 메뉴 목록을 성공적으로 가져온 경우
               displayMenus(menus);
             })
             .fail(function (error) {
-              alert('리뷰 목록을 가져오는데 실패했습니다.');
+              alert('메뉴 목록을 가져오는데 실패했습니다.');
             });
   }
 </script>
@@ -310,7 +310,7 @@
   // 메뉴 목록을 화면에 표시
   function displayMenus(menus) {
     const menuContainer = $('.menu-list'); // 메뉴 목록을 나타낼 컨테이너
-    menuContainer.empty(); // 기존 리뷰를 지우고 새로운 리뷰 목록으로 대체
+    menuContainer.empty(); // 기존 메뉴를 지우고 새로운 메뉴 목록으로 대체
 
     // 메뉴 목록을 반복해서 화면에 추가
     menus.forEach(function (menu) {
@@ -319,13 +319,13 @@
       const image = $('<p>').text('image: ' + menu.image); // 메뉴 이미지 출력
       const price = $('<p>').text('price: ' + menu.price); // 메뉴 가격 출력
 
-      // 리뷰 ID를 저장하는 히든 필드 --------------------------------------------------------------------------------
+      // 메뉴 ID를 저장하는 히든 필드 --------------------------------------------------------------------------------
       const menuIdField = $('<input type="hidden" name="menuId" value="' + menu.id + '">');
 
       // 수정 버튼 클릭 이벤트 리스너 --------------------------------------------------------------------------------
       const editButton = $('<button class="btn btn-primary">수정</button>');
       editButton.on('click', function() {
-        // 모달 창을 띄우고 해당 리뷰의 내용을 모달 폼에 미리 채움
+        // 모달 창을 띄우고 해당 메뉴의 내용을 모달 폼에 미리 채움
         $('#menuModal').modal('show');
         $('#menuId').val(menu.id);
         $('#menuname-modify').val(menu.menuname);
@@ -368,7 +368,7 @@
       menuDiv.append(menuName); // menuName
       menuDiv.append(image); // image
       menuDiv.append(price); // price
-      menuDiv.append(menuIdField); // 리뷰 ID를 저장하는 히든 필드 추가
+      menuDiv.append(menuIdField); // 메뉴 ID를 저장하는 히든 필드 추가
       menuDiv.append(editButton); // 수정 버튼 추가
       menuDiv.append(deleteButton); // 삭제 버튼 추가
       menuContainer.append(menuDiv);
@@ -389,9 +389,9 @@
 </script>
 <!-------------------------------------------------- MENU UPDATE REQUEST -------------------------------------------------------->
 <script>
-  // 리뷰 수정 버튼 클릭 이벤트 핸들러
+  // 메뉴 수정 버튼 클릭 이벤트 핸들러
   function submitMenuModify() {
-    // 수정할 리뷰의 정보 가져오기
+    // 수정할 메뉴의 정보 가져오기
     const menuId = $('#menuId').val();
     const menuname = $('#menuname-modify').val();
     const image = $('#image-modify').val();
@@ -461,9 +461,12 @@
   <div class="row" style="margin-top:40px;">
     <div class="col-md-8 col-md-offset-2">
       <div class="well well-sm">
+        <div id="storeNameTitle">
+          <p> 메뉴를 등록해 주세요 </p>
+        </div>
         <!-- 숨겨진 필드      -->
         <!-- Hidden 값 있음-->
-        <input type="text" class="form-control" id="dynamicStoreId" name="dynamicStoreId" required disabled>
+        <input type="hidden" class="form-control" id="dynamicStoreId" name="dynamicStoreId" required disabled>
           <div class="col-md-12">
             <!-- 메뉴 남기기 Form -->
             <form accept-charset="UTF-8" action="" method="post">
@@ -485,12 +488,12 @@
             </form>
         </div>
       </div>
-      <!-- 리뷰 리스트를 나타내는 부분 -->
+      <!-- 메뉴 리스트를 나타내는 부분 -->
       <div class="well well-sm">
-        <h3>리뷰 리스트</h3>
-        <!-- 리뷰 목록을 나타낼 컨테이너 -->
+        <h3>메뉴 리스트</h3>
+        <!-- 메뉴 목록을 나타낼 컨테이너 -->
         <div class="menu-list">
-          <!-- 아래의 코드를 추가하여 실제 리뷰를 표시합니다. -->
+          <!-- 아래의 코드를 추가하여 실제 메뉴를 표시합니다. -->
         </div>
       </div>
 
@@ -502,7 +505,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <span class="modal-title" id="menuModalLabel" style="text-align: center">리뷰 수정</span>
+        <span class="modal-title" id="menuModalLabel" style="text-align: center">메뉴 수정</span>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">X</span>
         </button>
@@ -512,7 +515,7 @@
 
         <form accept-charset="UTF-8" action="" method="post">
 
-          <div class="form-group">
+          <div class="form-group">뉴
             <div class="text-right" style="text-align: center">
               <label for="menuname">menuname:</label>
               <input type="text" id="menuname-modify" name="menuname">

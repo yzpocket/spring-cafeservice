@@ -32,6 +32,12 @@ public class HomeController {
         return "login";
     }
 
+    // 회원가입 뷰페이지 렌더링
+    @GetMapping("/signup")
+    public String signup() {
+        return "signup";
+    }
+
     // 리뷰 뷰페이지 렌더링
     @GetMapping("/stores/{storeId}/reviews")
     public String showReviewForm(@PathVariable Long storeId, Model model) {
