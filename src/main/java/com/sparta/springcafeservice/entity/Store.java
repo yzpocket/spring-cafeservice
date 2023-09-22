@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Entity
-@Getter
+@Entity @Getter
 @Table(name = "stores")
 @NoArgsConstructor
 public class Store extends TimeStamped{

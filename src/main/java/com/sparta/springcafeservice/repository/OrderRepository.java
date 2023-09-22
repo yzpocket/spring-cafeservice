@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findAllByOrderByModifiedAtDesc();
 
+    List<Order> findAllByOrderByModifiedAtDesc();
     Order findByUserId(Long userId);
 }

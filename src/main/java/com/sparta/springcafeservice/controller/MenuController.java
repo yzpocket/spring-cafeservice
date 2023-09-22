@@ -1,15 +1,11 @@
 package com.sparta.springcafeservice.controller;
 
-import com.sparta.springcafeservice.dto.LoginRequestDto;
 import com.sparta.springcafeservice.dto.MenuRequestDto;
 import com.sparta.springcafeservice.dto.MenuResponseDto;
 import com.sparta.springcafeservice.dto.StatusResponseDto;
-import com.sparta.springcafeservice.entity.Menu;
-import com.sparta.springcafeservice.entity.User;
 import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.MenuService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -49,8 +45,9 @@ public class MenuController {
     // 메뉴 수정
     @ResponseBody
     @PutMapping("/menus/{id}")
-    public ResponseEntity<?> updateMenu(@PathVariable Long id, @RequestBody MenuRequestDto menuRequestDto,
-                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<StatusResponseDto> updateMenu(@PathVariable Long id,
+                                                        @RequestBody MenuRequestDto menuRequestDto,
+                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return menuService.updateMenu(id, menuRequestDto, userDetails.getUser());
     }
 

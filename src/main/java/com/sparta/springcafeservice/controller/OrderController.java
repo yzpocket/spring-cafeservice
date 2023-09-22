@@ -3,6 +3,7 @@ package com.sparta.springcafeservice.controller;
 
 import com.sparta.springcafeservice.dto.OrderRequestDto;
 import com.sparta.springcafeservice.dto.OrderResponseDto;
+import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.entity.User;
 import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.OrderService;
@@ -22,34 +23,39 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    //create
+    // 주문 등록
     @PostMapping("/orders")
-    public OrderResponseDto createOrder(@RequestBody OrderRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<StatusResponseDto> createOrder(@RequestBody OrderRequestDto requestDto,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return orderService.createOrder(requestDto, userDetails.getUser());
     }
 
-    //readAll
+    // 주문 조회
     @GetMapping("/orders")
     public List<OrderResponseDto> getAllOrders(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return orderService.getAllOrders(userDetails.getUser());
     }
 
-
+    // 선택한 주문 조회
     @GetMapping("/orders/stores")
     public List<OrderResponseDto> getAllOrdersByStoreId(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return orderService.getAllOrdersByStoreId(userDetails.getUser());
 
     }
 
-    //update
+    // 주문 수정
     @PutMapping("/orders/{id}")
-    public ResponseEntity<String> updateOrder(@PathVariable Long id, @RequestBody OrderRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<StatusResponseDto> updateOrder(@PathVariable Long id,
+                                                         @RequestBody OrderRequestDto requestDto,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return orderService.updateOrder(id, requestDto, userDetails.getUser());
     }
 
-    //delete
+    // 주문 삭제
     @DeleteMapping("/orders/{id}")
-    public ResponseEntity<String> deleteOrder(@PathVariable Long id, @RequestBody OrderRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<StatusResponseDto> deleteOrder(@PathVariable Long id,
+                                                         @RequestBody OrderRequestDto requestDto,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return orderService.deleteOrder(id, requestDto, userDetails.getUser());
     }
 

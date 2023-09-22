@@ -52,6 +52,9 @@ public class ReviewController {
         return reviewService.deleteReview(id, userDetails.getUser());
     }
 
+
+
+
     // 리뷰 삭제 권한 확인용
     @GetMapping("/reviews/{id}/check-ownership")
     public ResponseEntity<StatusResponseDto> checkReviewOwnership(@PathVariable Long id,

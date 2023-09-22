@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public class SignupRequestDto {
 
     @NotBlank
@@ -16,13 +15,14 @@ public class SignupRequestDto {
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9!@#$%^&*]{8,15}$", message = "비밀번호는 대소문자, 숫자, 특수문자( !@#$%^&* )로만 구성된 8~15자의 문자열이어야 합니다.")
     private String password;
+
     @Email
     @NotBlank
     private String email;
 
     private boolean admin = false;
-
     private String adminToken = "";
 
-    private int registNum;
+    // 사용자는 null, 사업자는 고유한 번호
+    private Integer registNum;
 }

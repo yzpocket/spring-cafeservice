@@ -7,10 +7,7 @@ import lombok.Getter;
 public class MenuRequestDto {
 
     private String menuName;
-
     private String image;
-
     private int price;
-
-    private Long storeId;
+//    private Long storeId;
 }

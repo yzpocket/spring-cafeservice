@@ -6,9 +6,7 @@ import lombok.Getter;
 public class ReviewRequestDto {
 
     private byte star;
-
     private String review;
-
     private Long storeId;
 
     @Override

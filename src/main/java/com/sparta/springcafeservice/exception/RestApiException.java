@@ -14,5 +14,3 @@ public class RestApiException extends RuntimeException {
         this.statusCode = statusCode;
     }
 }
-
-//GlobalExceptionHandler

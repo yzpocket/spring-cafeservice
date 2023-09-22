@@ -17,11 +17,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HomeController {
 
-    private final StoreService storeService; // 서비스 클래스 주입
+    private final StoreService storeService;
+
 
     @GetMapping("/")
     public String home(Model model) {
-        // 모델에 데이터를 추가하여 템플릿에 전달
         model.addAttribute("message", "안녕하세요!");
         return "index"; // 뷰 이름은 templates 폴더에 있는 템플릿 파일명과 일치해야 합니다.
     }
@@ -40,6 +40,7 @@ public class HomeController {
         return "add-reviews";
     }
 
+
     // 가게 리스트 뷰페이지 렌더링 (index-contents레이어에 카드형태)
     @GetMapping("/stores")
     public String getAllStores(Model model) {
@@ -48,6 +49,7 @@ public class HomeController {
         return "index";
     }
 
+
     // 가게 상세정보 뷰페이지 렌더링
     @GetMapping("/stores/{storeId}")
     public String getStore(@PathVariable(name = "storeId") Long storeId, Model model) {
@@ -55,6 +57,7 @@ public class HomeController {
         model.addAttribute("store", storeResponse);
         return "getStore";
     }
+
 
     // 메뉴 뷰페이지 렌더링
     @GetMapping("/stores/{storeId}/menus")

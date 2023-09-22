@@ -7,9 +7,7 @@ import lombok.Getter;
 public class MenuResponseDto {
 
     private String menuName;
-
     private String image;
-
     private int price;
 
     public MenuResponseDto(Menu menu) {

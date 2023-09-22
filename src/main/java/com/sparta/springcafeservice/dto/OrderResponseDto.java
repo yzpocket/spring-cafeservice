@@ -7,6 +7,7 @@ import lombok.Getter;
 
 @Getter
 public class OrderResponseDto {
+
     private Long id; // 주문 ID
     private String contents; // 주문 취소 사유
     private OrderStatusEnum orderStatus; // 주문 상태

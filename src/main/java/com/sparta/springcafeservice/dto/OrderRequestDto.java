@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class OrderRequestDto {
+
     private Long menuId;
     private Long storeId;
     private Long userId;
