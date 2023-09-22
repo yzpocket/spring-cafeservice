@@ -278,17 +278,16 @@
                 storeName: $("#updateStoreName").val(),
                 storeAddress: $("#updateStoreAddress").val(),
                 information: $("#updateInformation").val()
-                // hiddn: $("#updateInformation").val()
             }),
             success: function (response) {
                 alert("수정되었습니다.")
-                window.location.href = "";
+                window.location.href = "/";
             },
             error: function (error) {
                 alert("수정 실패! 다시 시도해주세요.")
             },
             fail: function (fail) {
-              alert("수정 실패!")
+                alert("수정 실패!")
             },
         });
 
@@ -302,23 +301,32 @@
         const parts2 = Id.split("/");
         const storeId = parts2[parts2.length - 1];
         const token = Cookies.get('Authorization');
+        console.log(storeId);
 
         $.ajax({
             type: "DELETE",
             url: "/api/stores/" + storeId,
-            data: {},
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": token // 토큰을 헤더에 추가
-            }
-        })
-            .done(function (response) {
+            },
+            data: JSON.stringify({
+                password: $("#deletePassword").val(),
+                storeName: $("#storeName").val(),
+                storeAddress: $("#storeAddress").val(),
+                information: $("#information").val()
+            }),
+            success: function (response) {
                 alert("삭제되었습니다.")
-                window.location.href = "/index.html"
-            })
-            .fail (function (errorMessage) {
-                alert(errorMessage["responseJSON"]["message"])
-            })
+                window.location.href = "/";
+            },
+            error: function (error) {
+                alert("삭제 실패! 다시 시도해주세요.")
+            },
+            fail: function (fail) {
+                alert("삭제 실패!")
+            },
+        });
     }
 </script>
 
