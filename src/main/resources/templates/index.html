@@ -65,9 +65,9 @@
     </header>
 
     <section class="py-5">
-        <div class="input-group">
-            <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-            <button type="button" class="btn btn-outline-primary">search</button>
+        <div class="input-group" style="width: 50%; margin: auto">
+            <input type="search" id="searchKeyword" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+            <button type="button" class="btn btn-outline-primary" onclick="searchStoreAndMenu()">search</button>
         </div>
         <div id="wrapper">
             <p><a button type="button" class="btn btn-secondary" href="#popup1">CREATE CAFE</a></p>
@@ -96,24 +96,14 @@
 
         <div class="container px-5 my-5">
             <div class="row gx-5" id="cardBox">
-                <div class="col-lg-4 mb-5" >
-                    <!-- 상점 데이터를 반복해서 출력 -->
-                    <div th:each="store : ${stores}" class="card h-100 shadow border-0">
-                        <img class="card-img-top" src="https://dummyimage.com/600x350/ced4da/6c757d" alt="..."/>
-                        <div class="card-body p-4">
-                            <div class="badge bg-primary bg-gradient rounded-pill mb-2">Hit</div>
-                            <h5 class="card-title mb-3" th:text="${store.storeName}"></h5>
-                            <p class="card-text mb-0" th:text="${store.storeAddress}"></p>
-                            <p class="card-text mb-0" th:text="${store.information}"></p>
-                        </div>
-                    </div>
-                </div>
+                <!-- 여기에 상점 리스트가 append 됩니다. (id ="cardBox" 기준) -->
             </div>
         </div>
     </section>
 </main>
 <!-- Footer 부분 생략 -->
 
+<!------------------------------------------------------ index 기본 가게 리스트 지예 ------------------------------------------------------>
 <!-- jQuery 스크립트와 Ajax 요청 스크립트 -->
 <script>
     // 페이지 로드 후 팝업 높이 자동 조절
@@ -225,6 +215,78 @@
 
             }
         })
+    }
+</script>
+<!------------------------------------------------------ index 검색 후 가게 리스트 인용 ------------------------------------------------------>
+<!-- JavaScript 부분 -->
+<script>
+    function redirectToStore(storeId) {
+        const restfulUrl = `/stores/${storeId}`;
+        window.location.href = restfulUrl;
+    }
+
+    function searchStoreAndMenu() {
+        // 검색어 입력란에서 검색어 가져오기
+        var keyword = $("#searchKeyword").val();
+
+        // 검색어가 비어있는 경우 처리
+        if (!keyword.trim()) {
+            alert("검색어를 입력하세요.");
+            return;
+        }
+
+        // Ajax 요청 설정
+        $.ajax({
+            type: "GET",
+            url: "/api/search/stores-and-menus",
+            data: {
+                keyword: keyword
+            },
+            success: function (response) {
+                const stores = response;
+                const cardBox = $("#cardBox"); // #cardBox 요소 선택
+                cardBox.empty(); // 기존 카드 내용 비우기
+                alert(JSON.stringify(response, null, 2));
+
+                for (let i = 0; i < stores.length; i++) {
+                    const store = stores[i];
+                    const storeName = store["storeName"];
+                    const storeAddress = store["storeAddress"];
+                    const information = store["information"];
+                    const id = store["store_id"]; // id 속성 추가
+
+                    // 현재 로우에 카드를 추가합니다.
+                    const tempHtml = `
+                        <div class="col-lg-4 mb-5">
+                            <div class="card h-100 shadow border-0">
+                                <img class="card-img-top" src="https://dummyimage.com/600x350/ced4da/6c757d" alt="..." />
+                                <div class="card-body p-4">
+                                <div class="badge bg-primary bg-gradient rounded-pill mb-2">Hit</div>
+                                <a class="text-decoration-none link-dark stretched-link" onclick="redirectToStore(${id})">
+                                <h5 class="card-title mb-3">${storeName}</h5></a>
+                                <p class="card-text mb-0">${information}</p>
+                                </div>
+                                <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                                    <div class="d-flex align-items-end justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
+                                            <div class="small">
+                                                <div class="fw-bold">${storeAddress}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    cardBox.append(tempHtml); // 새로운 카드 추가
+                }
+            },
+            error: function (error) {
+                // 검색 요청이 실패한 경우 처리
+                console.error("검색 요청 실패:", error);
+            }
+        });
     }
 </script>
 </body>
