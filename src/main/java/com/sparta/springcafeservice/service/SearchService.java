@@ -27,6 +27,7 @@ public class SearchService {
         List<Menu> menus = menuRepository.findByMenuNameContaining(keyword);
         for (Menu menu : menus) {
             SearchResponseDto responseDto = new SearchResponseDto();
+            responseDto.setStore_id(menu.getStore().getId());
             responseDto.setStoreName(menu.getStore().getStoreName());
             responseDto.setStoreAddress(menu.getStore().getStoreAddress());
             responseDto.setInformation(menu.getStore().getInformation());
@@ -38,6 +39,7 @@ public class SearchService {
         List<Store> stores = storeRepository.findByStoreNameContaining(keyword);
         for (Store store : stores) {
             SearchResponseDto responseDto = new SearchResponseDto();
+            responseDto.setStore_id(store.getId());
             responseDto.setStoreName(store.getStoreName());
             responseDto.setStoreAddress(store.getStoreAddress());
             responseDto.setInformation(store.getInformation());

@@ -5,6 +5,15 @@
     <title>Cafe Service</title>
     <!-- 여기에 필요한 CSS 파일 및 스타일 시트 링크를 추가하세요 -->
     <link href="/css/popup.css" rel="stylesheet" />
+    <script src="/js/add-reviews.js"></script>
+    <!-- Bootstrap CSS (3.0.1) -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery (3.6.0) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap JavaScript (3.4.1) -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 </head>
 <body>
@@ -104,26 +113,6 @@
     <div class="e1">
         <a class="a"  href="http://localhost:8080"><strong>Cafe Service</strong></a>
     </div>
-
-    <div class="e2">
-        <a class="a" target="_blank" href="https://codepen.io/quang_ngo/full/rNaYXOb"
-           th:href="@{https://codepen.io/quang_ngo/full/rNaYXOb}">About Me</a>
-    </div>
-
-    <div class="e2">
-        <a class="a" target="_blank" href="https://codepen.io/quang_ngo/full/yLyzpvL"
-           th:href="@{https://codepen.io/quang_ngo/full/yLyzpvL}">My Motto</a>
-    </div>
-
-    <div class="e2">
-        <a class="a" target="_blank" href="https://codepen.io/quang_ngo/full/jOEepPG"
-           th:href="@{https://codepen.io/quang_ngo/full/jOEepPG}">storeName</a>
-    </div>
-
-    <div class="e2">
-        <a class="a" target="_blank" href="https://codepen.io/quang_ngo/full/dyPJpOM"
-           th:href="@{https://codepen.io/quang_ngo/full/dyPJpOM}">Contact</a>
-    </div>
 </div>
 <hr>
 
@@ -144,7 +133,7 @@
 
 </div>
 
-
+<!-- 수정 팝업 -->
 <div id="popup1" class="overlay">
     <div class="popup">
         <h2>UPDATE</h2>
@@ -169,6 +158,7 @@
     </div>
 </div>
 
+<!-- 삭제 팝업 -->
 <div id="popup2" class="overlay">
     <div class="popup">
         <h2>DELETE</h2>
@@ -183,35 +173,49 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // 현재 페이지 URL에서 가게 ID 가져오기
+        const url = window.location.href;
+        const parts = url.split("/");
+        const storeId = parts[parts.length - 1]; // 가게 ID는 URL에서 두 번째로 뒤에 위치함
+
+        // hidden 필드에 가게 아이디 설정
+        document.getElementById("dynamicStoreId").value = storeId;
+
+        // 가게 메뉴 추가 링크 생성 및 추가
+        const menuBox = document.querySelector(".menu-box");
+        const menuLink = document.createElement("a");
+        menuLink.href = "/stores/" + storeId + "/menus";
+        menuLink.textContent = "가게 메뉴 추가";
+        menuBox.appendChild(menuLink);
+
+        // 가게 리뷰 추가 링크 생성 및 추가
+        const reviewBox = document.querySelector(".review-box");
+        const reviewLink = document.createElement("a");
+        reviewLink.href = "/stores/" + storeId + "/reviews";
+        reviewLink.textContent = "가게 리뷰 추가";
+        reviewBox.appendChild(reviewLink);
+    });
+</script>
+<!-- Hidden 값 있음-->
+<input type="hidden" class="form-control" id="dynamicStoreId" name="dynamicStoreId" required disabled>
 
 <div class="fullBox2">
     <h3>Menu</h3>
     <!--카드 컨테이너-->
-    <div class="card">
-        <p th:text="${menuName}">menuName</p>
-        <p th:text="${price}">price</p>
+    <div class="menu-box">
+        <!-- js를 통해 동적 링크가 생성되는 부분 -->
     </div>
     <!-- 다른 카드들도 동일한 방식으로 추가 -->
 </div>
-</div>
-
-<div class="button2">
-    <a target="_blank" href="https://codepen.io/quang_ngo/full/wvBOmqw"
-       th:href="@{https://codepen.io/quang_ngo/full/wvBOmqw}">주문하기</a>
-</div>
-<div class="button2">
-    <a target="_blank" href="https://codepen.io/quang_ngo/full/povYLrb"
-       th:href="@{https://codepen.io/quang_ngo/full/povYLrb}">리뷰달기</a>
-</div>
 
 <div class="fullBox1">
-    <h3>Review</h3>
+    <h3>Reviews</h3>
     <!--리뷰 컨테이너-->
-    <div class="card">
-        <p th:text="${review}">review</p>
-        <p th:text="${star}">star</p>
+    <div class="review-box">
+        <!-- js를 통해 동적 링크가 생성되는 부분 -->
     </div>
-    <!--여기까지-->
 </div>
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>

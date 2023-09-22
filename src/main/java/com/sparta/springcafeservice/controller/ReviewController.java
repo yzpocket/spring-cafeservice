@@ -7,6 +7,8 @@ import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,23 +24,24 @@ import java.util.List;
 //@Controller
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 @RequestMapping("/api")
 public class ReviewController {
+    private static final Logger logger = LoggerFactory.getLogger(ReviewController.class);
 
     private final ReviewService reviewService;
 
     // 리뷰 작성
     @PostMapping("/reviews")
-    public ResponseEntity<?> createReview(@RequestBody ReviewRequestDto requestDto,
+    public ResponseEntity<StatusResponseDto> createReview(@RequestBody ReviewRequestDto requestDto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return reviewService.createReview(requestDto, userDetails.getUser());
     }
 
     // 리뷰 수정
     @PutMapping("/reviews/{id}")
-    public ResponseEntity<?> updateReview(@PathVariable Long id, @RequestBody ReviewRequestDto requestDto,
+    public ResponseEntity<StatusResponseDto> updateReview(@PathVariable Long id, @RequestBody ReviewRequestDto requestDto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        logger.info("Received JSON data: {}", requestDto);
         return reviewService.updateReview(id, requestDto, userDetails.getUser());
     }
 
@@ -51,7 +54,7 @@ public class ReviewController {
 
     // 리뷰 삭제 권한 확인용
     @GetMapping("/reviews/{id}/check-ownership")
-    public ResponseEntity<?> checkReviewOwnership(@PathVariable Long id,
+    public ResponseEntity<StatusResponseDto> checkReviewOwnership(@PathVariable Long id,
                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Review review = reviewService.getReviewById(id);
 
