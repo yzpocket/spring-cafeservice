@@ -11,9 +11,7 @@ import java.util.List;
 public class ReviewResponseDto {
 
     private byte star;
-
     private String review;
-
 
     public ReviewResponseDto(Review updatedReview) {
         this.star = updatedReview.getStar();

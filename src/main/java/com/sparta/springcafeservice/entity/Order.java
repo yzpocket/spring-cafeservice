@@ -11,8 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-@Entity
-@Getter
+@Entity @Getter
 @NoArgsConstructor
 @Table(name = "orders")
 public class Order extends TimeStamped {
@@ -30,10 +29,6 @@ public class Order extends TimeStamped {
     @ManyToOne
     @JoinColumn(name = "menu_id")
     private Menu menu;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "store_id", nullable = false)
-//    private Store store;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -45,7 +40,6 @@ public class Order extends TimeStamped {
 
     public Order(OrderRequestDto requestDto, User user, Menu menu) {
         this.menu = menu;
-//        this.store = store;
         this.user = user;
         this.contents = requestDto.getContents();
         this.orderStatus = OrderStatusEnum.ORDER_CONFIRMATION;

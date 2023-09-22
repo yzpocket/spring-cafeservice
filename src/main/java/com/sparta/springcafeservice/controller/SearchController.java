@@ -22,6 +22,7 @@ public class SearchController {
         return searchService.searchStoresAndMenusByKeyword(keyword);
     }
 }
+
     // 분리버전
     //// 메뉴 이름으로 검색하여 가게 정보 조회
     //@GetMapping("/search/stores-by-menu")

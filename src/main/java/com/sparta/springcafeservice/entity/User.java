@@ -1,5 +1,6 @@
 package com.sparta.springcafeservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,9 +26,10 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Column(nullable = true, unique = true)
     // 사용자는 0, 사업자는 0이외의 값
-    private int registNum;
+    private Integer registNum;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)

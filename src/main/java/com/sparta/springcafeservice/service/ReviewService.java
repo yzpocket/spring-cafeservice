@@ -30,12 +30,10 @@ public class ReviewService {
     @Transactional
     public ResponseEntity<StatusResponseDto> createReview(ReviewRequestDto reviewRequestDto, User user) {
         return handleServiceRequest(() -> {
+
             Store store = checkStoreExist(reviewRequestDto.getStoreId());
-
             Review review = new Review(reviewRequestDto, user, store);
-
             reviewRepository.save(review);
-
             return new StatusResponseDto("리뷰를 등록했습니다.", 200);
         });
     }
@@ -44,11 +42,10 @@ public class ReviewService {
     @Transactional
     public ResponseEntity<StatusResponseDto> updateReview(Long id, ReviewRequestDto requestDto, User user) {
         return handleServiceRequest(() -> {
+
             Review review = checkReviewExist(id);
             validateUserAuthority(user.getId(), review.getUser());
-
             review.update(requestDto);
-
             return new StatusResponseDto("리뷰가 수정되었습니다.", 200);
         });
     }
@@ -57,11 +54,10 @@ public class ReviewService {
     @Transactional
     public ResponseEntity<StatusResponseDto> deleteReview(Long id, User user) {
         return handleServiceRequest(() -> {
+
             Review review = checkReviewExist(id);
             validateUserAuthority(user.getId(), review.getUser());
-
             reviewRepository.delete(review);
-
             return new StatusResponseDto("리뷰가 삭제되었습니다.", 200);
         });
     }

@@ -97,7 +97,7 @@ public class JwtUtil {
 
 
     // -------------------------------------------------------------------------------//
-    // postman 테스트 용 -> 쿠키에 담아서 , 나중에 테스트 코드 작성하면 없어도 될 듯? 합니다
+    // postman 테스트 용 -> 쿠키에 담아서 인증
 
     public void addJwtToCookie(String token, HttpServletResponse res) {
         try {

@@ -20,7 +20,7 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String menuName;
 
     @Column(nullable = false)
@@ -37,6 +37,13 @@ public class Menu {
     List<Order> orderList = new ArrayList<>();
 
 
+    public Menu(MenuRequestDto menuRequestDto, Store store) {
+        this.menuName = menuRequestDto.getMenuName();
+        this.image = menuRequestDto.getImage();
+        this.price = menuRequestDto.getPrice();
+        this.store = store;
+    }
+
     public Menu(MenuRequestDto menuRequestDto) {
         this.menuName = menuRequestDto.getMenuName();
         this.image = menuRequestDto.getImage();
@@ -49,7 +56,4 @@ public class Menu {
         this.price = menuRequestDto.getPrice();
     }
 
-    public void setStore(Store checkId) {
-        this.store = checkId;
-    }
 }

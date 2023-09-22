@@ -12,14 +12,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 회원가입 -> Dto -> @Valid, 예외 메시지 반환
-    // ConstraintViolationException => 정규 표현식 맞지 않을 경우
-
-    // 정규 표현식이 아니라 유효성 검사 실패 -> 직접적인 호출을 했을 때
-    // 그러나 @Valid같은 어노테이션을 활용햇을 때는 MethodArgumentNotValidException 가 발생
-
-
-    // @Valid 유효성 걸렸을 때
+    // @Valid 유효성 걸렸을 때 MethodArgumentNotValidException 가 발생
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(
             MethodArgumentNotValidException ex) {

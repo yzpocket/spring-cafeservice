@@ -7,13 +7,11 @@ import lombok.Getter;
 
 @Getter
 public class StoreAllResponseDto {
-    private Long id;
 
+    private Long id;
     private String storeName;
     private String storeAddress;
     private String information;
-
-//    private List<MenuResponseDto> menuResponseDtoList;
 
     public StoreAllResponseDto(Store store) {
         this.id = store.getId();
