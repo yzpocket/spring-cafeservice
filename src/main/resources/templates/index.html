@@ -65,7 +65,10 @@
     </header>
 
     <section class="py-5">
-
+        <div class="input-group">
+            <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+            <button type="button" class="btn btn-outline-primary">search</button>
+        </div>
         <div id="wrapper">
             <p><a button type="button" class="btn btn-secondary" href="#popup1">CREATE CAFE</a></p>
         </div>
@@ -84,7 +87,6 @@
 
                         <label for="information">Information:</label>
                         <input type="text" id="information" name="information" required /><br />
-
                         <input type="submit" value="Create" onclick="createStore()">
                     </form>
                 </div>
