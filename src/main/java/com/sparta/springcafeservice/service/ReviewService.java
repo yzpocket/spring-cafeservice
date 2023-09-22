@@ -1,5 +1,6 @@
 package com.sparta.springcafeservice.service;
 
+import com.sparta.springcafeservice.controller.ReviewController;
 import com.sparta.springcafeservice.dto.ReviewRequestDto;
 import com.sparta.springcafeservice.dto.ReviewResponseDto;
 import com.sparta.springcafeservice.dto.StatusResponseDto;
@@ -9,6 +10,8 @@ import com.sparta.springcafeservice.entity.User;
 import com.sparta.springcafeservice.repository.ReviewRepository;
 import com.sparta.springcafeservice.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ReviewController.class);
 
     private final ReviewRepository reviewRepository;
 

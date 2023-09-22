@@ -40,5 +40,6 @@ public class Review extends TimeStamped {
 
     public void update(ReviewRequestDto requestDto) {
         this.review = requestDto.getReview();
+        this.star = requestDto.getStar();
     }
 }
