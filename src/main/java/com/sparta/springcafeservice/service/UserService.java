@@ -52,6 +52,10 @@ public class UserService {
             role = UserRoleEnum.ADMIN;
         }
 
+        User user = new User(username, password, email, role);
+        user.setPoint(1000000);
+        userRepository.save(user);
+
         StatusResponseDto res = new StatusResponseDto("회원가입이 완료되었습니다.", 200);
         return new ResponseEntity<>(res, HttpStatus.OK);
 

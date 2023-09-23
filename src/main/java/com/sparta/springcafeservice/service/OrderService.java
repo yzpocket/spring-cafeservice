@@ -47,27 +47,28 @@ public class OrderService {
             }
             user.setPoint(user.getPoint() - menu.getPrice());
             userRepository.save(user);
+
+            orderRepository.save(new Order(requestDto, user, menu));
             return new StatusResponseDto("주문을 등록했습니다.", 200);
         });
     }
 
 
-    // 주문 조회
-    public List<OrderResponseDto> getAllOrders(User user) {
-        List<Order> orderList = orderRepository.findAllByOrderByModifiedAtDesc();
+    // 주문 조회 (userId)
+    public List<OrderResponseDto> getAllOrdersByUserId(User user) {
+        List<Order> orderList = orderRepository.findAllByUserIdOrderByModifiedAtDesc(user.getId());
         return orderList.stream().map(OrderResponseDto::new).collect(Collectors.toList());
     }
 
 
-    // 선택한 주문 조회
+    // 주문 조회 (storeId)
     public List<OrderResponseDto> getAllOrdersByStoreId(User user) {
         Long storeId = user.getStore().getId();
-        List<Order> orders = orderRepository.findAllByOrderByModifiedAtDesc();
-        List<OrderResponseDto> storeOrders = orders.stream().filter(order -> order.getMenu().getStore().getId().equals(storeId))
-                .map(OrderResponseDto::new)
-                .collect(Collectors.toList());
-        return storeOrders;
+        List<Order> storeOrders = orderRepository.findAllByMenu_Store_IdOrderByModifiedAtDesc(storeId);
+        return storeOrders.stream().map(OrderResponseDto::new).collect(Collectors.toList());
     }
+
+
 
 
     // 주문 수정
@@ -102,7 +103,7 @@ public class OrderService {
     }
 
 
-    // 주문 삭제
+    // 주문 삭제 -> 취소
     @Transactional
     public ResponseEntity<StatusResponseDto> deleteOrder(Long id, OrderRequestDto requestDto, User user) {
         return handleServiceRequest(()->{
@@ -111,10 +112,18 @@ public class OrderService {
             if (!order.getMenu().getStore().getId().equals(user.getStore().getId())) {
                 throw new IllegalArgumentException("주문을 취소할 권한이 없습니다.");
             }
+            // 주문을 취소하면 point를 다시 user에게 반환
+            int orderPrice = order.getMenu().getPrice();
+            user.setPoint(user.getPoint() + orderPrice);
+
+            userRepository.save(user);
+//            // 주문 삭제 -> 주문 취소 Enum을 만들어서 상태 변경을 하는게 더 좋을듯 !!!
+//            orderRepository.delete(order);
+            order.setOrderStatus(OrderStatusEnum.CANCELED); // 주문 상태를 취소로 변경
+
+
             return new StatusResponseDto("주문을 취소하였습니다.", 200);
         });
-
-
     }
 
 
