@@ -74,6 +74,10 @@
 
                         <label for="information">Information:</label>
                         <input type="text" id="information" name="information" required /><br />
+
+                        <label for="information">BusinessNumber:</label>
+                        <input type="text" id="businessNum" name="businessNum" required /><br />
+
                         <input type="submit" value="Create" onclick="createStore()">
                     </form>
                 </div>
@@ -140,6 +144,7 @@
                     const storeName = store["storeName"]
                     const storeAddress = store["storeAddress"]
                     const information = store["information"]
+                    const businessNum = store["businessNum"]
                     const id = store["id"]; // id 속성 추가
 
                     // 현재 로우에 카드를 추가합니다.
