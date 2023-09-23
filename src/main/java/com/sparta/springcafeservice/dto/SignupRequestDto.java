@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class SignupRequestDto {
@@ -23,6 +22,4 @@ public class SignupRequestDto {
     private boolean admin = false;
     private String adminToken = "";
 
-    // 사용자는 null, 사업자는 고유한 번호
-    private Integer registNum;
 }
