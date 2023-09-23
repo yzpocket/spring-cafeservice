@@ -2,7 +2,6 @@ package com.sparta.springcafeservice.service;
 
 import com.sparta.springcafeservice.controller.ReviewController;
 import com.sparta.springcafeservice.dto.ReviewRequestDto;
-import com.sparta.springcafeservice.dto.ReviewResponseDto;
 import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.entity.Review;
 import com.sparta.springcafeservice.entity.Store;
@@ -17,10 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
@@ -34,13 +29,13 @@ public class ReviewService {
     // 리뷰 작성
     @Transactional
     public ResponseEntity<StatusResponseDto> createReview(ReviewRequestDto reviewRequestDto, User user) {
-        return handleServiceRequest(() -> {
-
+        StatusResponseDto statusResponse = handleServiceRequest(() -> {
             Store store = checkStoreExist(reviewRequestDto.getStoreId());
             Review review = new Review(reviewRequestDto, user, store);
             reviewRepository.save(review);
             return new StatusResponseDto("리뷰를 등록했습니다.", 200);
         });
+        return new ResponseEntity<>(statusResponse, HttpStatus.OK);
     }
 
     // 리뷰 수정
@@ -86,19 +81,6 @@ public class ReviewService {
     private void validateUserAuthority(Long reviewUserId, User user) {
         if (!reviewUserId.equals(user.getId())) {
             throw new IllegalArgumentException("리뷰 작성자만 접근할 수 있습니다.");
-        }
-    }
-
-    // 중복 코드 제거를 위한 메소드
-    private ResponseEntity<StatusResponseDto> handleServiceRequest(Supplier<StatusResponseDto> action) {
-        try {
-            return new ResponseEntity<>(action.get(), HttpStatus.OK);
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
-            return new ResponseEntity<>(new StatusResponseDto(ex.getMessage(), 400), HttpStatus.BAD_REQUEST);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return new ResponseEntity<>(new StatusResponseDto("서비스 요청 중 오류가 발생했습니다.", 500), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
