@@ -7,7 +7,6 @@ import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +21,8 @@ public class OrderController {
 
     // 주문 등록
     @PostMapping("/orders")
-    public ResponseEntity<StatusResponseDto> createOrder(@RequestBody OrderRequestDto requestDto,
-                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto createOrder(@RequestBody OrderRequestDto requestDto,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return orderService.createOrder(requestDto, userDetails.getUser());
     }
 
@@ -42,17 +41,17 @@ public class OrderController {
 
     // 주문 수정
     @PutMapping("/orders/{id}")
-    public ResponseEntity<StatusResponseDto> updateOrder(@PathVariable Long id,
-                                                         @RequestBody OrderRequestDto requestDto,
-                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto updateOrder(@PathVariable Long id,
+                                         @RequestBody OrderRequestDto requestDto,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return orderService.updateOrder(id, requestDto, userDetails.getUser());
     }
 
     // 주문 삭제
     @DeleteMapping("/orders/{id}")
-    public ResponseEntity<StatusResponseDto> deleteOrder(@PathVariable Long id,
-                                                         @RequestBody OrderRequestDto requestDto,
-                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto deleteOrder(@PathVariable Long id,
+                                         @RequestBody OrderRequestDto requestDto,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return orderService.deleteOrder(id, requestDto, userDetails.getUser());
     }
 

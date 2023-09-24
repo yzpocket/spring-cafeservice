@@ -33,24 +33,21 @@ public class OrderService {
 
     // 주문 등록
     @Transactional
-    public ResponseEntity<StatusResponseDto> createOrder(OrderRequestDto requestDto, User user) {
-        return handleServiceRequest(()->{
+    public StatusResponseDto createOrder(OrderRequestDto requestDto, User user) {
+        Menu menu = menuRepository.findById(requestDto.getMenuId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 메뉴를 찾을 수 없습니다."));
+        Store store = storeRepository.findById(requestDto.getStoreId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 가게를 찾을 수 없습니다."));
 
-            Menu menu = menuRepository.findById(requestDto.getMenuId())
-                    .orElseThrow(() -> new IllegalArgumentException("해당 메뉴를 찾을 수 없습니다."));
-            Store store = storeRepository.findById(requestDto.getStoreId())
-                    .orElseThrow(() -> new IllegalArgumentException("해당 가게를 찾을 수 없습니다."));
+        if (user.getPoint() < menu.getPrice()) {
+            throw new IllegalArgumentException("포인트가 부족해 주문할 수 없습니다");
+        }
 
-            // 잔액 예외 처리 -> 포인트 업데이트
-            if (user.getPoint() < menu.getPrice()) {
-                throw new IllegalArgumentException("포인트가 부족해 주문할 수 없습니다");
-            }
-            user.setPoint(user.getPoint() - menu.getPrice());
-            userRepository.save(user);
+        user.setPoint(user.getPoint() - menu.getPrice());
+        userRepository.save(user);
 
-            orderRepository.save(new Order(requestDto, user, menu));
-            return new StatusResponseDto("주문을 등록했습니다.", 200);
-        });
+        orderRepository.save(new Order(requestDto, user, menu));
+        return new StatusResponseDto("주문을 등록했습니다.", 200);
     }
 
 
@@ -73,57 +70,49 @@ public class OrderService {
 
     // 주문 수정
     @Transactional
-    public ResponseEntity<StatusResponseDto> updateOrder(Long id, OrderRequestDto requestDto, User user) {
-        return handleServiceRequest(()->{
+    public StatusResponseDto updateOrder(Long id, OrderRequestDto requestDto, User user) {
+        Order order = checkOrderExist(id);
 
-            Order order = checkOrderExist(id);
-            //변경사항 확인
-            OrderStatusEnum currentStatus = order.getOrderStatus();
-            OrderStatusEnum newStatus = requestDto.getOrderStatus();
+        OrderStatusEnum currentStatus = order.getOrderStatus();
+        OrderStatusEnum newStatus = requestDto.getOrderStatus();
 
-            if (!order.getMenu().getStore().getId().equals(user.getStore().getId())) {
-                throw new IllegalArgumentException("주문상태를 변경할 권한이 없습니다.");
+        if (!order.getMenu().getStore().getId().equals(user.getStore().getId())) {
+            throw new IllegalArgumentException("주문상태를 변경할 권한이 없습니다.");
+        }
+
+        if (!currentStatus.equals(newStatus)) {
+            if (newStatus.equals(OrderStatusEnum.DELIVERY_COMPLETED)) {
+                int menuPrice = order.getMenu().getPrice();
+                User owner = order.getMenu().getStore().getUser();
+
+                int notUpdatePoint = owner.getPoint();
+                int updatePoint = (notUpdatePoint + menuPrice);
+
+                owner.setPoint(updatePoint);
             }
+        }
 
-            //주문 상태가 바뀌면 사장에게 돈을 입금
-            if (!currentStatus.equals(newStatus)) {
-                if (newStatus.equals(OrderStatusEnum.DELIVERY_COMPLETED)) {
-                    int menuPrice = order.getMenu().getPrice();
-                    User owner = order.getMenu().getStore().getUser();
-
-                    int notUpdatePoint = owner.getPoint();
-                    int updatePoint = (notUpdatePoint + menuPrice);
-
-                    owner.setPoint(updatePoint);
-                }
-            }
-            order.update(requestDto);
-            return new StatusResponseDto("주문 상태가 바뀌었습니다.", 200);
-        });
+        order.update(requestDto);
+        return new StatusResponseDto("주문 상태가 바뀌었습니다.", 200);
     }
 
 
     // 주문 삭제 -> 취소
     @Transactional
-    public ResponseEntity<StatusResponseDto> deleteOrder(Long id, OrderRequestDto requestDto, User user) {
-        return handleServiceRequest(()->{
+    public StatusResponseDto deleteOrder(Long id, OrderRequestDto requestDto, User user) {
+        Order order = checkOrderExist(id);
 
-            Order order = checkOrderExist(id);
-            if (!order.getMenu().getStore().getId().equals(user.getStore().getId())) {
-                throw new IllegalArgumentException("주문을 취소할 권한이 없습니다.");
-            }
-            // 주문을 취소하면 point를 다시 user에게 반환
-            int orderPrice = order.getMenu().getPrice();
-            user.setPoint(user.getPoint() + orderPrice);
+        if (!order.getMenu().getStore().getId().equals(user.getStore().getId())) {
+            throw new IllegalArgumentException("주문을 취소할 권한이 없습니다.");
+        }
 
-            userRepository.save(user);
-//            // 주문 삭제 -> 주문 취소 Enum을 만들어서 상태 변경을 하는게 더 좋을듯 !!!
-//            orderRepository.delete(order);
-            order.setOrderStatus(OrderStatusEnum.CANCELED); // 주문 상태를 취소로 변경
+        int orderPrice = order.getMenu().getPrice();
+        user.setPoint(user.getPoint() + orderPrice);
+        userRepository.save(user);
 
+        order.setOrderStatus(OrderStatusEnum.CANCELED);
 
-            return new StatusResponseDto("주문을 취소하였습니다.", 200);
-        });
+        return new StatusResponseDto("주문을 취소하였습니다.", 200);
     }
 
 
