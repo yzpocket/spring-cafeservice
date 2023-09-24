@@ -29,6 +29,9 @@ public class Store extends TimeStamped{
     @Column(name = "information")
     private String information; //가게 정보
 
+    @Column(name = "businessNum")
+    private Integer businessNum; //사업자 번호
+
     @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -45,6 +48,7 @@ public class Store extends TimeStamped{
         this.storeName = requestDto.getStoreName();
         this.storeAddress = requestDto.getStoreAddress();
         this.information = requestDto.getInformation();
+        this.businessNum = requestDto.getBusinessNum();
         this.user = user;
     }
 

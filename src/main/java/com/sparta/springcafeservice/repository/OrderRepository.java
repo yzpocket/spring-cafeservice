@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    List<Order> findAllByOrderByModifiedAtDesc();
-    Order findByUserId(Long userId);
+    List<Order> findAllByUserIdOrderByModifiedAtDesc(Long userId);
+
+    List<Order> findAllByMenu_Store_IdOrderByModifiedAtDesc(Long storeId);
 }

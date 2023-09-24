@@ -14,6 +14,7 @@ import com.sparta.springcafeservice.repository.MenuRepository;
 import com.sparta.springcafeservice.repository.ReviewRepository;
 import com.sparta.springcafeservice.repository.StoreRepository;
 import com.sparta.springcafeservice.repository.UserRepository;
+import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,26 +33,32 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final ReviewRepository reviewRepository;
     private final MenuRepository menuRepository;
-    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     // 가게 등록
     public ResponseEntity<StatusResponseDto> createStore(StoreRequestDto requestDto, User user) {
         return handleServiceRequest(()->{
 
+            Integer checkBusinessNum = requestDto.getBusinessNum();
+            Store checkStore = storeRepository.findByBusinessNum(checkBusinessNum);
+            // 이미 user 가 가게를 등록한 경우
             if (user.getStore() != null) {
                 throw new IllegalArgumentException("이미 가게를 등록하였습니다.");
             }
-            if (user.getRegistNum() == 0 || user.getRegistNum() == null) {
-                throw new IllegalArgumentException("사업자가 아닙니다.");
+            // request 에서 가져온 사업자 등록 번호가 이미 사용된 경우 (중복체크)
+            if (checkStore != null) {
+                throw new DuplicateRequestException("이미 사용중인 사업자 등록 번호 입니다.");
+            }
+            // 사업자 번호가 null 인 경우
+            if (checkBusinessNum == null) {
+                throw new IllegalArgumentException("사업자 등록번호가 없습니다.");
             }
 
-            List<User> authorRegistNum = userRepository.findByRegistNum(user.getRegistNum());
-            // 사업자 번호 중복체크
-            if (!authorRegistNum.isEmpty() && !user.getId().equals(authorRegistNum.get(0).getId())) {
-                throw new IllegalArgumentException("이미 등록된 사업자 번호입니다.");
-            }
+            // store 를 등록하는 사용자의 point -> 0으로 세팅한다
+            user.setPoint(0);
+            userRepository.save(user);
 
             storeRepository.save(new Store(requestDto, user));
             return new StatusResponseDto("가게가 등록되었습니다.", 200);
@@ -68,7 +75,7 @@ public class StoreService {
 
     // 선택한 가게 조회
     public StoreResponseDto getStore(Long storeId) {
-        return new StoreResponseDto(chekStoreExist(storeId));
+        return new StoreResponseDto(checkStoreExist(storeId));
     }
 
 
@@ -76,17 +83,16 @@ public class StoreService {
     @Transactional
     public ResponseEntity<StatusResponseDto> updateStore(Long id, StoreRequestDto requestDto, User user) {
        return handleServiceRequest(()->{
+           Store store = checkStoreExist(id);
 
-           Store store = chekStoreExist(id);
-
-           if (!user.getEmail().equals(store.getUser().getEmail())) {
-               throw new IllegalArgumentException("수정 권한이 없습니다");
-           }
+//           if (!user.getEmail().equals(store.getUser().getEmail())) {
+//               throw new IllegalArgumentException("수정 권한이 없습니다");
+//           }
            // 비밀 번호가 다를 시 예외처리
            if (!passwordEncoder.matches(requestDto.getPassword(), store.getUser().getPassword())) {
                throw new IllegalArgumentException("비밀번호가 다릅니다");
            }
-           //가게 사장만 수정 가능
+           //가게 사장만 수정 가능(엔티티의 고유 식별자인 id 값으로 비교하는 것으로 바꿨습니다..)
            if (!user.getId().equals(store.getUser().getId())) {
                throw new IllegalArgumentException("사용자가 다릅니다");
            }
@@ -102,18 +108,15 @@ public class StoreService {
     public ResponseEntity<StatusResponseDto> deleteStore(Long storeId, StoreRequestDto requestDto, User user) {
         return handleServiceRequest(()->{
 
-            Store store = chekStoreExist(storeId);
+            Store store = checkStoreExist(storeId);
 
+            //가게 사장만 삭제 가능
             if (!user.getId().equals(store.getUser().getId())) {
                 throw new IllegalArgumentException("삭제 권한이 없습니다");
             }
             // 비밀 번호가 다를 시 예외처리
             if (!passwordEncoder.matches(requestDto.getPassword(), store.getUser().getPassword())) {
                 throw new IllegalArgumentException("비밀번호가 다릅니다");
-            }
-            //가게 사장만 삭제 가능
-            if (!user.getId().equals(store.getUser().getId())) {
-                throw new IllegalArgumentException("사용자가 다릅니다");
             }
 
             storeRepository.delete(store);
@@ -122,7 +125,7 @@ public class StoreService {
     }
 
 
-    private Store chekStoreExist(Long id) {
+    private Store checkStoreExist(Long id) {
         // 가게 ID를 사용하여 특정 가게을 조회하고, 존재하지 않을 경우 예외 발생
         return storeRepository.findById(id).orElseThrow(() ->
                 new RestApiException("선택한 가게는 존재하지 않습니다.", HttpStatus.NOT_FOUND.value())

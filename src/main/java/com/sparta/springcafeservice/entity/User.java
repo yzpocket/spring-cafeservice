@@ -1,10 +1,8 @@
 package com.sparta.springcafeservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +24,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Column(nullable = true, unique = true)
-    // 사용자는 0, 사업자는 0이외의 값
-    private Integer registNum;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -49,14 +43,6 @@ public class User {
         this.password = password;
         this.email = email;
         this.role = role;
-    }
-
-    public User(String username, String password, String email, UserRoleEnum role, int registNum) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-        this.registNum = registNum;
     }
 
 

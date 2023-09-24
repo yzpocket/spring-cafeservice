@@ -6,10 +6,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 @Entity @Getter
 @NoArgsConstructor
@@ -24,6 +22,7 @@ public class Order extends TimeStamped {
     private String contents; //주문 취소 사유
 
     @Column
+    @Enumerated(value = EnumType.STRING)
     private OrderStatusEnum orderStatus;
 
     @ManyToOne
@@ -48,5 +47,9 @@ public class Order extends TimeStamped {
 
     public void update(OrderRequestDto requestDto) {
         this.orderStatus = requestDto.getOrderStatus();
+    }
+
+    public void setOrderStatus(OrderStatusEnum orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }
