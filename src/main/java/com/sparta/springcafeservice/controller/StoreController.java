@@ -10,7 +10,6 @@ import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +26,8 @@ public class StoreController {
 
     // 가게 등록
     @PostMapping("/stores")
-    public ResponseEntity<StatusResponseDto>  createStore(@RequestBody StoreRequestDto requestDto,
-                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto createStore(@RequestBody StoreRequestDto requestDto,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return storeService.createStore(requestDto, userDetails.getUser());
     }
 
@@ -46,9 +45,9 @@ public class StoreController {
 
     // 가게 수정
     @PutMapping("/stores/{storeId}")
-    public ResponseEntity<StatusResponseDto> updateStore(@PathVariable Long storeId,
-                                                           @RequestBody StoreRequestDto requestDto,
-                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto updateStore(@PathVariable Long storeId,
+                                         @RequestBody StoreRequestDto requestDto,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return storeService.updateStore(storeId, requestDto, userDetails.getUser());
 
     }
@@ -56,9 +55,9 @@ public class StoreController {
 
     // 가게 삭제
     @DeleteMapping("/stores/{storeId}")
-    public ResponseEntity<StatusResponseDto> deleteStore(@PathVariable Long storeId,
-                                                           @RequestBody StoreRequestDto requestDto,
-                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto deleteStore(@PathVariable Long storeId,
+                                         @RequestBody StoreRequestDto requestDto,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return storeService.deleteStore(storeId, requestDto, userDetails.getUser());
     }
 
