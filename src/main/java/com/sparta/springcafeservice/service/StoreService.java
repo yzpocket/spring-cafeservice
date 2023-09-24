@@ -5,10 +5,7 @@ import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.dto.StoreAllResponseDto;
 import com.sparta.springcafeservice.dto.StoreRequestDto;
 import com.sparta.springcafeservice.dto.StoreResponseDto;
-import com.sparta.springcafeservice.entity.Menu;
-import com.sparta.springcafeservice.entity.Review;
-import com.sparta.springcafeservice.entity.Store;
-import com.sparta.springcafeservice.entity.User;
+import com.sparta.springcafeservice.entity.*;
 import com.sparta.springcafeservice.exception.RestApiException;
 import com.sparta.springcafeservice.repository.MenuRepository;
 import com.sparta.springcafeservice.repository.ReviewRepository;
@@ -56,8 +53,9 @@ public class StoreService {
                 throw new IllegalArgumentException("사업자 등록번호가 없습니다.");
             }
 
-            // store 를 등록하는 사용자의 point -> 0으로 세팅한다
+            // store 를 등록하는 사용자의 point -> 0으로 세팅 / user 의 role USER ->BIZ 로 변경
             user.setPoint(0);
+            user.setRole(UserRoleEnum.BIZ);
             userRepository.save(user);
 
             storeRepository.save(new Store(requestDto, user));
@@ -118,6 +116,9 @@ public class StoreService {
             if (!passwordEncoder.matches(requestDto.getPassword(), store.getUser().getPassword())) {
                 throw new IllegalArgumentException("비밀번호가 다릅니다");
             }
+
+            user.setRole(UserRoleEnum.USER);
+            userRepository.save(user);
 
             storeRepository.delete(store);
             return new StatusResponseDto("가게 정보가 삭제되었습니다.", 200);
