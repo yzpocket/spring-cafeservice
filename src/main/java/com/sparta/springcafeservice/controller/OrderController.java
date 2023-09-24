@@ -4,19 +4,16 @@ package com.sparta.springcafeservice.controller;
 import com.sparta.springcafeservice.dto.OrderRequestDto;
 import com.sparta.springcafeservice.dto.OrderResponseDto;
 import com.sparta.springcafeservice.dto.StatusResponseDto;
-import com.sparta.springcafeservice.entity.User;
 import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-//@Controller
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class OrderController {
@@ -30,13 +27,13 @@ public class OrderController {
         return orderService.createOrder(requestDto, userDetails.getUser());
     }
 
-    // 주문 조회
+    // 주문 조회 (userId)
     @GetMapping("/orders")
-    public List<OrderResponseDto> getAllOrders(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return orderService.getAllOrders(userDetails.getUser());
+    public List<OrderResponseDto> getAllOrdersByUserId(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return orderService.getAllOrdersByUserId(userDetails.getUser());
     }
 
-    // 선택한 주문 조회
+    // 주문 조회 (storeId)
     @GetMapping("/orders/stores")
     public List<OrderResponseDto> getAllOrdersByStoreId(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return orderService.getAllOrdersByStoreId(userDetails.getUser());

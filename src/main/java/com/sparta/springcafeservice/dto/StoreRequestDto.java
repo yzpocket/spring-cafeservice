@@ -10,4 +10,6 @@ public class StoreRequestDto {
     private String storeName;
     private String storeAddress;
     private String information;
+    private Integer businessNum;
+
 }
