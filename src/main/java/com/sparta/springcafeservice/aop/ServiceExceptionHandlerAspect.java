@@ -29,7 +29,7 @@ public class ServiceExceptionHandlerAspect {
     */
 
     // [4-1] Service 클래스에서 반환을 통일시키는 부가기능
-    @Around("targetAllServiceMethods()")
+    @Around("targetAllServiceMethods() && args(action)")
     public ResponseEntity<StatusResponseDto> handleServiceRequest(Supplier<StatusResponseDto> action) {
         try {
             return new ResponseEntity<>(action.get(), HttpStatus.OK);

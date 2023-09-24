@@ -38,26 +38,20 @@ public class ReviewService {
 
     // 리뷰 수정
     @Transactional
-    public ResponseEntity<StatusResponseDto> updateReview(Long id, ReviewRequestDto requestDto, User user) {
-        return handleServiceRequest(() -> {
-
-            Review review = checkReviewExist(id);
-            validateUserAuthority(user.getId(), review.getUser());
-            review.update(requestDto);
-            return new StatusResponseDto("리뷰가 수정되었습니다.", 200);
-        });
+    public StatusResponseDto updateReview(Long id, ReviewRequestDto requestDto, User user) {
+        Review review = checkReviewExist(id);
+        validateUserAuthority(user.getId(), review.getUser());
+        review.update(requestDto);
+        return new StatusResponseDto("리뷰가 수정되었습니다.", 200);
     }
 
     // 선택 리뷰 삭제
     @Transactional
-    public ResponseEntity<StatusResponseDto> deleteReview(Long id, User user) {
-        return handleServiceRequest(() -> {
-
-            Review review = checkReviewExist(id);
-            validateUserAuthority(user.getId(), review.getUser());
-            reviewRepository.delete(review);
-            return new StatusResponseDto("리뷰가 삭제되었습니다.", 200);
-        });
+    public StatusResponseDto deleteReview(Long id, User user) {
+        Review review = checkReviewExist(id);
+        validateUserAuthority(user.getId(), review.getUser());
+        reviewRepository.delete(review);
+        return new StatusResponseDto("리뷰가 삭제되었습니다.", 200);
     }
 
 

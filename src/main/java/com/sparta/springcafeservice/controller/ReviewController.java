@@ -35,7 +35,7 @@ public class ReviewController {
 
     // 리뷰 수정
     @PutMapping("/reviews/{id}")
-    public ResponseEntity<StatusResponseDto> updateReview(@PathVariable Long id, @RequestBody ReviewRequestDto requestDto,
+    public StatusResponseDto updateReview(@PathVariable Long id, @RequestBody ReviewRequestDto requestDto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         logger.info("Received JSON data: {}", requestDto);
         return reviewService.updateReview(id, requestDto, userDetails.getUser());
@@ -43,8 +43,8 @@ public class ReviewController {
 
     // 리뷰 삭제
     @DeleteMapping("/reviews/{id}")
-    public ResponseEntity<StatusResponseDto> deleteReview(@PathVariable Long id,
-                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto deleteReview(@PathVariable Long id,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return reviewService.deleteReview(id, userDetails.getUser());
     }
 
