@@ -1,5 +1,6 @@
 package com.sparta.springcafeservice.service;
 
+import com.sparta.springcafeservice.aop.ServiceExceptionHandlerAspect;
 import com.sparta.springcafeservice.controller.ReviewController;
 import com.sparta.springcafeservice.dto.ReviewRequestDto;
 import com.sparta.springcafeservice.dto.StatusResponseDto;
@@ -11,12 +12,14 @@ import com.sparta.springcafeservice.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@EnableAspectJAutoProxy
 @RequiredArgsConstructor
 public class ReviewService {
 
@@ -25,6 +28,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     private final StoreRepository storeRepository;
+
+    private final ServiceExceptionHandlerAspect serviceExceptionHandlerAspect;
 
     // 리뷰 작성
     @Transactional
