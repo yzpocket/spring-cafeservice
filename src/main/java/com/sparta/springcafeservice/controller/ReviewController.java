@@ -6,16 +6,12 @@ import com.sparta.springcafeservice.entity.Review;
 import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.ReviewService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 /**
@@ -32,7 +28,7 @@ public class ReviewController {
 
     // 리뷰 작성
     @PostMapping("/reviews")
-    public ResponseEntity<StatusResponseDto> createReview(@RequestBody ReviewRequestDto requestDto,
+    public StatusResponseDto createReview(@RequestBody ReviewRequestDto requestDto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return reviewService.createReview(requestDto, userDetails.getUser());
     }
