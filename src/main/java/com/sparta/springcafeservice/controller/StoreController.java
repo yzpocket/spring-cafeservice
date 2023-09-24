@@ -8,6 +8,7 @@ import com.sparta.springcafeservice.entity.Menu;
 import com.sparta.springcafeservice.entity.Review;
 import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.StoreService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class StoreController {
 
     // 가게 등록
     @PostMapping("/stores")
-    public ResponseEntity<StatusResponseDto>  createStore(@RequestBody StoreRequestDto requestDto,
+    public ResponseEntity<StatusResponseDto>  createStore(@RequestBody @Valid StoreRequestDto requestDto,
                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return storeService.createStore(requestDto, userDetails.getUser());
     }

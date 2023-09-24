@@ -20,17 +20,19 @@ public class Store extends TimeStamped{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "storeName")
+    @Column(name = "storeName", unique = true)
     private String storeName; // 가게 이름
 
-    @Column(name = "storeAddress")
-    private String storeAddress; // 가게 주소
+//    @Column(name = "storeAddress")
+//    private String storeAddress; // 가게 주소
+
+
 
     @Column(name = "information")
     private String information; //가게 정보
 
     @Column(name = "businessNum")
-    private Integer businessNum; //사업자 번호
+    private int businessNum; //사업자 번호
 
     @JsonIgnore
     @OneToOne
@@ -44,18 +46,28 @@ public class Store extends TimeStamped{
     @OneToMany(mappedBy = "store", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Review> reviewList = new ArrayList<>();
 
-    public Store(StoreRequestDto requestDto, User user) {
+    @OneToOne(orphanRemoval = true)
+    private StoreAddress storeAddress;
+
+
+
+    public Store(StoreRequestDto requestDto, User user, StoreAddress storeAddress) {
         this.storeName = requestDto.getStoreName();
-        this.storeAddress = requestDto.getStoreAddress();
         this.information = requestDto.getInformation();
         this.businessNum = requestDto.getBusinessNum();
         this.user = user;
+
+        this.storeAddress = storeAddress;
     }
 
     public void update(StoreRequestDto requestDto) {
         this.storeName = requestDto.getStoreName();
-        this.storeAddress = requestDto.getStoreAddress();
         this.information = requestDto.getInformation();
+
+        this.storeAddress.updateAddress(requestDto.getPostNum(),
+                                        requestDto.getCity(),
+                                        requestDto.getDistrict(),
+                                        requestDto.getNeighborhood());
     }
 
     public List<Menu> getMenuList() {
