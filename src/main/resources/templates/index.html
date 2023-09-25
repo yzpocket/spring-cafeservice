@@ -84,31 +84,34 @@
 <!--            </div>-->
 <!--        </div>-->
 
-        <div id="popup1" class="overlay">
+        <div id="popup1" class="overlay" >
             <div class="popup">
-                <h2>Create Store</h2>
-                <a class="close" href="#">×</a>
-                <div class="content">
-                    <form id="createStoreForm">
-                        <label for="storeName">Store Name:</label>
-                        <input type="text" id="storeName" name="storeName" placeholder="가게 이름" required /><br />
+                <div>
 
-                        <label for="storeAddress">Store Address:</label>
-                        <div id="storeAddress">
-                            <input type="text" id="postNum" name="postNum" placeholder="우편번호" required />
-                            <input type="text" id="city" name="city" placeholder="시" required />
-                            <input type="text" id="district" name="district" placeholder="구" required />
-                            <input type="text" id="neighborhood" name="neighborhood" placeholder="동" required />
-                        </div><br />
+                    <h2>Create Store</h2>
+                    <a class="close" href="#">×</a>
+                    <div class="content">
+                        <form id="createStoreForm">
+                            <label for="storeName">Store Name:</label>
+                            <input type="text" id="storeName" name="storeName" placeholder="가게 이름" required />
 
-                        <label for="information">Information:</label>
-                        <input type="text" id="information" name="information" placeholder="가게 정보" required /><br />
+                            <label for="storeAddress">Store Address:</label>
+                            <div id="storeAddress">
+                                <input type="text" id="postNum" name="postNum" placeholder="우편번호" required />
+                                <input type="text" id="city" name="city" placeholder="시" required />
+                                <input type="text" id="district" name="district" placeholder="구" required />
+                                <input type="text" id="neighborhood" name="neighborhood" placeholder="동" required />
+                            </div>
 
-                        <label for="businessNum">BusinessNumber:</label>
-                        <input type="text" id="businessNum" name="businessNum" placeholder="사업자 등록 번호" required /><br />
+                            <label for="information">Information:</label>
+                            <input type="text" id="information" name="information" placeholder="가게 정보" required />
 
-                        <input type="submit" value="Create" onclick="createStore()">
-                    </form>
+                            <label for="businessNum">BusinessNumber:</label>
+                            <input type="text" id="businessNum" name="businessNum" placeholder="사업자 등록 번호" required />
+
+                            <input type="submit" value="Create" onclick="createStore()">
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

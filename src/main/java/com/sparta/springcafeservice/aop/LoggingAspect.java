@@ -67,13 +67,4 @@ public class LoggingAspect {
         String methodName = joinPoint.getSignature().getName();
         logger.info("Repository 메소드 '{}' 호출 -> 반환 : {}", methodName, result.toString());
     }
-
-
-
-    //// Controller, Service, Repository 모두 포함하는 메소드 호출 시 로그 출력
-    //@Before("controllerMethods() || serviceMethods() || repositoryMethods()")
-    //public void logAllMethods(JoinPoint joinPoint) {
-    //    String methodName = joinPoint.getSignature().getName();
-    //    logger.info("3layer 중 메소드 '{}' 호출", methodName);
-    //}
 }

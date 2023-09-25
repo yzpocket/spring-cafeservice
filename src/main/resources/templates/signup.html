@@ -30,7 +30,12 @@
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const email = document.getElementById('email').value;
-    const registnum = document.getElementById('registNum').value;
+
+    // 필수 입력 필드가 비어있는지 검사
+    if (!username || !password || !email || !registnum) {
+      alert('모든 필수 입력 필드를 채워주세요.');
+      return; // 가입 요청을 보내지 않고 함수를 종료
+    }
 
     // 폼 데이터를 JSON으로 변환
     const formData = {
@@ -66,27 +71,21 @@
               console.error('에러 발생:', error);
             });
   }
+
 </script>
 <body>
 <div id="login-form">
   <div id="login-title">Sign up CafeService</div>
+  <div class="login-id-label">E-mail</div>
+  <input type="text" id="email" placeholder="E-mail" class="login-input-box" required>
 
-    <div class="login-id-label">Username</div>
-    <input type="text" id="username" placeholder="Username" class="login-input-box">
+  <div class="login-id-label">Password</div>
+  <input type="password" id="password" class="login-input-box" required>
 
-    <div class="login-id-label">Password</div>
-    <input type="password" id="password" class="login-input-box">
+  <div class="login-id-label">Username</div>
+  <input type="text" id="username" placeholder="Username" class="login-input-box" required>
 
-    <div class="login-id-label">E-mail</div>
-    <input type="text" id="email" placeholder="E-mail" class="login-input-box">
 
-    <div class="login-id-label">registNum</div>
-    <input type="text" id="registNum" placeholder="registNum" class="login-input-box">
-
-    <div>
-      <input id="admin-check" type="checkbox" name="admin" onclick="onclickAdmin()" style="margin-top: 40px;">사업자 회원
-      <input id="admin-token" type="password" name="adminToken" placeholder="사업자 인증번호" class="login-input-box" style="display:none">
-    </div>
     <button id="login-id-submit" onclick="submitSignup()">회원 가입</button>
   </form>
 </div>
