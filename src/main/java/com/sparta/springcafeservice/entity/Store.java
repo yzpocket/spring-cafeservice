@@ -22,7 +22,7 @@ public class Store extends TimeStamped{
     private Long id;
 
     @Column(name = "storeName")
-    @Pattern(regexp = "^. {1,20}$", message = "가게 이름은 20자 이내로 입력해야 합니다.")
+    @Pattern(regexp = "^[\\s\\S]{1,20}$", message = "가게 이름은 20자 이내로 입력해야 합니다.")
     private String storeName; // 가게 이름
 
     @Column(name = "storeAddress")
@@ -33,7 +33,7 @@ public class Store extends TimeStamped{
 
     @Column(name = "businessNum")
     @Pattern(regexp = "^[0-9]{10}$", message = "사업자 번호는 10자리 숫자로 입력해야 합니다.")
-    private Integer businessNum; //사업자 번호
+    private String businessNum; //사업자 번호
 
     @JsonIgnore
     @OneToOne

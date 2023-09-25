@@ -11,7 +11,7 @@ import java.util.List;
 public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findByStoreNameContaining(String keyword);
 
-    Store findByBusinessNum(Integer checkBusinessNum);
+    Store findByBusinessNum(String checkBusinessNum);
 
     boolean existsByStoreName(String storeName);
 }

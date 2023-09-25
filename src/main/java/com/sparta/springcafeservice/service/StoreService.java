@@ -38,7 +38,7 @@ public class StoreService {
     public ResponseEntity<StatusResponseDto> createStore(StoreRequestDto requestDto, User user) {
         return handleServiceRequest(()->{
 
-            Integer checkBusinessNum = requestDto.getBusinessNum();
+            String checkBusinessNum = requestDto.getBusinessNum();
             Store checkStore = storeRepository.findByBusinessNum(checkBusinessNum);
             // 유저아이디로 만든 스토어가 있는지 확인 (레파지토리)
             if (storeRepository.existsById(user.getId())) {
