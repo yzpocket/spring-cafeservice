@@ -17,4 +17,14 @@ public class ReviewResponseDto {
         this.star = updatedReview.getStar();
         this.review = updatedReview.getReview();
     }
+
+    // 로그 출력용 toString() 오버라이드
+    @Override
+    public String toString() {
+        return "ReviewResponseDto{" +
+                "star=" + star +
+                ", review='" + review + '\'' +
+                '}';
+    }
+
 }

@@ -17,4 +17,15 @@ public class OrderResponseDto {
         this.contents = order.getContents();
         this.orderStatus = order.getOrderStatus();
     }
+
+    // 로그 출력용 toString() 오버라이드
+    @Override
+    public String toString() {
+        return "OrderResponseDto{" +
+                "id=" + id +
+                ", contents='" + contents + '\'' +
+                ", orderStatus=" + orderStatus +
+                '}';
+    }
+
 }

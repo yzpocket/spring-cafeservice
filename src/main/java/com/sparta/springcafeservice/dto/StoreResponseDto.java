@@ -25,4 +25,16 @@ public class StoreResponseDto {
         this.reviewResponseDtoList = store.getReviewList().stream().map(ReviewResponseDto::new).collect(Collectors.toList());
 
     }
+
+    // 로그 출력용 toString() 오버라이드
+    @Override
+    public String toString() {
+        return "StoreResponseDto{" +
+                "storeName='" + storeName + '\'' +
+                ", storeAddress='" + storeAddress + '\'' +
+                ", information='" + information + '\'' +
+                ", menuResponseDtoList=" + menuResponseDtoList +
+                ", reviewResponseDtoList=" + reviewResponseDtoList +
+                '}';
+    }
 }

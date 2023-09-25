@@ -22,4 +22,15 @@ public class StoreAllResponseDto {
     public Long getId() {
         return id;
     }
+
+    // 로그 출력용 toString() 오버라이드
+    @Override
+    public String toString() {
+        return "StoreAllResponseDto{" +
+                "id=" + id +
+                ", storeName='" + storeName + '\'' +
+                ", storeAddress='" + storeAddress + '\'' +
+                ", information='" + information + '\'' +
+                '}';
+    }
 }
