@@ -49,7 +49,7 @@ public class MenuService {
             throw new IllegalArgumentException("사용자의 가게 정보가 없습니다.");
         }
         // 가게 사장인지 확인(가게의 userId와 사용자 id 비교)
-        if (!checkStoreUser(user)) {
+        if (!checkStoreOwner(user)) {
             throw new IllegalArgumentException("가게 사장이 아닙니다.");
         }
         // 중복 메뉴 이름
@@ -90,7 +90,7 @@ public class MenuService {
         Menu menu = checkMenuExist(id);
 
         //사용자가 사장인지 확인
-        if (!checkStoreUser(user)) {
+        if (!checkStoreOwner(user)) {
             throw new IllegalArgumentException("사업자가 아닙니다.");
         } else {
             menu.update(menuRequestDto);
@@ -106,14 +106,13 @@ public class MenuService {
         Menu menu = checkMenuExist(id);
 
         // 사용자가 가게 사장인지 확인
-        if (!checkStoreUser(user)) {
+        if (!checkStoreOwner(user)) {
             throw new IllegalArgumentException("잘못된 접근 입니다.");
         } else {
             menuRepository.delete(menu);
         }
         return new StatusResponseDto("메뉴가 삭제되었습니다.", 200);
     }
-
 
     // 메뉴 찾기(id)
     public Menu checkMenuExist(Long id) {
@@ -123,7 +122,7 @@ public class MenuService {
     }
 
     // 사장인지 아닌지 확인 -> 사장일 경우 true
-    private boolean checkStoreUser(User user) {
+    private boolean checkStoreOwner(User user) {
         return user.getStore() != null && user.getId().equals(user.getStore().getUser().getId());
     }
 }

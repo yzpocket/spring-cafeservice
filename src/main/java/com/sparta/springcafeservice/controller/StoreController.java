@@ -8,8 +8,10 @@ import com.sparta.springcafeservice.entity.Menu;
 import com.sparta.springcafeservice.entity.Review;
 import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.StoreService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,13 +28,8 @@ public class StoreController {
 
     // 가게 등록
     @PostMapping("/stores")
-    public StatusResponseDto createStore(@RequestBody StoreRequestDto requestDto,
-                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info(requestDto.getStoreName().toString());
-        log.info(requestDto.getStoreAddress().toString());
-        log.info(userDetails.toString());
-        log.info(userDetails.getUser().toString());
-        log.info(userDetails.getAuthorities().toString());
+    public StatusResponseDto  createStore(@RequestBody @Valid StoreRequestDto requestDto,
+                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return storeService.createStore(requestDto, userDetails.getUser());
     }
 

@@ -60,29 +60,59 @@
             <p><a button type="button" class="btn btn-secondary" href="#popup1">CREATE CAFE</a></p>
         </div>
 
+<!--        <div id="popup1" class="overlay">-->
+<!--            <div class="popup">-->
+<!--                <h2>Create Store</h2>-->
+<!--                <a class="close" href="#">&times;</a>-->
+<!--                <div class="content">-->
+<!--                    <form id="createStoreForm">-->
+<!--                        <label for="storeName">Store Name:</label>-->
+<!--                        <input type="text" id="storeName" name="storeName" required /><br />-->
+
+<!--                        <label for="storeAddress">Store Address:</label>-->
+<!--                        <input type="text" id="storeAddress" name="storeAddress" required /><br />-->
+
+<!--                        <label for="information">Information:</label>-->
+<!--                        <input type="text" id="information" name="information" required /><br />-->
+
+<!--                        <label for="information">BusinessNumber:</label>-->
+<!--                        <input type="text" id="businessNum" name="businessNum" required /><br />-->
+
+<!--                        <input type="submit" value="Create" onclick="createStore()">-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
         <div id="popup1" class="overlay">
             <div class="popup">
                 <h2>Create Store</h2>
-                <a class="close" href="#">&times;</a>
+                <a class="close" href="#">×</a>
                 <div class="content">
                     <form id="createStoreForm">
                         <label for="storeName">Store Name:</label>
-                        <input type="text" id="storeName" name="storeName" required /><br />
+                        <input type="text" id="storeName" name="storeName" placeholder="가게 이름" required /><br />
 
                         <label for="storeAddress">Store Address:</label>
-                        <input type="text" id="storeAddress" name="storeAddress" required /><br />
+                        <div id="storeAddress">
+                            <input type="text" id="postNum" name="postNum" placeholder="우편번호" required />
+                            <input type="text" id="city" name="city" placeholder="시" required />
+                            <input type="text" id="district" name="district" placeholder="구" required />
+                            <input type="text" id="neighborhood" name="neighborhood" placeholder="동" required />
+                        </div><br />
 
                         <label for="information">Information:</label>
-                        <input type="text" id="information" name="information" required /><br />
+                        <input type="text" id="information" name="information" placeholder="가게 정보" required /><br />
 
-                        <label for="information">BusinessNumber:</label>
-                        <input type="text" id="businessNum" name="businessNum" required /><br />
+                        <label for="businessNum">BusinessNumber:</label>
+                        <input type="text" id="businessNum" name="businessNum" placeholder="사업자 등록 번호" required /><br />
 
                         <input type="submit" value="Create" onclick="createStore()">
                     </form>
                 </div>
             </div>
         </div>
+
 
 
         <div class="container px-5 my-5">
@@ -142,7 +172,14 @@
                 for (let i = 0; i < stores.length; i++) {
                     const store = stores[i];
                     const storeName = store["storeName"]
-                    const storeAddress = store["storeAddress"]
+                    // const storeAddress = store["storeAddress"]
+
+                    const postNum = store["postNum"];
+                    const city = store["city"];
+                    const district = store["district"];
+                    const neighborhood = store["neighborhood"];
+                    const combinedAddress = `${postNum} ${city} ${district} ${neighborhood}`;
+
                     const information = store["information"]
                     const businessNum = store["businessNum"]
                     const id = store["id"]; // id 속성 추가
@@ -162,7 +199,7 @@
                                         <div class="d-flex align-items-center">
                                             <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
                                             <div class="small">
-                                                <div class="fw-bold">${storeAddress}</div>
+                                                <div class="fw-bold">${combinedAddress}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -183,32 +220,78 @@
     }
 
 
-
-    /**/
     function createStore() {
-        const token = Cookies.get('Authorization');
+        alert("create button click")
+        let storeName = document.getElementById('storeName').value;
+        let information = document.getElementById('information').value;
+        let businessNum = document.getElementById('businessNum').value;
+        let postNum = document.getElementById('postNum').value;
+        let city = document.getElementById('city').value;
+        let district = document.getElementById('district').value;
+        let neighborhood = document.getElementById('neighborhood').value;
 
-        $.ajax({
-            url: "/api/stores",
-            method: "POST",
-            timeout: 0,
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": token // 토큰을 헤더에 추가
-            },
-            data: JSON.stringify({
-                storeName: $("#storeName").val(),
-                storeAddress: $("#storeAddress").val(),
-                information: $("#information").val()
-            }),
-            success: function (response) {
-                alert("신청하였습니다.")
-            },
-            error: function (error) {
-                alert("등록 실패! 다시 확인해주세요.")
+        // 쿠키에서 JWT 토큰을 추출합니다.
+        let jwtToken = getCookie("Authorization");
 
-            }
-        })
+        console.log(jwtToken);
+
+        // 사용자의 로그인 상태 확인
+        let isLoggedIn = checkLoginStatus();
+
+        // 로그인 상태를 확인하여 리뷰 작성 여부 결정
+        if (isLoggedIn) {
+            $.ajax({
+                url: "/api/stores",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(
+                    {storeName: storeName,
+                        information: information,
+                        businessNum: businessNum,
+                        postNum: postNum,
+                        city: city,
+                        district: district,
+                        neighborhood: neighborhood
+                    }),
+                headers: {
+                    "Authorization": jwtToken // JWT 토큰을 "Bearer" 스키마와 함께 추가합니다. -> 백에서 이미 bearer처리중이니 엇ㅂ애기
+                }
+            })
+                .done(function (response) {
+                    alert('Store가 등록되었습니다.');
+                    window.location.reload(); // 현재 페이지 리로드
+                    // window.location.href = '/add-menu'
+                    // 필요한 경우 페이지 리다이렉트나 다른 처리를 여기에 추가
+                })
+                .fail(function (error) {
+                    alert('Store 등록에 실패했습니다.');
+                });
+        } else {
+            // 로그인되지 않은 경우 알림 표시
+            alert('로그인 후에 Store를 작성할 수 있습니다.');
+            window.location.href = '/login';
+        }
+    }
+</script>
+<!-------------------------------------------------- REVIEW AUTHORIZATION -------------------------------------------------------->
+<script>
+    // 사용자의 로그인 상태 여부를 확인하는 함수
+    function checkLoginStatus() {
+        // 세션 정보나 토큰을 사용하여 로그인 상태를 확인
+        // isLoggedIn 변수에 true 또는 false를 설정
+        // 예를 들어, 로그인 토큰이 존재하는지 여부를 확인하는 코드 추가
+        let jwtToken = getCookie("Authorization");
+        return !!jwtToken; // 토큰이 존재하면 true, 그렇지 않으면 false 반환
+    }
+
+    // 쿠키에서 특정 이름의 쿠키 값을 추출하는 함수
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) {
+            const decodedValue = decodeURIComponent(parts.pop().split(';').shift()).trim(); // 여기서 trim() 추가
+            return decodedValue;
+        }
     }
 </script>
 <!------------------------------------------------------ index 검색 후 가게 리스트 인용 ------------------------------------------------------>
@@ -250,7 +333,14 @@
                 for (let i = 0; i < stores.length; i++) {
                     const store = stores[i];
                     const storeName = store["storeName"];
-                    const storeAddress = store["storeAddress"];
+                    // const storeAddress = store["storeAddress"];
+
+                    const postNum = store["postNum"];
+                    const city = store["city"];
+                    const district = store["district"];
+                    const neighborhood = store["neighborhood"];
+                    const combinedAddress = `${postNum} ${city} ${district} ${neighborhood}`;
+
                     const information = store["information"];
                     const id = store["store_id"]; // id 속성 추가
 
@@ -270,7 +360,7 @@
                                         <div class="d-flex align-items-center">
                                             <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
                                             <div class="small">
-                                                <div class="fw-bold">${storeAddress}</div>
+                                                <div class="fw-bold">${combinedAddress}</div>
                                             </div>
                                         </div>
                                     </div>

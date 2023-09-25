@@ -119,7 +119,15 @@
 
 <div class="fullBox1">
     <h1 id="storeName" th:text="${storeName}">Loading...</h1>
-    <h3 id="storeAddress" th:text="${storeAddress}">Loading...</h3>
+<!--    <h3 id="storeAddress" th:text="${storeAddress}">Loading...</h3>-->
+
+    <h3 id="storeAddress">
+        <span id="postNum" th:text="${postNum}"></span>,
+        <span id="city" th:text="${city}"></span>,
+        <span id="district" th:text="${district}"></span>,
+        <span id="neighborhood" th:text="${neighborhood}"></span>
+    </h3>
+
     <p id="information" th:text="${information}">Loading...</p>
 
     <div class="button2">
@@ -141,8 +149,16 @@
                 <label for="storeName">Store Name:</label>
                 <input type="text" id="updateStoreName" name="storeName" required /><br />
 
+<!--                <label for="storeAddress">Store Address:</label>-->
+<!--                <input type="text" id="updateStoreAddress" name="storeAddress" required /><br />-->
+
                 <label for="storeAddress">Store Address:</label>
-                <input type="text" id="updateStoreAddress" name="storeAddress" required /><br />
+                <div id="updateStoreAddress">
+                    <input type="text" id="updatePostNum" name="postNum" placeholder="우편번호" required />
+                    <input type="text" id="updateCity" name="city" placeholder="시" required />
+                    <input type="text" id="updateDistrict" name="district" placeholder="구" required />
+                    <input type="text" id="updateNeighborhood" name="neighborhood" placeholder="동" required />
+                </div><br />
 
                 <label for="information">Information:</label>
                 <input type="text" id="updateInformation" name="information" required /><br />
@@ -244,7 +260,14 @@
 
                 // 값을 가져온 후 Thymeleaf로 동적으로 설정
                 $('#storeName').text(storeName);
-                $('#storeAddress').text(storeAddress);
+                // $('#storeAddress').text(storeAddress);
+
+                // 4개의 필드로 주소 정보 설정
+                $('#postNum').text(storeAddress[0]);
+                $('#city').text(storeAddress[1]);
+                $('#district').text(storeAddress[2]);
+                $('#neighborhood').text(storeAddress[3]);
+
                 $('#information').text(information);
 
             },
@@ -276,7 +299,19 @@
             data: JSON.stringify({
                 password: $("#updatePassword").val(),
                 storeName: $("#updateStoreName").val(),
-                storeAddress: $("#updateStoreAddress").val(),
+                // storeAddress: $("#updateStoreAddress").val(),
+
+                postNum: $("#updatePostNum").val(),
+                city: $("#updateCity").val(),
+                district: $("#updateDistrict").val(),
+                neighborhood: $("#updateNeighborhood").val(),
+
+                // storeAddress:
+                //     $("#updatePostNum").val() + ", " +
+                //     $("#updateCity").val() + ", " +
+                //     $("#updateDistrict").val() + ", " +
+                //     $("#updateNeighborhood").val(),
+
                 information: $("#updateInformation").val()
             }),
             success: function (response) {
@@ -313,7 +348,14 @@
             data: JSON.stringify({
                 password: $("#deletePassword").val(),
                 storeName: $("#storeName").val(),
-                storeAddress: $("#storeAddress").val(),
+                // storeAddress: $("#storeAddress").val(),
+
+                storeAddress:
+                    $("#postNum").val() + ", " +
+                    $("#city").val() + ", " +
+                    $("#district").val() + ", " +
+                    $("#neighborhood").val(),
+
                 information: $("#information").val()
             }),
             success: function (response) {

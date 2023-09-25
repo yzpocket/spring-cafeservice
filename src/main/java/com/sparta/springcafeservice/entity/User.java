@@ -46,8 +46,6 @@ public class User {
     }
 
 
-    public void setPoint(int point){
-        this.point = point;
-    }
-
+    public void setPoint(int point) { this.point = point; }
+    public void setRole(UserRoleEnum role) { this.role = role; }
 }
