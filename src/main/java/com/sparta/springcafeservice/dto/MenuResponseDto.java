@@ -15,15 +15,4 @@ public class MenuResponseDto {
         this.image = menu.getImage();
         this.price = menu.getPrice();
     }
-
-    // 로그 출력용 toString() 오버라이드
-    @Override
-    public String toString() {
-        return "MenuResponseDto{" +
-                "menuName='" + menuName + '\'' +
-                ", image='" + image + '\'' +
-                ", price=" + price +
-                '}';
-    }
-
 }

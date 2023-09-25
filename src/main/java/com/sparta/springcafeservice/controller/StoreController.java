@@ -28,6 +28,11 @@ public class StoreController {
     @PostMapping("/stores")
     public StatusResponseDto createStore(@RequestBody StoreRequestDto requestDto,
                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info(requestDto.getStoreName().toString());
+        log.info(requestDto.getStoreAddress().toString());
+        log.info(userDetails.toString());
+        log.info(userDetails.getUser().toString());
+        log.info(userDetails.getAuthorities().toString());
         return storeService.createStore(requestDto, userDetails.getUser());
     }
 
