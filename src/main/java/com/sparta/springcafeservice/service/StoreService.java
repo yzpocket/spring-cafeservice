@@ -7,13 +7,12 @@ import com.sparta.springcafeservice.dto.StoreRequestDto;
 import com.sparta.springcafeservice.dto.StoreResponseDto;
 import com.sparta.springcafeservice.entity.*;
 import com.sparta.springcafeservice.exception.RestApiException;
-import com.sparta.springcafeservice.repository.MenuRepository;
-import com.sparta.springcafeservice.repository.ReviewRepository;
-import com.sparta.springcafeservice.repository.StoreRepository;
-import com.sparta.springcafeservice.repository.UserRepository;
+import com.sparta.springcafeservice.repository.*;
 import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -34,26 +34,35 @@ public class StoreService {
     private final MenuRepository menuRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final StoreAddressRepository storeAddressRepository;
 
     // 가게 등록
+    @Transactional
     public ResponseEntity<StatusResponseDto> createStore(StoreRequestDto requestDto, User user) {
         return handleServiceRequest(()->{
+            log.info("가게 생성 로그 ");
 
-            String checkBusinessNum = requestDto.getBusinessNum();
-            Store checkStore = storeRepository.findByBusinessNum(checkBusinessNum);
+            List<Store> existStoreName = storeRepository.findByStoreNameContaining(requestDto.getStoreName());
+            Optional<Store> existBizNum = storeRepository.findByBusinessNum(requestDto.getBusinessNum());
+            StoreAddress storeAddress = requestDto.toStoreAddress();
+            storeAddressRepository.save(storeAddress);
+
+          
+            // 가게 이름 중복체크
+            if (!existStoreName.isEmpty()) {
+                throw new IllegalArgumentException("중복된 가게 이름입니다.");
+            }
+          
             // 유저아이디로 만든 스토어가 있는지 확인 (레파지토리)
             if (storeRepository.existsById(user.getId())) {
                 throw new IllegalArgumentException("이미 가게를 등록하였습니다.");
             }
-            // request 에서 가져온 사업자 등록 번호가 이미 사용된 경우 (중복체크)
-            if (checkStore != null) {
-                throw new DuplicateRequestException("이미 사용중인 사업자 등록 번호 입니다.");
+
+            // 사업자 중복 체크
+            if (existBizNum.isPresent()) {
+                throw new IllegalArgumentException("중복된 사업자 번호입니다.");
             }
-            // 사업자 번호가 null 인 경우
-            if (checkBusinessNum == null) {
-                throw new IllegalArgumentException("사업자 등록번호가 없습니다.");
-            }
+          
             // 가게 이름 중복 금지
             if (storeRepository.existsByStoreName(requestDto.getStoreName())) {
                 throw new DuplicateRequestException("중복된 가게이름이 존재합니다.");
@@ -63,8 +72,9 @@ public class StoreService {
             user.setPoint(0);
             user.setRole(UserRoleEnum.BIZ);
             userRepository.save(user);
+            Store store = new Store(requestDto, user, storeAddress);
+            storeRepository.save(store);
 
-            storeRepository.save(new Store(requestDto, user));
             return new StatusResponseDto("가게가 등록되었습니다.", 200);
         });
     }
@@ -89,9 +99,7 @@ public class StoreService {
        return handleServiceRequest(()->{
            Store store = checkStoreExist(id);
 
-//           if (!user.getEmail().equals(store.getUser().getEmail())) {
-//               throw new IllegalArgumentException("수정 권한이 없습니다");
-//           }
+
            // 비밀 번호가 다를 시 예외처리
            if (!passwordEncoder.matches(requestDto.getPassword(), store.getUser().getPassword())) {
                throw new IllegalArgumentException("비밀번호가 다릅니다");

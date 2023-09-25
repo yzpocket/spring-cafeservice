@@ -21,19 +21,21 @@ public class Store extends TimeStamped{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "storeName")
-    @Pattern(regexp = "^[\\s\\S]{1,20}$", message = "가게 이름은 20자 이내로 입력해야 합니다.")
+
+    @Column(name = "storeName", unique = true)
     private String storeName; // 가게 이름
 
-    @Column(name = "storeAddress")
-    private String storeAddress; // 가게 주소
+//    @Column(name = "storeAddress")
+//    private String storeAddress; // 가게 주소
+
+
 
     @Column(name = "information")
     private String information; //가게 정보
 
     @Column(name = "businessNum")
-    @Pattern(regexp = "^[0-9]{10}$", message = "사업자 번호는 10자리 숫자로 입력해야 합니다.")
-    private String businessNum; //사업자 번호
+    private int businessNum; //사업자 번호
+
 
     @JsonIgnore
     @OneToOne
@@ -47,18 +49,28 @@ public class Store extends TimeStamped{
     @OneToMany(mappedBy = "store", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Review> reviewList = new ArrayList<>();
 
-    public Store(StoreRequestDto requestDto, User user) {
+    @OneToOne(orphanRemoval = true)
+    private StoreAddress storeAddress;
+
+
+
+    public Store(StoreRequestDto requestDto, User user, StoreAddress storeAddress) {
         this.storeName = requestDto.getStoreName();
-        this.storeAddress = requestDto.getStoreAddress();
         this.information = requestDto.getInformation();
         this.businessNum = requestDto.getBusinessNum();
         this.user = user;
+
+        this.storeAddress = storeAddress;
     }
 
     public void update(StoreRequestDto requestDto) {
         this.storeName = requestDto.getStoreName();
-        this.storeAddress = requestDto.getStoreAddress();
         this.information = requestDto.getInformation();
+
+        this.storeAddress.updateAddress(requestDto.getPostNum(),
+                                        requestDto.getCity(),
+                                        requestDto.getDistrict(),
+                                        requestDto.getNeighborhood());
     }
 
     public List<Menu> getMenuList() {

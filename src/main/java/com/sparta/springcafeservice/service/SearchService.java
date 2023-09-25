@@ -29,7 +29,9 @@ public class SearchService {
             SearchResponseDto responseDto = new SearchResponseDto();
             responseDto.setStore_id(menu.getStore().getId());
             responseDto.setStoreName(menu.getStore().getStoreName());
+
             responseDto.setStoreAddress(menu.getStore().getStoreAddress());
+
             responseDto.setInformation(menu.getStore().getInformation());
             responseDto.setType("menu");
             responseDtos.add(responseDto);
@@ -41,7 +43,9 @@ public class SearchService {
             SearchResponseDto responseDto = new SearchResponseDto();
             responseDto.setStore_id(store.getId());
             responseDto.setStoreName(store.getStoreName());
+
             responseDto.setStoreAddress(store.getStoreAddress());
+
             responseDto.setInformation(store.getInformation());
             responseDto.setType("store");
             responseDtos.add(responseDto);

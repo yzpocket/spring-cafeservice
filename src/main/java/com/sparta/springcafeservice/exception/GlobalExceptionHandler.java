@@ -13,6 +13,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     // @Valid 유효성 걸렸을 때 MethodArgumentNotValidException 가 발생
+    // @NotBlank, @Size, @Digits, @Pattern 등의 검증 어노테이션들은 모두 @Valid에 의해 검증
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
