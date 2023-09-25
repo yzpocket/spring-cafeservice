@@ -53,7 +53,7 @@ public class ReviewService {
     }
 
 
-    // 가게 체크
+    // 가게 체크 - 오더, 리뷰,
     private Store checkStoreExist(Long id) {
         return storeRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 가게는 존재하지 않습니다.")

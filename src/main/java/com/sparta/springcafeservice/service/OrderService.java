@@ -76,28 +76,27 @@ public class OrderService {
         OrderStatusEnum currentStatus = order.getOrderStatus();
         OrderStatusEnum newStatus = requestDto.getOrderStatus();
 
-            if (!order.getMenu().getStore().getId().equals(user.getStore().getId())) {
-                throw new IllegalArgumentException("주문상태를 변경할 권한이 없습니다.");
-            }
-            // 주문 상태가 취소일 경우
-            if (order.getOrderStatus() != OrderStatusEnum.ORDER_CONFIRMATION) {
-                throw new IllegalArgumentException("주문상태를 변경할 수 없는 주문입니다.");
-            }
-            //주문 상태가 바뀌면 사장에게 돈을 입금
-            if (!currentStatus.equals(newStatus)) {
-                if (newStatus.equals(OrderStatusEnum.DELIVERY_COMPLETED)) {
-                    int menuPrice = order.getMenu().getPrice() * order.getQuantity();
-                    User owner = order.getMenu().getStore().getUser();
+        if (!order.getMenu().getStore().getId().equals(user.getStore().getId())) {
+            throw new IllegalArgumentException("주문상태를 변경할 권한이 없습니다.");
+        }
+        // 주문 상태가 취소일 경우
+        if (order.getOrderStatus() != OrderStatusEnum.ORDER_CONFIRMATION) {
+            throw new IllegalArgumentException("주문상태를 변경할 수 없는 주문입니다.");
+        }
+        //주문 상태가 바뀌면 사장에게 돈을 입금
+        if (!currentStatus.equals(newStatus)) {
+            if (newStatus.equals(OrderStatusEnum.DELIVERY_COMPLETED)) {
+                int menuPrice = order.getMenu().getPrice() * order.getQuantity();
+                User owner = order.getMenu().getStore().getUser();
 
                 int notUpdatePoint = owner.getPoint();
                 int updatePoint = (notUpdatePoint + menuPrice);
 
-                    owner.setPoint(updatePoint);
-                }
+                owner.setPoint(updatePoint);
             }
-            order.update(requestDto);
-            return new StatusResponseDto("주문 상태가 바뀌었습니다.", 200);
-        });
+        }
+        order.update(requestDto);
+        return new StatusResponseDto("주문 상태가 바뀌었습니다.", 200);
     }
 
 
