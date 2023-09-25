@@ -10,6 +10,9 @@ import com.sparta.springcafeservice.exception.RestApiException;
 import com.sparta.springcafeservice.repository.*;
 import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +25,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class StoreService {
 
@@ -33,7 +37,7 @@ public class StoreService {
     private final StoreAddressRepository storeAddressRepository;
 
     // 가게 등록
-
+    @Transactional
     public ResponseEntity<StatusResponseDto> createStore(StoreRequestDto requestDto, User user) {
         return handleServiceRequest(()->{
             log.info("가게 생성 로그 ");
@@ -57,7 +61,6 @@ public class StoreService {
             user.setPoint(0);
             userRepository.save(user);
             Store store = new Store(requestDto, user, storeAddress);
-
             storeRepository.save(store);
 
             return new StatusResponseDto("가게가 등록되었습니다.", 200);
