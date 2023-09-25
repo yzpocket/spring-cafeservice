@@ -6,7 +6,6 @@ import com.sparta.springcafeservice.dto.StatusResponseDto;
 import com.sparta.springcafeservice.security.UserDetailsImpl;
 import com.sparta.springcafeservice.service.MenuService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +22,8 @@ public class MenuController {
     // 메뉴 등록
     @ResponseBody
     @PostMapping("/menus")
-    public ResponseEntity<StatusResponseDto> createMenu(@RequestBody MenuRequestDto menuRequestDto,
-                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto createMenu(@RequestBody MenuRequestDto menuRequestDto,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return menuService.createMenu(menuRequestDto, userDetails.getUser());
     }
 
@@ -45,17 +44,17 @@ public class MenuController {
     // 메뉴 수정
     @ResponseBody
     @PutMapping("/menus/{id}")
-    public ResponseEntity<StatusResponseDto> updateMenu(@PathVariable Long id,
-                                                        @RequestBody MenuRequestDto menuRequestDto,
-                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto updateMenu(@PathVariable Long id,
+                                        @RequestBody MenuRequestDto menuRequestDto,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return menuService.updateMenu(id, menuRequestDto, userDetails.getUser());
     }
 
     // 메뉴 삭제
     @ResponseBody
     @DeleteMapping("/menus/{id}")
-    public ResponseEntity<StatusResponseDto> deleteMenu(@PathVariable Long id,
-                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto deleteMenu(@PathVariable Long id,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return menuService.deleteMenu(id, userDetails.getUser());
     }
 

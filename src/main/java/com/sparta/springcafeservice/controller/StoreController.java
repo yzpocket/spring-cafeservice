@@ -28,7 +28,7 @@ public class StoreController {
 
     // 가게 등록
     @PostMapping("/stores")
-    public ResponseEntity<StatusResponseDto>  createStore(@RequestBody @Valid StoreRequestDto requestDto,
+    public StatusResponseDto  createStore(@RequestBody @Valid StoreRequestDto requestDto,
                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return storeService.createStore(requestDto, userDetails.getUser());
     }
@@ -47,9 +47,9 @@ public class StoreController {
 
     // 가게 수정
     @PutMapping("/stores/{storeId}")
-    public ResponseEntity<StatusResponseDto> updateStore(@PathVariable Long storeId,
-                                                           @RequestBody StoreRequestDto requestDto,
-                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto updateStore(@PathVariable Long storeId,
+                                         @RequestBody StoreRequestDto requestDto,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return storeService.updateStore(storeId, requestDto, userDetails.getUser());
 
     }
@@ -57,9 +57,9 @@ public class StoreController {
 
     // 가게 삭제
     @DeleteMapping("/stores/{storeId}")
-    public ResponseEntity<StatusResponseDto> deleteStore(@PathVariable Long storeId,
-                                                           @RequestBody StoreRequestDto requestDto,
-                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public StatusResponseDto deleteStore(@PathVariable Long storeId,
+                                         @RequestBody StoreRequestDto requestDto,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return storeService.deleteStore(storeId, requestDto, userDetails.getUser());
     }
 

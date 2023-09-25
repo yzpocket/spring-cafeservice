@@ -38,8 +38,7 @@ public class StoreService {
 
     // 가게 등록
     @Transactional
-    public ResponseEntity<StatusResponseDto> createStore(StoreRequestDto requestDto, User user) {
-        return handleServiceRequest(()->{
+    public StatusResponseDto createStore(StoreRequestDto requestDto, User user) {
             log.info("가게 생성 로그 ");
 
             List<Store> existStoreName = storeRepository.findByStoreNameContaining(requestDto.getStoreName());
@@ -47,12 +46,12 @@ public class StoreService {
             StoreAddress storeAddress = requestDto.toStoreAddress();
             storeAddressRepository.save(storeAddress);
 
-          
+
             // 가게 이름 중복체크
             if (!existStoreName.isEmpty()) {
                 throw new IllegalArgumentException("중복된 가게 이름입니다.");
             }
-          
+
             // 유저아이디로 만든 스토어가 있는지 확인 (레파지토리)
             if (storeRepository.existsById(user.getId())) {
                 throw new IllegalArgumentException("이미 가게를 등록하였습니다.");
@@ -62,7 +61,7 @@ public class StoreService {
             if (existBizNum.isPresent()) {
                 throw new IllegalArgumentException("중복된 사업자 번호입니다.");
             }
-          
+
             // 가게 이름 중복 금지
             if (storeRepository.existsByStoreName(requestDto.getStoreName())) {
                 throw new DuplicateRequestException("중복된 가게이름이 존재합니다.");
@@ -75,8 +74,7 @@ public class StoreService {
             Store store = new Store(requestDto, user, storeAddress);
             storeRepository.save(store);
 
-            return new StatusResponseDto("가게가 등록되었습니다.", 200);
-        });
+        return new StatusResponseDto("가게가 등록되었습니다.", 200);
     }
 
 
@@ -95,9 +93,8 @@ public class StoreService {
 
     // 가게 수정
     @Transactional
-    public ResponseEntity<StatusResponseDto> updateStore(Long id, StoreRequestDto requestDto, User user) {
-       return handleServiceRequest(()->{
-           Store store = checkStoreExist(id);
+    public StatusResponseDto updateStore(Long id, StoreRequestDto requestDto, User user) {
+        Store store = checkStoreExist(id);
 
 
            // 비밀 번호가 다를 시 예외처리
@@ -109,18 +106,15 @@ public class StoreService {
                throw new IllegalArgumentException("사용자가 다릅니다");
            }
 
-           store.update(requestDto);
-           return new StatusResponseDto("가게 정보가 수정되었습니다.", 200);
-       });
+        store.update(requestDto);
+        return new StatusResponseDto("가게 정보가 수정되었습니다.", 200);
     }
 
 
     // 가게 삭제
     @Transactional
-    public ResponseEntity<StatusResponseDto> deleteStore(Long storeId, StoreRequestDto requestDto, User user) {
-        return handleServiceRequest(()->{
-
-            Store store = checkStoreExist(storeId);
+    public StatusResponseDto deleteStore(Long storeId, StoreRequestDto requestDto, User user) {
+        Store store = checkStoreExist(storeId);
 
             //가게 사장만 삭제 가능
             if (!user.getId().equals(store.getUser().getId())) {
@@ -135,8 +129,7 @@ public class StoreService {
             userRepository.save(user);
 
             storeRepository.delete(store);
-            return new StatusResponseDto("가게 정보가 삭제되었습니다.", 200);
-        });
+        return new StatusResponseDto("가게 정보가 삭제되었습니다.", 200);
     }
 
 
@@ -156,19 +149,5 @@ public class StoreService {
 
     public List<Menu> getMenusByStoreId(Long storeId) {
         return menuRepository.findAllByStoreId(storeId);
-    }
-
-
-    // 중복 코드 제거를 위한 메소드
-    private ResponseEntity<StatusResponseDto> handleServiceRequest(Supplier<StatusResponseDto> action) {
-        try {
-            return new ResponseEntity<>(action.get(), HttpStatus.OK);
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
-            return new ResponseEntity<>(new StatusResponseDto(ex.getMessage(), 400), HttpStatus.BAD_REQUEST);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return new ResponseEntity<>(new StatusResponseDto("서비스 요청 중 오류가 발생했습니다.", 500), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 }
