@@ -60,29 +60,59 @@
             <p><a button type="button" class="btn btn-secondary" href="#popup1">CREATE CAFE</a></p>
         </div>
 
+<!--        <div id="popup1" class="overlay">-->
+<!--            <div class="popup">-->
+<!--                <h2>Create Store</h2>-->
+<!--                <a class="close" href="#">&times;</a>-->
+<!--                <div class="content">-->
+<!--                    <form id="createStoreForm">-->
+<!--                        <label for="storeName">Store Name:</label>-->
+<!--                        <input type="text" id="storeName" name="storeName" required /><br />-->
+
+<!--                        <label for="storeAddress">Store Address:</label>-->
+<!--                        <input type="text" id="storeAddress" name="storeAddress" required /><br />-->
+
+<!--                        <label for="information">Information:</label>-->
+<!--                        <input type="text" id="information" name="information" required /><br />-->
+
+<!--                        <label for="information">BusinessNumber:</label>-->
+<!--                        <input type="text" id="businessNum" name="businessNum" required /><br />-->
+
+<!--                        <input type="submit" value="Create" onclick="createStore()">-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
         <div id="popup1" class="overlay">
             <div class="popup">
                 <h2>Create Store</h2>
-                <a class="close" href="#">&times;</a>
+                <a class="close" href="#">×</a>
                 <div class="content">
                     <form id="createStoreForm">
                         <label for="storeName">Store Name:</label>
-                        <input type="text" id="storeName" name="storeName" required /><br />
+                        <input type="text" id="storeName" name="storeName" placeholder="가게 이름" required /><br />
 
                         <label for="storeAddress">Store Address:</label>
-                        <input type="text" id="storeAddress" name="storeAddress" required /><br />
+                        <div id="storeAddress">
+                            <input type="text" id="postNum" name="postNum" placeholder="우편번호" required />
+                            <input type="text" id="city" name="city" placeholder="시" required />
+                            <input type="text" id="district" name="district" placeholder="구" required />
+                            <input type="text" id="neighborhood" name="neighborhood" placeholder="동" required />
+                        </div><br />
 
                         <label for="information">Information:</label>
-                        <input type="text" id="information" name="information" required /><br />
+                        <input type="text" id="information" name="information" placeholder="가게 정보" required /><br />
 
-                        <label for="information">BusinessNumber:</label>
-                        <input type="text" id="businessNum" name="businessNum" required /><br />
+                        <label for="businessNum">BusinessNumber:</label>
+                        <input type="text" id="businessNum" name="businessNum" placeholder="사업자 등록 번호" required /><br />
 
                         <input type="submit" value="Create" onclick="createStore()">
                     </form>
                 </div>
             </div>
         </div>
+
 
 
         <div class="container px-5 my-5">
@@ -142,7 +172,14 @@
                 for (let i = 0; i < stores.length; i++) {
                     const store = stores[i];
                     const storeName = store["storeName"]
-                    const storeAddress = store["storeAddress"]
+                    // const storeAddress = store["storeAddress"]
+
+                    const postNum = store["postNum"];
+                    const city = store["city"];
+                    const district = store["district"];
+                    const neighborhood = store["neighborhood"];
+                    const combinedAddress = `${postNum} ${city} ${district} ${neighborhood}`;
+
                     const information = store["information"]
                     const businessNum = store["businessNum"]
                     const id = store["id"]; // id 속성 추가
@@ -162,7 +199,7 @@
                                         <div class="d-flex align-items-center">
                                             <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
                                             <div class="small">
-                                                <div class="fw-bold">${storeAddress}</div>
+                                                <div class="fw-bold">${combinedAddress}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -198,8 +235,14 @@
             },
             data: JSON.stringify({
                 storeName: $("#storeName").val(),
-                storeAddress: $("#storeAddress").val(),
-                information: $("#information").val()
+                // storeAddress: $("#storeAddress").val(),
+                information: $("#information").val(),
+
+                city: $("#city").val(),
+                district: $("#district").val(),
+                neighborhood: $("#neighborhood").val(),
+                postNum: $("#postNum").val()
+
             }),
             success: function (response) {
                 alert("신청하였습니다.")
@@ -250,7 +293,14 @@
                 for (let i = 0; i < stores.length; i++) {
                     const store = stores[i];
                     const storeName = store["storeName"];
-                    const storeAddress = store["storeAddress"];
+                    // const storeAddress = store["storeAddress"];
+
+                    const postNum = store["postNum"];
+                    const city = store["city"];
+                    const district = store["district"];
+                    const neighborhood = store["neighborhood"];
+                    const combinedAddress = `${postNum} ${city} ${district} ${neighborhood}`;
+
                     const information = store["information"];
                     const id = store["store_id"]; // id 속성 추가
 
@@ -270,7 +320,7 @@
                                         <div class="d-flex align-items-center">
                                             <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
                                             <div class="small">
-                                                <div class="fw-bold">${storeAddress}</div>
+                                                <div class="fw-bold">${combinedAddress}</div>
                                             </div>
                                         </div>
                                     </div>
