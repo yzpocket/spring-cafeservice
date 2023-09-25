@@ -12,4 +12,6 @@ public class OrderRequestDto {
 
     private String contents;
     private OrderStatusEnum orderStatus;
+
+    private int quantity;
 }

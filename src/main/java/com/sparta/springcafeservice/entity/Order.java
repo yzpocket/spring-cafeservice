@@ -33,6 +33,9 @@ public class Order extends TimeStamped {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(columnDefinition = "int default 1")
+    private int quantity;
+
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime orderDate;
@@ -43,6 +46,8 @@ public class Order extends TimeStamped {
         this.contents = requestDto.getContents();
         this.orderStatus = OrderStatusEnum.ORDER_CONFIRMATION;
         this.orderDate = LocalDateTime.now(); //주문 시간(생성일자, 수정일자와는 다릅니다.)
+        this.quantity = requestDto.getQuantity();
+
     }
 
     public void update(OrderRequestDto requestDto) {
