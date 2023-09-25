@@ -10,7 +10,7 @@ import lombok.Getter;
 public class StoreRequestDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @NotBlank(message = "패스워드를 입력하세요.")
+//    @NotBlank(message = "패스워드를 입력하세요.")
     private String password;
 
     @NotBlank
@@ -18,7 +18,7 @@ public class StoreRequestDto {
     private String storeName;
 
     @NotBlank
-    @Size(min = 10, message = "상점 소개를 10자 이상 작성해주세요.")
+//    @Size(min = 10, message = "상점 소개를 10자 이상 작성해주세요.")
     private String information;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

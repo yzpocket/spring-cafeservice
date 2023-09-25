@@ -36,12 +36,12 @@ public class StoreService {
 
     public ResponseEntity<StatusResponseDto> createStore(StoreRequestDto requestDto, User user) {
         return handleServiceRequest(()->{
+            log.info("가게 생성 로그 ");
 
             List<Store> existStoreName = storeRepository.findByStoreNameContaining(requestDto.getStoreName());
             Optional<Store> existBizNum = storeRepository.findByBusinessNum(requestDto.getBusinessNum());
             StoreAddress storeAddress = requestDto.toStoreAddress();
             storeAddressRepository.save(storeAddress);
-
 
             // 가게 이름 중복체크
             if (!existStoreName.isEmpty()) {
@@ -52,8 +52,6 @@ public class StoreService {
             if (existBizNum.isPresent()) {
                 throw new IllegalArgumentException("중복된 사업자 번호입니다.");
             }
-
-
 
             // store 를 등록하는 사용자의 point -> 0으로 세팅한다
             user.setPoint(0);
