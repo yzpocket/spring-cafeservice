@@ -40,8 +40,8 @@ public class StoreService {
 
             Integer checkBusinessNum = requestDto.getBusinessNum();
             Store checkStore = storeRepository.findByBusinessNum(checkBusinessNum);
-            // 이미 user 가 가게를 등록한 경우
-            if (user.getStore() != null) {
+            // 유저아이디로 만든 스토어가 있는지 확인 (레파지토리)
+            if (storeRepository.existsById(user.getId())) {
                 throw new IllegalArgumentException("이미 가게를 등록하였습니다.");
             }
             // request 에서 가져온 사업자 등록 번호가 이미 사용된 경우 (중복체크)
@@ -51,6 +51,10 @@ public class StoreService {
             // 사업자 번호가 null 인 경우
             if (checkBusinessNum == null) {
                 throw new IllegalArgumentException("사업자 등록번호가 없습니다.");
+            }
+            // 가게 이름 중복 금지
+            if (storeRepository.existsByStoreName(requestDto.getStoreName())) {
+                throw new DuplicateRequestException("중복된 가게이름이 존재합니다.");
             }
 
             // store 를 등록하는 사용자의 point -> 0으로 세팅 / user 의 role USER ->BIZ 로 변경
