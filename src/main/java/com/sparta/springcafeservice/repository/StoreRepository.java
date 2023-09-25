@@ -12,7 +12,8 @@ import java.util.Optional;
 public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findByStoreNameContaining(String keyword);
 
-    Optional<Store> findByBusinessNum(int businessNum);
 
-//    Store findByBusinessNum(Integer checkBusinessNum);
+    Optional<Store> findByBusinessNum(int businessNum);
+  
+    boolean existsByStoreName(String storeName);
 }

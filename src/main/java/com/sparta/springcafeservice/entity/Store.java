@@ -4,6 +4,7 @@ package com.sparta.springcafeservice.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.springcafeservice.dto.StoreRequestDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +21,7 @@ public class Store extends TimeStamped{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @Column(name = "storeName", unique = true)
     private String storeName; // 가게 이름
 
@@ -33,6 +35,7 @@ public class Store extends TimeStamped{
 
     @Column(name = "businessNum")
     private int businessNum; //사업자 번호
+
 
     @JsonIgnore
     @OneToOne

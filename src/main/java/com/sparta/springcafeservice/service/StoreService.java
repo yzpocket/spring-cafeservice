@@ -47,18 +47,30 @@ public class StoreService {
             StoreAddress storeAddress = requestDto.toStoreAddress();
             storeAddressRepository.save(storeAddress);
 
+          
             // 가게 이름 중복체크
             if (!existStoreName.isEmpty()) {
                 throw new IllegalArgumentException("중복된 가게 이름입니다.");
+            }
+          
+            // 유저아이디로 만든 스토어가 있는지 확인 (레파지토리)
+            if (storeRepository.existsById(user.getId())) {
+                throw new IllegalArgumentException("이미 가게를 등록하였습니다.");
             }
 
             // 사업자 중복 체크
             if (existBizNum.isPresent()) {
                 throw new IllegalArgumentException("중복된 사업자 번호입니다.");
             }
+          
+            // 가게 이름 중복 금지
+            if (storeRepository.existsByStoreName(requestDto.getStoreName())) {
+                throw new DuplicateRequestException("중복된 가게이름이 존재합니다.");
+            }
 
-            // store 를 등록하는 사용자의 point -> 0으로 세팅한다
+            // store 를 등록하는 사용자의 point -> 0으로 세팅 / user 의 role USER ->BIZ 로 변경
             user.setPoint(0);
+            user.setRole(UserRoleEnum.BIZ);
             userRepository.save(user);
             Store store = new Store(requestDto, user, storeAddress);
             storeRepository.save(store);
@@ -118,6 +130,9 @@ public class StoreService {
             if (!passwordEncoder.matches(requestDto.getPassword(), store.getUser().getPassword())) {
                 throw new IllegalArgumentException("비밀번호가 다릅니다");
             }
+
+            user.setRole(UserRoleEnum.USER);
+            userRepository.save(user);
 
             storeRepository.delete(store);
             return new StatusResponseDto("가게 정보가 삭제되었습니다.", 200);

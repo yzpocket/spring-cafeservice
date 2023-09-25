@@ -42,10 +42,10 @@ public class OrderService {
                     .orElseThrow(() -> new IllegalArgumentException("해당 가게를 찾을 수 없습니다."));
 
             // 잔액 예외 처리 -> 포인트 업데이트
-            if (user.getPoint() < menu.getPrice()) {
+            if (user.getPoint() < menu.getPrice() * requestDto.getQuantity()) {
                 throw new IllegalArgumentException("포인트가 부족해 주문할 수 없습니다");
             }
-            user.setPoint(user.getPoint() - menu.getPrice());
+            user.setPoint(user.getPoint() - menu.getPrice() * requestDto.getQuantity());
             userRepository.save(user);
 
             orderRepository.save(new Order(requestDto, user, menu));
@@ -84,11 +84,14 @@ public class OrderService {
             if (!order.getMenu().getStore().getId().equals(user.getStore().getId())) {
                 throw new IllegalArgumentException("주문상태를 변경할 권한이 없습니다.");
             }
-
+            // 주문 상태가 취소일 경우
+            if (order.getOrderStatus() != OrderStatusEnum.ORDER_CONFIRMATION) {
+                throw new IllegalArgumentException("주문상태를 변경할 수 없는 주문입니다.");
+            }
             //주문 상태가 바뀌면 사장에게 돈을 입금
             if (!currentStatus.equals(newStatus)) {
                 if (newStatus.equals(OrderStatusEnum.DELIVERY_COMPLETED)) {
-                    int menuPrice = order.getMenu().getPrice();
+                    int menuPrice = order.getMenu().getPrice() * order.getQuantity();
                     User owner = order.getMenu().getStore().getUser();
 
                     int notUpdatePoint = owner.getPoint();
@@ -112,9 +115,14 @@ public class OrderService {
             if (!order.getMenu().getStore().getId().equals(user.getStore().getId())) {
                 throw new IllegalArgumentException("주문을 취소할 권한이 없습니다.");
             }
+            // 배달 완료 주문은 삭제 불가
+            if (order.getOrderStatus() == OrderStatusEnum.DELIVERY_COMPLETED) {
+                throw new IllegalArgumentException("이미 배달이 완료된 주문입니다.");
+            }
             // 주문을 취소하면 point를 다시 user에게 반환
-            int orderPrice = order.getMenu().getPrice();
-            user.setPoint(user.getPoint() + orderPrice);
+            int menuPrice = order.getMenu().getPrice() * order.getQuantity();
+            User customer = order.getUser();
+            customer.setPoint(customer.getPoint() + menuPrice);
 
             userRepository.save(user);
 //            // 주문 삭제 -> 주문 취소 Enum을 만들어서 상태 변경을 하는게 더 좋을듯 !!!
