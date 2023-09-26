@@ -180,8 +180,8 @@ class StoreServiceTest {
         }
 
         @Test
-        @DisplayName("가게 수정 실패 - 사용자 ID 다름")
-        void updateStoreDifferentUserId() {
+        @DisplayName("가게 수정 실패 - Password 다름")
+        void failUpdateStoreIncorrectPassword() {
             // given
             Long storeId = 1L;
             StoreRequestDto storeRequestDto = new StoreRequestDto();
@@ -190,23 +190,48 @@ class StoreServiceTest {
 
             when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
 
-            // 사용자 비밀번호 일치 설정
-            when(passwordEncoder.matches(storeRequestDto.getPassword(), user.getPassword())).thenReturn(true);
-
-            // 사용자와 가게의 아이디를 다르게 설정
-            when(user.getId()).thenReturn(1L);
-            when(store.getUser().getId()).thenReturn(2L);
-
+            // 사용자 비밀번호 다르게
+            when(passwordEncoder.matches(storeRequestDto.getPassword(), store.getUser().getPassword())).thenReturn(false);
 
             // when, then
             IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> storeService.updateStore(storeId, storeRequestDto, user));
-            assertEquals("사용자가 다릅니다", illegalArgumentException.getMessage());
+            assertEquals("비밀번호가 다릅니다", illegalArgumentException.getMessage());
+        }
+
+        @Test
+        @DisplayName("가게 수정 실패 - 사용자 ID 다름")
+        void failUpdateStoreUserId() {
+            // given
+            Long storeId = 1L;
+            StoreRequestDto storeRequestDto = new StoreRequestDto();
+
+            // User 객체를 모킹하고 사용자 ID를 설정
+            User user1 = mock(User.class);
+            when(user1.getId()).thenReturn(1L);
+            User user2 = mock(User.class);
+            when(user2.getId()).thenReturn(2L);
+
+            Store store = new Store(storeRequestDto, user1, new StoreAddress());
+
+            // storeRepository.findById()가 해당 가게를 반환하도록 설정
+            when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
+            when(passwordEncoder.matches(storeRequestDto.getPassword(), store.getUser().getPassword())).thenReturn(true);
+
+            // 사용자 ID가 다른 경우, 예외가 발생해야 합니다.
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> storeService.updateStore(storeId, storeRequestDto, user2));
+            assertEquals("사용자가 다릅니다", exception.getMessage());
         }
 
 
+    }
+
+
+    @Nested
+    @DisplayName("deleteStore")
+    class Delete {
         @Test
-        @DisplayName("가게 수정 실패 - Password 다름")
-        void updateStoreIncorrectPassword() {
+        @DisplayName("가게 삭제 성공")
+        void deleteStore() {
             // given
             Long storeId = 1L;
             StoreRequestDto storeRequestDto = new StoreRequestDto();
@@ -214,20 +239,57 @@ class StoreServiceTest {
             Store store = new Store(storeRequestDto, user, new StoreAddress());
 
             when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
-            when(passwordEncoder.matches(storeRequestDto.getPassword(), user.getPassword())).thenReturn(false);
-            when(user.getId()).thenReturn(1L);
-            when(store.getUser().getId()).thenReturn(1L);
+            when(passwordEncoder.matches(storeRequestDto.getPassword(), user.getPassword())).thenReturn(true);
+            when(userRepository.save(user)).thenReturn(user);
+
+            // when
+            StatusResponseDto response = storeService.deleteStore(storeId, storeRequestDto, user);
+
+            // then
+            assertEquals("가게 정보가 삭제되었습니다.", response.getMsg());
+            assertEquals(200, response.getStatuscode());
+        }
+
+        @Test
+        @DisplayName("가게 삭제 실패 - 권한이 없는 경우")
+        void failDeleteStoreUserId() {
+            // given
+            Long storeId = 1L;
+            StoreRequestDto storeRequestDto = new StoreRequestDto();
+
+            // User 객체를 모킹하고 사용자 ID를 설정
+            User user1 = mock(User.class);
+            when(user1.getId()).thenReturn(1L);
+            User user2 = mock(User.class);
+            when(user2.getId()).thenReturn(2L);
+
+            Store store = new Store(storeRequestDto, user1, new StoreAddress());
+
+            // storeRepository.findById()가 해당 가게를 반환하도록 설정
+            when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
+
+            // 사용자 ID가 다른 경우, 예외가 발생해야 합니다.
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> storeService.deleteStore(storeId, storeRequestDto, user2));
+            assertEquals("삭제 권한이 없습니다", exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("가게 삭제 실패 - Password 다름")
+        void failDeleteStorePassword() {
+            // given
+            Long storeId = 1L;
+            StoreRequestDto storeRequestDto = new StoreRequestDto();
+            User user = mock(User.class);
+            Store store = new Store(storeRequestDto, user, new StoreAddress());
+
+            when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
+
+            // 사용자 비밀번호 다르게
+            when(passwordEncoder.matches(storeRequestDto.getPassword(), store.getUser().getPassword())).thenReturn(false);
 
             // when, then
-            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> storeService.updateStore(storeId, storeRequestDto, user));
-            assertEquals("비밀번호가 다릅니다", exception.getMessage());
+            IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> storeService.updateStore(storeId, storeRequestDto, user));
+            assertEquals("비밀번호가 다릅니다", illegalArgumentException.getMessage());
         }
     }
-
-
-
-    @Test
-    void deleteStore() {
-    }
-
 }
