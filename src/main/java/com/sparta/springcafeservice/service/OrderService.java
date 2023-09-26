@@ -12,12 +12,10 @@ import com.sparta.springcafeservice.repository.StoreRepository;
 import com.sparta.springcafeservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 
@@ -119,7 +117,7 @@ public class OrderService {
             customer.setPoint(customer.getPoint() + menuPrice);
 
             userRepository.save(user);
-//            // 주문 삭제 -> 주문 취소 Enum을 만들어서 상태 변경을 하는게 더 좋을듯 !!!
+//            // 주문 삭제 -> 주문 취소 Enum을 만들어서 상태 변경을 하는게 더 좋을듯 !!!(솔직히 이러면 수정에 들어가는게 맞음..)
 //            orderRepository.delete(order);
             order.setOrderStatus(OrderStatusEnum.CANCELED); // 주문 상태를 취소로 변경
 
