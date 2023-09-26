@@ -46,7 +46,7 @@ class StoreServiceTest {
     StoreService storeService;
 
     @Nested
-    @DisplayName("가게를 생성합니다.")
+    @DisplayName("CreateStore")
     class Create {
         @Test
         @DisplayName("가게 생성 성공")
