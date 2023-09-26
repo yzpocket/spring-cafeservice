@@ -10,8 +10,10 @@ import com.sparta.springcafeservice.repository.MenuRepository;
 import com.sparta.springcafeservice.repository.StoreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+//@ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @InjectMocks
     private MenuService menuService;
@@ -198,6 +201,13 @@ class MenuServiceTest {
         idFieldUser.setAccessible(true);
         idFieldUser.set(user , 1L);
 
+        // 만약 다른 유저 테스트 할라면 -> user2 매개변수에 삽입
+        User user2 = new User();
+        Field idFieldUser2 = User.class.getDeclaredField("id");
+        idFieldUser.setAccessible(true);
+        idFieldUser.set(user , 2L);
+
+
         Store store = new Store();
         Field userStore= store.getClass().getDeclaredField("user");
         userStore.setAccessible(true);
@@ -211,16 +221,18 @@ class MenuServiceTest {
         userId.setAccessible(true);
         userId.set(user , store);
 
-        MenuRequestDto requestDto= new MenuRequestDto();
-
-        Menu menu= new Menu(requestDto,user.getStore());
+        // 기존 메뉴 생성
+        MenuRequestDto existingMenuData = new MenuRequestDto(/* 기존 메뉴 데이터 */);
+        Menu menu = new Menu(existingMenuData, user.getStore());
         Long id= 1L;
 
-        when(menuRepository.findById(id)).thenReturn(Optional.of(menu));
+        when(menuRepository.findById(id)).thenReturn(Optional.of(menu)); // 기존 메뉴 찾는 로직
 
-        StatusResponseDto responseDto = menuService.updateMenu(id,requestDto,user);
+        // 수정된 매개변수 삽입 / 기존 : user  / 다른 유저 : usre2
+        MenuRequestDto updateData = new MenuRequestDto(/* 수정할 데이터 */);
+        StatusResponseDto response = menuService.updateMenu(id, updateData, user);
 
-        assertEquals("메뉴가 수정되었습니다.", responseDto.getMsg());
+        assertEquals("메뉴가 수정되었습니다.", response.getMsg());
 
     }
 
