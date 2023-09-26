@@ -26,6 +26,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     //THYMELEAF
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    testImplementation 'junit:junit:4.13.1'
     //JWT
     compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
