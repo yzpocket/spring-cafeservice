@@ -3,6 +3,8 @@ package com.sparta.springcafeservice.service;
 import com.sparta.springcafeservice.controller.ReviewController;
 import com.sparta.springcafeservice.dto.ReviewRequestDto;
 import com.sparta.springcafeservice.dto.StatusResponseDto;
+import com.sparta.springcafeservice.dto.StoreAllResponseDto;
+import com.sparta.springcafeservice.dto.StoreResponseDto;
 import com.sparta.springcafeservice.entity.Review;
 import com.sparta.springcafeservice.entity.Store;
 import com.sparta.springcafeservice.entity.User;
@@ -14,11 +16,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
-
-    private static final Logger logger = LoggerFactory.getLogger(ReviewController.class);
 
     private final ReviewRepository reviewRepository;
 
@@ -28,7 +31,14 @@ public class ReviewService {
     // 리뷰 작성
     @Transactional
     public StatusResponseDto createReview(ReviewRequestDto reviewRequestDto, User user) {
-        Store store = checkStoreExist(reviewRequestDto.getStoreId());
+        //로그인 확인
+        if (user == null) {
+            throw new IllegalArgumentException("로그인 해주세요!");
+        }
+
+        Store store = storeRepository.findById(reviewRequestDto.getStoreId())
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 storeId입니다."));
+
         Review review = new Review(reviewRequestDto, user, store);
         reviewRepository.save(review);
         return new StatusResponseDto("리뷰를 등록했습니다.", 200);
