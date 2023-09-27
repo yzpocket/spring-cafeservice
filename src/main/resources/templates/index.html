@@ -47,10 +47,15 @@
                         <p class="lead fw-normal text-white-50 mb-4">스페셜한 커피를 위해 끊임없이 노력하고 혁신하는 것. <br>
                             바리스타는 진정한 한 잔의 '완벽한 커피'를 만들기 위해 노력합니다. <br>
                             저희는 그 한잔의 가치를 고객에게 그대로 전달하기 위해 노력합니다. </p>
-                        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
-                            <a class="btn btn-primary btn-lg px-4 me-sm-3" href="#features">Get Order Now</a>
+                        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+<!--                            <a class="btn btn-primary btn-lg px-4 me-sm-3" href="#features">Get Order Now</a>-->
                             <a class="btn btn-outline-light btn-lg px-4" href="/login">Login and Signup</a>
                         </div>
+
+                    </div>
+                    <div class="input-group" style="width: 50%; margin: auto">
+                        <input type="search" id="searchKeyword" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                        <button type="button" class="btn btn-outline-primary" onclick="searchStoreAndMenu()">search</button>
                     </div>
                 </div>
             </div>
@@ -60,10 +65,7 @@
     </header>
 
     <section class="py-5">
-        <div class="input-group" style="width: 50%; margin: auto">
-            <input type="search" id="searchKeyword" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-            <button type="button" class="btn btn-outline-primary" onclick="searchStoreAndMenu()">search</button>
-        </div>
+
         <div id="wrapper">
             <p><a button type="button" class="btn btn-secondary" href="#popup1">CREATE CAFE</a></p>
         </div>
