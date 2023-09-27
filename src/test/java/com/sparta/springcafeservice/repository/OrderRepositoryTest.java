@@ -29,18 +29,18 @@ public class OrderRepositoryTest {
     private Store store;
     private Menu menu;
 
-    @BeforeEach
-    void setUp() {
-        // 필요한 엔티티를 미리 생성하여 entityManager를 통해 저장합니다.
-        user = new User();
-        entityManager.persist(user);
-
-        store = new Store();
-        entityManager.persist(store);
-
-        menu = new Menu(store); // Menu 엔티티 생성 시에 store 정보를 주입합니다.
-        entityManager.persist(menu);
-    }
+//    @BeforeEach
+//    void setUp() {
+//        // 필요한 엔티티를 미리 생성하여 entityManager를 통해 저장합니다.
+//        user = new User();
+//        entityManager.persist(user);
+//
+//        store = new Store();
+//        entityManager.persist(store);
+//
+//        menu = new Menu(store); // Menu 엔티티 생성 시에 store 정보를 주입합니다.
+//        entityManager.persist(menu);
+//    }
 
 
     @Test
