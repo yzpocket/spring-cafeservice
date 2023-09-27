@@ -211,7 +211,8 @@
                                 <img class="card-img-top" src="${imageUrl}" alt="..." />
                                 <div class="card-body p-4">
                                 <div class="badge bg-primary bg-gradient rounded-pill mb-2">Hit</div>
-                                <a class="text-decoration-none link-dark stretched-link" onclick="redirectToStore(${id})"><h5 class="card-title mb-3">${storeName}</h5></a>
+                                <a class="text-decoration-none link-dark stretched-link" onclick="redirectToStore(${id})">
+                                <h5 class="card-title mb-3">${storeName}</h5></a>
                                 <p class="card-text mb-0">${information}</p>
                                 </div>
                                 <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
@@ -371,11 +372,11 @@
 
                     const information = store["information"]
                     const businessNum = store["businessNum"]
-                    const id = store["id"]; // id 속성 추가
+                    const id = store["store_id"]; // id 속성 추가
 
                     const imageUrl = imageUrls[i];
                     const profileImageUrls = "https://scontent-ssn1-1.cdninstagram.com/v/t39.30808-6/359726052_18346095394079592_5175476032249568874_n.jpg?stp=c0.292.750.750a_dst-jpg_e15_s150x150&_nc_ht=scontent-ssn1-1.cdninstagram.com&_nc_cat=100&_nc_ohc=tcRkv0QuiQMAX_DXjw3&edm=AGW0Xe4AAAAA&ccb=7-5&oh=00_AfBIRDrHrrhrIsCbJG3-KlFhoimZ2eFIt7iQRZWXKxcIlA&oe=65150673&_nc_sid=94fea1"
-
+                    alert(id)
                     // 현재 로우에 카드를 추가합니다.
                     const tempHtml = `
                         <div class="col-lg-4 mb-5">
