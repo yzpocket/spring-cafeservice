@@ -20,9 +20,7 @@
 <!--    카카오로 로그인하기-->
 <!--  </button>-->
   <br>
-  <button id="login-id-btn" onclick="location.href='/signup'">
-    회원 가입하기
-  </button>
+
   <div>
     <div class="login-id-label">이메일</div>
     <input type="text" name="email" id="email" class="login-input-box">
@@ -31,7 +29,11 @@
     <input type="password" name="password" id="password" class="login-input-box">
 
     <button id="login-id-submit" onclick="onLogin()">로그인</button>
-  </div>
+    <br>
+    <button id="login-id-btn" onclick="location.href='/signup'">
+      회원 가입하기
+    </button>
+  </br>
   <div id="login-failed" style="display:none" class="alert alert-danger" role="alert">로그인에 실패하였습니다.</div>
 </div>
 </body>
